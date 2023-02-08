@@ -5,6 +5,10 @@ import Layout from './Layout'
 import Home from './Home'
 import About from './About'
 import Banco from './Banco'
+import Empresa from './Empresa'
+import TestBig from './TestBig'
+
+
 import './App.css'
 
 
@@ -33,6 +37,8 @@ function App() {
       <Route index element={<Home/>}/>
       <Route path='about' element={<About/>}/>
       <Route path='banco' element={<Banco/>}/>
+      <Route path='empresa' element={<Empresa/>}/>
+      <Route path='testbig' element={<TestBig/>}/>
     </Route>
     <Route path='*' element={<h1>not found</h1>}/>
   </Routes>

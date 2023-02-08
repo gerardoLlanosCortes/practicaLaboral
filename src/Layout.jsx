@@ -56,7 +56,7 @@ export const Layout = () => {
           <nav className="navbar navbar-expand-md ">
             <div className=" container-sm ">
               <a href="#" className="navbar-brand mb-1 ">
-                  <i class="fa-solid fa-location-dot brand__logo"></i>
+                  <i className="fa-solid fa-location-dot brand__logo"></i>
                   <span>Logo</span>
               </a>
 
@@ -67,20 +67,20 @@ export const Layout = () => {
               <div className="collapse navbar-collapse " id='menu' >
                 <ul className="navbar-nav me-auto">
                   <li className="nav-item">
-                    <a className="nav-link active" aria-current="page" href="#"><Link to="/" className='nav__anchor'>Home</Link></a>
+                    <Link to="/" className='nav__anchor nav-link active" ' aria-current="page">Home</Link>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link" href="#"><Link to="/about" className='nav__anchor'>About</Link></a>
+                    <Link to="/about" className='nav__anchor nav-link'>About</Link>
                   </li>
                   <li className="nav-item dropdown">
                     <a className="nav-link dropdown-toggle nav__anchor" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                       Administración
                     </a>
                     <ul className="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-                      <li><a className="dropdown-item" href="#"><Link to="/banco" className='nav__anchor nav__anchor--dropdown'>Banco</Link></a></li>
-                      <li><a className="dropdown-item" href="#"><Link to="/banco" className='nav__anchor nav__anchor--dropdown'>Empresa</Link></a></li>
-                      <li><a className="dropdown-item" href="#"><Link to="/banco" className='nav__anchor nav__anchor--dropdown'>Item</Link></a></li>
-                      <li><a className="dropdown-item" href="#"><Link to="/banco" className='nav__anchor nav__anchor--dropdown'>Empleado</Link></a></li>
+                      <li><Link to="/banco" className='nav__anchor nav__anchor--dropdown dropdown-item'>Banco</Link></li>
+                      <li><Link to="/empresa" className='nav__anchor nav__anchor--dropdown dropdown-item'>Empresa</Link></li>
+                      <li><Link to="/banco" className='nav__anchor nav__anchor--dropdown dropdown-item'>Item</Link></li>
+                      <li><Link to="/testbig" className='nav__anchor nav__anchor--dropdown dropdown-item'>Empleado</Link></li>
                     </ul>
                   </li>
                 </ul>
