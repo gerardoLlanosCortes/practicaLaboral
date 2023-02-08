@@ -1,22 +1,19 @@
-import React, {Component} from 'react'
+import React from 'react'
 import { useState,useEffect } from 'react'
 import axios from 'axios'
 import {show__alert} from "./functions"
 import withReactContent from 'sweetalert2-react-content'
 import Swal from "sweetalert2";
 
-import DataTable, {createTheme} from 'react-data-table-component'
-import 'styled-components'
-
 import Tabla from './components/Tabla'
-import Test from './components/Test'
 
 export const Empresa = () => {
 
-    const url = "https://tzone.cl:4503/banco"
-    const [bancos, setBancos] = useState([]);
-    const [bancoId,setBancoId] = useState("")
-    const [bancoNombre,setBancoNombre] = useState("")
+    const url = "https://tzone.cl:4503/empresa"
+    const [empresas, setEmpresas] = useState([]);
+    const [idEmpresa,setIdEmpresa] = useState("")
+    const [rutEmpresa,setRutEmpresa] = useState("")
+    const [empresa, setEmpresa] = useState("")
     const [estado, setEstado] = useState("")
     const [operation, setOperation] = useState(1)
     const [title, setTitle] = useState("")
@@ -47,7 +44,7 @@ export const Empresa = () => {
             let result = await axios.get(url,{
                 headers: header,
             })
-            setBancos(result.data)
+            setEmpresas(result.data)
             setSearchApiData(result.data)
         }catch(err){
             console.log(err)
@@ -60,21 +57,23 @@ export const Empresa = () => {
     // ==== POST Y PATCH =======
     // =========================
 
-    const validar = (bancoId) => {
+    const validar = (id) => {
         let parametros
         let metodo
-        if(bancoNombre.trim() === ""){
-            show__alert("Escribe el nombre del banco", "warning")
+        if(rutEmpresa.trim() === ""){
+            show__alert("Escribe el rut de la empresa", "warning")
+        }else if(empresa.trim() === ""){
+            show__alert("Escribe el nombre de la empresa", "warning")
         }else if(estado === ""){
-            show__alert("Escribe el estado del banco", "warning")
+            show__alert("Escribe el estado de la empresa", "warning")
         }else{
             if(operation === 1){
-                parametros = {Banco:bancoNombre.trim(), Estado: estado}
+                parametros = {RutEmpresa: rutEmpresa,Empresa: empresa.trim(),Estado:estado}
                 metodo = "POST"
                 enviarSolicitud(metodo, url, parametros)
             }else{
-                parametros = {Banco:bancoNombre.trim(), Estado: estado}
-                enviarSolicitud("PATCH", `https://tzone.cl:4503/banco/${bancoId}`, parametros)
+                parametros = {RutEmpresa: rutEmpresa,Empresa: empresa.trim(),Estado:estado}
+                enviarSolicitud("PATCH", `https://tzone.cl:4503/empresa/${id}`, parametros)
             }
             
         }
@@ -86,21 +85,21 @@ export const Empresa = () => {
     // ======= DELETE ==========
     // =========================
 
-    const deleteBanco = (id,banco) => {
+    const deleteItem = (id,empresa) => {
         const MySwal = withReactContent(Swal)
         MySwal.fire({
-            title: "Seguro que quieres eliminar el banco " + banco + " ?",
+            title: "Seguro que quieres eliminarla empresa " + empresa + " ?",
             icon: "question",
             confirmButtonColor: 'rgba(25, 135, 84, 0.800)',
             cancelButtonColor: '#d33',
             showCancelButton:true,confirmButtonText:"Sí, eliminar",cancelButton:"Cancelar"
         }).then((result => {
             if(result.isConfirmed){
-                setBancoId(id)
-                let urlDelete= `https://tzone.cl:4503/banco/${id}`
+                setIdEmpresa(id)
+                let urlDelete= `https://tzone.cl:4503/empresa/${id}`
                 enviarSolicitud("DELETE", urlDelete)
             }else{
-                show__alert("El banco NO fue eliminado", "info")
+                show__alert("La empresa NO fue eliminada", "info")
             }
         }))
     }
@@ -134,8 +133,13 @@ export const Empresa = () => {
 
     const columns = [
         {
-            name: "Banco",
-            selector: row => row.Banco,
+            name: "RutEmpresa",
+            selector: row => row.RutEmpresa,
+            sortable: true
+        },
+        {
+            name: "Empresa",
+            selector: row => row.Empresa,
             sortable: true
         },
         {
@@ -147,8 +151,8 @@ export const Empresa = () => {
             name:"Action",
             cell: row => (
                 <div>                
-                    <a href="#" className='edit edit__icon' data-toggle="modal"><i className='material-icons ' data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#modalBancos" title='Edit' onClick={() => openModal(2, row.IdBanco, row.Banco, row.Estado)}>&#xE254;</i></a> 
-                    <a href="#" className='delete delete__icon' data-toggle="modal"><i className='material-icons' data-toggle="tooltip" title='Delete' onClick={() => deleteBanco(row.IdBanco, row.Banco)}>&#xE872;</i></a>
+                    <a href="#" className='edit edit__icon' data-toggle="modal"><i className='material-icons ' data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#modalTable" title='Edit' onClick={() => openModal(2, row.IdEmpresa, row.RutEmpresa, row.Empresa, row.Estado)}>&#xE254;</i></a> 
+                    <a href="#" className='delete delete__icon' data-toggle="modal"><i className='material-icons' data-toggle="tooltip" title='Delete' onClick={() => deleteItem(row.IdEmpresa, row.Empresa)}>&#xE872;</i></a>
                 </div>
             ),
             
@@ -164,22 +168,24 @@ export const Empresa = () => {
     // ======== MODAL ==========
     // =========================
 
-    const openModal = (op, id, banco, estado) => {
-        setBancoId("")
-        setBancoNombre("")
+    const openModal = (op, id,rut, empresa, estado) => {
+        setIdEmpresa("")
+        setRutEmpresa("")
+        setEmpresa("")
         setEstado("")
         setOperation(op)
         if(op === 1){
-            setTitle("Registrar Banco")
+            setTitle("Registrar Empresa")
         }
         else if(op === 2){
-            setTitle("Editar Banco")
-            setBancoId(id)
-            setBancoNombre(banco)
+            setTitle("Editar Empresa")
+            setIdEmpresa(id)
+            setRutEmpresa(rut)
+            setEmpresa(empresa)
             setEstado(estado)
         }
         window.setTimeout(function(){
-            document.getElementById("banco").focus()
+            document.getElementById("first").focus()
         },500)
     }
 
@@ -189,13 +195,13 @@ export const Empresa = () => {
 
     const handleFilter = (e) => {
         if(e.target.value == ""){
-            setBancos(searchApiData)
+            setEmpresas(searchApiData)
         }else{
-            const filterResult = searchApiData.filter(item => item.Banco.toLowerCase().includes(e.target.value.toLowerCase()))
+            const filterResult = searchApiData.filter(item => item.Empresa.toLowerCase().includes(e.target.value.toLowerCase()) || item.RutEmpresa.toLowerCase().includes(e.target.value.toLowerCase()))
             if (filterResult.length > 0) {
-                setBancos(filterResult)
+                setEmpresas(filterResult)
             } else {
-                setBancos([{"Banco": "No hay información", "Estado": undefined}])
+                setEmpresas([{"Empresa": "No hay información", "Estado": undefined}])
             }
         }
         setFilterVal(e.target.value)
@@ -205,11 +211,11 @@ export const Empresa = () => {
     return(
         <div className='Empresa' >
             <Tabla 
-                bancos={bancos}
+                arrayData={empresas}
                 columns={columns}
-                title={"Administrar Bancos"}
-                bancoId={bancoId}
-                bancoNombre={bancoNombre}
+                title={"Administrar Empresas"}
+                bancoId={idEmpresa}
+                bancoNombre={empresa}
                 estado={estado}
                 operation={operation}
                 filterVal={filterVal}
@@ -220,7 +226,7 @@ export const Empresa = () => {
 
 
 
-            <div id='modalBancos' className="modal fade" aria-hidden="true">
+            <div id='modalTable' className="modal fade" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -231,8 +237,14 @@ export const Empresa = () => {
                             <input type="hidden" id='id'/>
                             <div className="input-group mb-3">
                                 <span className='input-group-text'><i className="fa-solid fa-building-columns"></i></span>
-                                <input type="text" id='banco' className='form-control' placeholder='Banco' value={bancoNombre}
-                                onChange={(e) => setBancoNombre(e.target.value)} />
+                                <input type="text" id='first' className='form-control' placeholder='Rut Empresa' value={rutEmpresa}
+                                onChange={(e) => setRutEmpresa(e.target.value)} />
+                            </div>
+
+                            <div className="input-group mb-3">
+                                <span className='input-group-text'><i className="fa-solid fa-building-columns"></i></span>
+                                <input type="text" id='first' className='form-control' placeholder='Empresa' value={empresa}
+                                onChange={(e) => setEmpresa(e.target.value)} />
                             </div>
 
                             <div className="input-group mb-3">
@@ -246,7 +258,7 @@ export const Empresa = () => {
 
 
                             <div className="d-grid col-6 mx-auto">
-                                <button onClick={() => validar(bancoId)} className='btn btn-success btn__save btn__save--modal'>
+                                <button onClick={() => validar(idEmpresa)} className='btn btn-success btn__save btn__save--modal'>
                                     <i className="fa-solid fa-floppy-disk save__icon"></i>
                                 </button>
                             </div>

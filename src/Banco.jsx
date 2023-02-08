@@ -1,17 +1,13 @@
-import React, {Component} from 'react'
+import React from 'react'
 import { useState,useEffect } from 'react'
 import axios from 'axios'
 import {show__alert} from "./functions"
 import withReactContent from 'sweetalert2-react-content'
 import Swal from "sweetalert2";
 
-import DataTable, {createTheme} from 'react-data-table-component'
-import 'styled-components'
+import Tabla from './components/Tabla'
 
-// import Tabla from './components/Tabla'
-
-
-export const Banco = () => { 
+export const Banco = () => {
 
     const url = "https://tzone.cl:4503/banco"
     const [bancos, setBancos] = useState([]);
@@ -129,31 +125,6 @@ export const Banco = () => {
 
 
     // =========================
-    // ======== MODAL ==========
-    // =========================
-
-    const openModal = (op, id, banco, estado) => {
-        setBancoId("")
-        setBancoNombre("")
-        setEstado("")
-        setOperation(op)
-        if(op === 1){
-            setTitle("Registrar Banco")
-        }
-        else if(op === 2){
-            setTitle("Editar Banco")
-            setBancoId(id)
-            setBancoNombre(banco)
-            setEstado(estado)
-        }
-        window.setTimeout(function(){
-            document.getElementById("banco").focus()
-        },500)
-    }
-
-
-
-    // =========================
     // ======== COLUMNAS =======
     // =========================
 
@@ -172,7 +143,7 @@ export const Banco = () => {
             name:"Action",
             cell: row => (
                 <div>                
-                    <a href="#" className='edit edit__icon' data-toggle="modal"><i className='material-icons ' data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#modalBancos" title='Edit' onClick={() => openModal(2, row.IdBanco, row.Banco, row.Estado)}>&#xE254;</i></a> 
+                    <a href="#" className='edit edit__icon' data-toggle="modal"><i className='material-icons ' data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#modalTable" title='Edit' onClick={() => openModal(2, row.IdBanco, row.Banco, row.Estado)}>&#xE254;</i></a> 
                     <a href="#" className='delete delete__icon' data-toggle="modal"><i className='material-icons' data-toggle="tooltip" title='Delete' onClick={() => deleteBanco(row.IdBanco, row.Banco)}>&#xE872;</i></a>
                 </div>
             ),
@@ -183,17 +154,30 @@ export const Banco = () => {
         }  
     ]
     
+
+
     // =========================
-    // ======== ESPANOL ========
+    // ======== MODAL ==========
     // =========================
 
-    const paginacionOpciones = {
-        rowsPerPageText: "Filas por Página",
-        rangeSeparatorText: "de",
-        selectAllRowsItem: true,
-        selectAllRowsItemText: "todos",
+    const openModal = (op, id, banco, estado) => {
+        setBancoId("")
+        setBancoNombre("")
+        setEstado("")
+        setOperation(op)
+        if(op === 1){
+            setTitle("Registrar Banco")
+        }
+        else if(op === 2){
+            setTitle("Editar Banco")
+            setBancoId(id)
+            setBancoNombre(bancos)
+            setEstado(estado)
+        }
+        window.setTimeout(function(){
+            document.getElementById("banco").focus()
+        },500)
     }
-
 
     // =========================
     // ======== SEACRH =========
@@ -213,38 +197,26 @@ export const Banco = () => {
         setFilterVal(e.target.value)
     }
 
-    
-    
 
-    return (
-    
-        <div className='Banco container-sm' >
-            <h2 className='text-center table__title'>Administrar Bancos</h2>
-            <div className="d-flex justify-content-between table__cta">
-                <div className="input-group input__search">
-                    <span className='input-group-text'><i className="fa-solid fa-magnifying-glass"></i></span>
-                    <input type="text" className='form-control' placeholder='Buscar' value={filterVal}
-                    onInput={(e) => handleFilter(e)}/>
-                </div>
-                <button onClick={() => openModal(1)} className="btn btn-success btn__add btn__save" data-bs-toggle="modal" data-bs-target="#modalBancos">
-                    <i className="fa-solid fa-circle-plus circle-icon"></i>Añadir
-                </button>
-            </div>
-                    
-            <DataTable 
-                id="#example"
-                columns={columns} 
-                data={bancos}
-                pagination
-                paginationComponentOptions={paginacionOpciones}
-                responsive
-                striped
-                highlightOnHover
-                fixedHeader
-                fixedHeaderScrollHeight='300px'
-            />
+    return(
+        <div className='Empresa' >
+            <Tabla 
+                arrayData={bancos}
+                columns={columns}
+                title={"Administrar Bancos"}
+                bancoId={bancoId}
+                bancoNombre={bancoNombre}
+                estado={estado}
+                operation={operation}
+                filterVal={filterVal}
+                handleFilter={handleFilter}
+                openModal={openModal}
+                />
 
-            <div id='modalBancos' className="modal fade" aria-hidden="true">
+
+
+
+            <div id='modalTable' className="modal fade" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -282,11 +254,9 @@ export const Banco = () => {
                 </div>
             </div>
         </div>
+
+        
     )
 }
 
-
-
 export default Banco;
-
-

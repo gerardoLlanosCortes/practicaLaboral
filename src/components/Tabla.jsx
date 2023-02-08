@@ -1,8 +1,8 @@
-import React, {Component} from 'react'
-import DataTable, {createTheme} from 'react-data-table-component'
+import React from 'react'
+import DataTable from 'react-data-table-component'
 import 'styled-components'
 
-export const Tabla = ({bancos,title,filterVal,handleFilter, openModal,columns}) => {
+export const Tabla = ({arrayData,title,filterVal,handleFilter, openModal,columns}) => {
  
     // =========================
     // ======== ESPANOL ========
@@ -26,14 +26,14 @@ export const Tabla = ({bancos,title,filterVal,handleFilter, openModal,columns}) 
                     <input type="text" className='form-control' placeholder='Buscar' value={filterVal}
                     onInput={(e) => handleFilter(e)}/>
                 </div>
-                <button onClick={() => openModal(1)} className="btn btn-success btn__add btn__save" data-bs-toggle="modal" data-bs-target="#modalBancos">
+                <button onClick={() => openModal(1)} className="btn btn-success btn__add btn__save" data-bs-toggle="modal" data-bs-target="#modalTable">
                     <i className="fa-solid fa-circle-plus circle-icon"></i>Añadir
                 </button>
             </div>
                     
             <DataTable 
                 id="#example"
-                data={bancos}
+                data={arrayData}
                 columns={columns} 
                 pagination
                 paginationComponentOptions={paginacionOpciones}
