@@ -1,0 +1,568 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+/* 
+===================================
+========= GENERALES ===============
+===================================
+*/
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.App {
+  min-width: 100vw;
+  min-height: 100vh;
+	display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+}
+
+a{
+  text-decoration: none;
+}
+
+html, body{
+  font-family: 'Roboto' , sans-serif;
+}
+
+.contenedor{
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+body{
+  overflow-x: hidden;
+}
+
+.container-sm{
+  max-width: 1200px;
+}
+
+
+/* 
+===================================
+============== LOGIN ==============
+===================================
+*/
+
+.login__container{
+	display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 30rem;
+  border-radius: 25px;
+  background-color: #fffffff3;
+  border-radius: 25px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+h1{
+  margin-top: 32px;
+  margin-bottom: 24px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.650);
+}
+
+.avatar{
+  width: 25%;
+  margin-bottom: 32px;
+}
+
+label{
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.550);
+}
+
+.input__container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+	width: 70%;
+}
+
+.input__container input{
+  height: 1.5rem;
+  border-radius: 6px;
+  background-color: #fffffff3;
+  border-color: rgba(0, 0, 0, 0.200);
+  color: rgba(0, 0, 0, 0.550);
+  outline: none;
+  padding: 20px;
+  font-size: 16px;
+  transition: all .3s ease-in-out;
+}
+
+input:hover{
+  border-color: rgba(0, 0, 0, 0.400);
+}
+
+input:focus {
+  border-color: rgba(0, 0, 0, 0.400);
+}
+
+.login__btn {
+  height: 3.3rem;
+  width: 70%;
+  margin: 10px;
+  margin-top: 16px;
+  border-radius: 6px;
+  background:#6dbafa;
+  border: none;
+	margin-bottom: 32px;
+  cursor: pointer;
+  transition: all .2s ease-in-out;
+}
+
+
+.login__btn:hover{
+  background:#62a9e2;
+}
+
+.login__btn p{
+  color: rgba(255, 255, 255, 0.829);
+  font-size: 16px;
+  font-weight: 500;
+  margin: auto;
+}
+
+
+/* 
+===================================
+============== NAV ==============
+===================================
+*/
+/* 
+ li{
+  list-style: none;
+}  */
+
+
+
+.nav__anchor{
+  text-decoration: none;
+  color: rgba(0, 0, 0, 0.750);
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all .3s ease-in-out;
+}
+
+.nav__anchor:hover{
+  color: #62a9e2;
+}
+
+.nav__anchor--dropdown{
+  font-weight: 400;
+}
+
+p{
+  color: rgba(0, 0, 0, 0.750);
+}
+
+i{
+  color: rgba(0, 0, 0, 0.750);
+}
+
+/* li > a:hover{
+  color: #62a9e2;
+} */
+
+.dropdown-item:active {
+  background-color: #fff;
+}
+
+
+/* .nav__container{
+  width: 100vw;
+  background-color: #fff;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,.1);
+} */
+
+.navbar{
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,.1);
+}
+
+/* .navbar{
+  width: 100%;
+  height: 60px;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+} */
+
+.navbar .logo a{
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.brand__logo{
+  margin-right: 4px;
+}
+
+/* .navbar .links{
+  display: flex;
+  gap: 2rem;
+  margin: auto;
+} */
+/* 
+.navbar .hamburgerBtn__toggle{
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: none;
+} */
+
+.navbar .nav__right{
+  gap: 2rem;
+}
+
+.navbar .nav__right .btn__cta{
+  background-color: #62a9e2;
+  color: #fff;
+  padding: .5rem 1rem;
+  outline: none;
+  border-radius: 6px;
+  font-size: .8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .3s ease-in-out;
+}
+
+.navbar .nav__right .btn__cta:hover{
+  background:#4e99d6;
+  scale: 1.02;
+}
+
+.navbar .nav__right .user__nav{
+  gap: 4px;
+}
+
+.navbar .nav__right .user__nav .user__name{
+  cursor: auto;
+  /* margin: auto; */
+} 
+/* 
+.navbar .nav__right .user__nav i{
+  margin: auto;
+} */
+
+/* .left{
+  display: flex;
+  align-items: center;
+  gap: 50px;
+} */
+
+
+
+
+/* =====================
+======== Hero ============
+======================== */
+
+/* .flex__container{
+  display: flex;
+  text-align: center;
+  margin: 0 auto;
+  height: auto;
+  padding-top: 200px;
+  justify-content: space-around;
+  gap: 10px;
+  width: 100%;
+} */
+
+/* .flex__container img{
+  display: block;
+  height: 400px;
+  object-fit: cover;
+  width: auto;
+}
+
+.flex__container .textos{
+  width: 50%;
+  text-align: start;
+} */
+
+.hero__main{
+  margin-top: 200px;
+}
+
+.home__texts h1{
+  font-size: 64px;
+  color: #575a89;
+}
+
+
+.home__img img{
+  width: 100%;
+}
+
+.home__texts{
+  width: 100%;
+
+}
+
+.home__texts{
+  text-align: start;
+}
+
+.btn__home{
+  display: inline-block;
+  font-weight: 400;
+  text-decoration: none;
+  margin-top: 30px;
+  color: #fff;
+  /* border: 2px solid #6dbafa; */
+  background-color: #6dbafa;
+  width: 150px;
+  border-radius: 6px;
+  text-align: center;
+  padding: 10px 0;
+  transition: all .3s ease-in-out;
+}
+
+.btn__home:hover{
+  background:#62a9e2;
+  width: 180px;
+}
+
+
+/* =====================
+======== about ============
+======================== */
+
+.about__img img{
+  width: 100%;
+}
+
+.about__texts{
+  text-align: justify;
+}
+
+.about__texts h1{
+  font-size: 40px;
+  color: #575a89;
+}
+
+.about__texts h2{
+  font-size: 20px;
+  color: rgba(0, 0, 0, 0.600);
+}
+
+.about__texts .social{
+  display: flex;
+  justify-content: space-between;
+  width: 30%;
+  margin: 24px 0;
+}
+
+.about__texts .social a i:hover{
+  color: #62a9e2;
+}
+
+
+
+/* =====================
+======== CRUD ============
+======================== */
+
+.rdt_TableHeadRow{
+  font-weight: 700;
+  font-size: .9rem;
+}
+
+.circle-icon{
+  color: #fff;
+  margin-right: 8px;
+}
+
+.btn__add{
+  width: 20%;
+}
+
+.input__search{
+  width: 50%;
+}
+
+.table__title{
+  margin-top: 64px;
+  margin-bottom: 40px;
+  color: rgba(0, 0, 0, 0.700);
+  font-weight: 400;
+}
+
+.table__cta{
+  margin-bottom: 4px;
+}
+
+.save__icon{
+  color: #fff;
+}
+
+.btn__save{
+  background-color: rgba(25, 135, 84, 0.800);
+  border: none;
+  padding: 2px;
+}
+
+.btn__save--modal{
+  padding: 8px;
+}
+
+.edit.edit__icon i{
+  margin-right: 8px;
+  color: rgb(255, 193, 7);
+}
+
+.delete.delete__icon i{
+  color: rgb(220, 53, 69);
+}
+
+/* =============================
+========= MEDIA QUERIES ========
+================================ */
+
+
+@media (max-width: 1250px) {
+  /* .navbar{
+    max-width: 750px;
+  } */
+  
+  /* .flex__container .textos{
+    width: 50%;
+    text-align: start;
+  }
+  
+  .textos h1{
+    font-size: 64px;
+    color: #575a89;
+  }
+  
+  .textos h2{
+    font-size: 22px;
+    color: #575a89;
+  }
+  
+  .btn__home{
+    display: inline-block;
+    font-weight: 400;
+    text-decoration: none;
+    margin-top: 30px;
+    color: #fff;
+    background-color: #6dbafa;
+    width: 150px;
+    border-radius: 3px;
+    text-align: center;
+    padding: 10px 0;
+    transition: all .3s ease-in-out;
+  }
+  
+  .textos a:hover{
+    background:#62a9e2;
+    width: 180px;
+  }
+
+  .flex__container{
+    max-width: 750px;
+  }
+
+  .flex__container img{
+    width: 60%;
+    object-fit: fill;
+  }
+
+  .flex__container .textos{
+    width: 40%;
+  } */
+}
+
+@media (max-width: 800px) {
+
+  /* .flex__container{
+    flex-direction: column;
+    max-width: 550px;
+    align-items: center;
+  }
+
+  .flex__container img{
+    width: 80%;
+    object-fit: fill;
+
+  }
+
+  .flex__container .textos{
+    width: 80%;
+  } */
+
+  /* .navbar{
+    max-width: 550px;
+  } */
+
+  /* .navbar .links{
+    position: absolute;
+    opacity: 0;
+    visibility: hidden;
+    left: 100%;
+  }
+
+  .navbar .nav__right{
+    position: absolute;
+    opacity: 0;
+    visibility: hidden;
+    left: 100%;
+  }
+
+  .navbar .logo{
+    margin-left: 8px;
+  }
+
+  .navbar .hamburgerBtn__toggle{
+    display: block;
+    font-size: 2rem;
+    margin-right: 8px;
+  }
+
+  .navbar.open .links{
+    opacity: 1;
+    visibility: visible;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    width: 50%;
+    min-width: 300px;
+    height: 100vh;
+    top: 60px;
+    padding: 40px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .navbar.open .nav__right{
+    opacity: 1;
+    visibility: visible;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    width: 50%;
+    min-width: 300px;
+    height: 10px;
+    top: 200px;
+    padding: 30px;
+    font-weight: 500;
+    font-size: 1.1rem;
+    text-align: center;
+
+  } */
+
+
+} 
+
+
+
