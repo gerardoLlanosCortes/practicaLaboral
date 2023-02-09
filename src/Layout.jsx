@@ -21,37 +21,12 @@ export const Layout = () => {
 
   
 
-  const menuToggle = () => {
-    document.querySelector(".navbar").classList.toggle("open")
-  }
+  // const menuToggle = () => {
+  //   document.querySelector(".navbar").classList.toggle("open")
+  // }
 
   return (
     <>
-
-        {/* <header>
-          <div className="nav__container">
-            <div className="navbar">
-              <div className="left">
-                <div className="logo"><Link to="/">LOGO</Link></div>
-                <ul className="links">
-                  <li><Link to="/">Home</Link></li>
-                  <li><Link to="/about">About</Link></li>
-                  <li><Link to="/banco">Banco</Link></li>
-                </ul>
-              </div>
-                <div className="nav__right">
-                  <div className="user__nav">
-                    <i className="fa fa-solid fa-user"></i>
-                    <p className='user__name'>{nombreUsuario()}</p>
-                  </div>
-                  <a href="#" className='btn__cta' onClick={cerrarSesion}>Cerrar Sesión</a>
-            </div>
-              <div className="hamburgerBtn__toggle" onClick={menuToggle}>
-                <i className="fa fa-solid fa-bars"></i>
-              </div>
-            </div>
-          </div>
-        </header> */}
         <header>
           <nav className="navbar navbar-expand-md ">
             <div className=" container-sm ">
@@ -79,8 +54,8 @@ export const Layout = () => {
                     <ul className="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
                       <li><Link to="/banco" className='nav__anchor nav__anchor--dropdown dropdown-item'>Banco</Link></li>
                       <li><Link to="/empresa" className='nav__anchor nav__anchor--dropdown dropdown-item'>Empresa</Link></li>
-                      <li><Link to="/banco" className='nav__anchor nav__anchor--dropdown dropdown-item'>Item</Link></li>
-                      <li><Link to="/testbig" className='nav__anchor nav__anchor--dropdown dropdown-item'>Empleado</Link></li>
+                      <li><Link to="/item" className='nav__anchor nav__anchor--dropdown dropdown-item'>Item</Link></li>
+                      <li><Link to="/empleado" className='nav__anchor nav__anchor--dropdown dropdown-item'>Empleado</Link></li>
                     </ul>
                   </li>
                 </ul>

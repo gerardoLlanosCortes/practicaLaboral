@@ -2,6 +2,7 @@ import React from 'react'
 import DataTable from 'react-data-table-component'
 import 'styled-components'
 
+
 export const Tabla = ({arrayData,title,filterVal,handleFilter, openModal,columns}) => {
  
     // =========================
@@ -17,7 +18,7 @@ export const Tabla = ({arrayData,title,filterVal,handleFilter, openModal,columns
 
 
     return (
-        <div className='container-sm' >
+        <div className='container-sm container__tabla' >
 
             <h2 className='text-center table__title'>{title}</h2>
             <div className="d-flex justify-content-between table__cta">
@@ -41,7 +42,7 @@ export const Tabla = ({arrayData,title,filterVal,handleFilter, openModal,columns
                 striped
                 highlightOnHover
                 fixedHeader
-                fixedHeaderScrollHeight='300px'
+                fixedHeaderScrollHeight='100vh'
             />
 
             

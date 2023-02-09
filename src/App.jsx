@@ -6,13 +6,12 @@ import Home from './Home'
 import About from './About'
 import Banco from './Banco'
 import Empresa from './Empresa'
-import TestBig from './TestBig'
+import Item from './Item'
+import Empleado from './Item'
 
 
 import './App.css'
 
-
-const url = "https://tzone.cl:4503/banco"
 
 function App() {
   
@@ -38,7 +37,8 @@ function App() {
       <Route path='about' element={<About/>}/>
       <Route path='banco' element={<Banco/>}/>
       <Route path='empresa' element={<Empresa/>}/>
-      <Route path='testbig' element={<TestBig/>}/>
+      <Route path='item' element={<Item/>}/>
+      <Route path='empleado' element={<Empleado/>}/>
     </Route>
     <Route path='*' element={<h1>not found</h1>}/>
   </Routes>

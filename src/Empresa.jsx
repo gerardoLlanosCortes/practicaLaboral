@@ -88,7 +88,7 @@ export const Empresa = () => {
     const deleteItem = (id,empresa) => {
         const MySwal = withReactContent(Swal)
         MySwal.fire({
-            title: "Seguro que quieres eliminarla empresa " + empresa + " ?",
+            title: "Seguro que quieres eliminar la empresa " + empresa + " ?",
             icon: "question",
             confirmButtonColor: 'rgba(25, 135, 84, 0.800)',
             cancelButtonColor: '#d33',
@@ -214,10 +214,6 @@ export const Empresa = () => {
                 arrayData={empresas}
                 columns={columns}
                 title={"Administrar Empresas"}
-                bancoId={idEmpresa}
-                bancoNombre={empresa}
-                estado={estado}
-                operation={operation}
                 filterVal={filterVal}
                 handleFilter={handleFilter}
                 openModal={openModal}
@@ -236,13 +232,13 @@ export const Empresa = () => {
                         <div className="modal-body">
                             <input type="hidden" id='id'/>
                             <div className="input-group mb-3">
-                                <span className='input-group-text'><i className="fa-solid fa-building-columns"></i></span>
+                                <span className='input-group-text'><i className="fas fa-id-badge"></i></span>
                                 <input type="text" id='first' className='form-control' placeholder='Rut Empresa' value={rutEmpresa}
                                 onChange={(e) => setRutEmpresa(e.target.value)} />
                             </div>
 
                             <div className="input-group mb-3">
-                                <span className='input-group-text'><i className="fa-solid fa-building-columns"></i></span>
+                                <span className='input-group-text'><i className="fas fa-building"></i></span>
                                 <input type="text" id='first' className='form-control' placeholder='Empresa' value={empresa}
                                 onChange={(e) => setEmpresa(e.target.value)} />
                             </div>

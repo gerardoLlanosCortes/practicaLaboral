@@ -7,12 +7,12 @@ import Swal from "sweetalert2";
 
 import Tabla from './components/Tabla'
 
-export const Banco = () => {
+export const Item = () => {
 
-    const url = "https://tzone.cl:4503/banco"
-    const [bancos, setBancos] = useState([]);
-    const [bancoId,setBancoId] = useState("")
-    const [bancoNombre,setBancoNombre] = useState("")
+    const url = "https://tzone.cl:4503/item"
+    const [items, setItems] = useState([]);
+    const [idItem,setIdItem] = useState("")
+    const [item,setItem] = useState("")
     const [estado, setEstado] = useState("")
     const [operation, setOperation] = useState(1)
     const [title, setTitle] = useState("")
@@ -43,7 +43,7 @@ export const Banco = () => {
             let result = await axios.get(url,{
                 headers: header,
             })
-            setBancos(result.data)
+            setItems(result.data)
             setSearchApiData(result.data)
         }catch(err){
             console.log(err)
@@ -56,21 +56,21 @@ export const Banco = () => {
     // ==== POST Y PATCH =======
     // =========================
 
-    const validar = (bancoId) => {
+    const validar = (idItem) => {
         let parametros
         let metodo
-        if(bancoNombre.trim() === ""){
-            show__alert("Escribe el nombre del banco", "warning")
+        if(item.trim() === ""){
+            show__alert("Escribe el nombre del item", "warning")
         }else if(estado === ""){
-            show__alert("Escribe el estado del banco", "warning")
+            show__alert("Escribe el estado del item", "warning")
         }else{
             if(operation === 1){
-                parametros = {Banco:bancoNombre.trim(), Estado: estado}
+                parametros = {Item:item.trim(), Estado:estado}
                 metodo = "POST"
                 enviarSolicitud(metodo, url, parametros)
             }else{
-                parametros = {Banco:bancoNombre.trim(), Estado: estado}
-                enviarSolicitud("PATCH", `https://tzone.cl:4503/banco/${bancoId}`, parametros)
+                parametros = {Item:item.trim(), Estado:estado}
+                enviarSolicitud("PATCH", `https://tzone.cl:4503/item/${idItem}`, parametros)
             }
             
         }
@@ -82,21 +82,21 @@ export const Banco = () => {
     // ======= DELETE ==========
     // =========================
 
-    const deleteItem = (id,banco) => {
+    const deleteItem = (id,item) => {
         const MySwal = withReactContent(Swal)
         MySwal.fire({
-            title: "Seguro que quieres eliminar el banco " + banco + " ?",
+            title: "Seguro que quieres eliminar el item " + item + " ?",
             icon: "question",
             confirmButtonColor: 'rgba(25, 135, 84, 0.800)',
             cancelButtonColor: '#d33',
             showCancelButton:true,confirmButtonText:"Sí, eliminar",cancelButton:"Cancelar"
         }).then((result => {
             if(result.isConfirmed){
-                setBancoId(id)
-                let urlDelete= `https://tzone.cl:4503/banco/${id}`
+                setIdItem(id)
+                let urlDelete= `https://tzone.cl:4503/item/${id}`
                 enviarSolicitud("DELETE", urlDelete)
             }else{
-                show__alert("El banco NO fue eliminado", "info")
+                show__alert("El item NO fue eliminado", "info")
             }
         }))
     }
@@ -130,8 +130,8 @@ export const Banco = () => {
 
     const columns = [
         {
-            name: "Banco",
-            selector: row => row.Banco,
+            name: "Item",
+            selector: row => row.Item,
             sortable: true
         },
         {
@@ -143,8 +143,8 @@ export const Banco = () => {
             name:"Action",
             cell: row => (
                 <div>                
-                    <a href="#" className='edit edit__icon' data-toggle="modal"><i className='material-icons ' data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#modalTable" title='Edit' onClick={() => openModal(2, row.IdBanco, row.Banco, row.Estado)}>&#xE254;</i></a> 
-                    <a href="#" className='delete delete__icon' data-toggle="modal"><i className='material-icons' data-toggle="tooltip" title='Delete' onClick={() => deleteItem(row.IdBanco, row.Banco)}>&#xE872;</i></a>
+                    <a href="#" className='edit edit__icon' data-toggle="modal"><i className='material-icons ' data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#modalTable" title='Edit' onClick={() => openModal(2, row.IdItem, row.Item, row.Estado)}>&#xE254;</i></a> 
+                    <a href="#" className='delete delete__icon' data-toggle="modal"><i className='material-icons' data-toggle="tooltip" title='Delete' onClick={() => deleteItem(row.IdItem, row.Item)}>&#xE872;</i></a>
                 </div>
             ),
             
@@ -160,18 +160,18 @@ export const Banco = () => {
     // ======== MODAL ==========
     // =========================
 
-    const openModal = (op, id, banco, estado) => {
-        setBancoId("")
-        setBancoNombre("")
+    const openModal = (op, id, item, estado) => {
+        setIdItem("")
+        setItem("")
         setEstado("")
         setOperation(op)
         if(op === 1){
-            setTitle("Registrar Banco")
+            setTitle("Registrar Item")
         }
         else if(op === 2){
-            setTitle("Editar Banco")
-            setBancoId(id)
-            setBancoNombre(banco)
+            setTitle("Editar Item")
+            setIdItem(id)
+            setItem(item)
             setEstado(estado)
         }
         window.setTimeout(function(){
@@ -185,13 +185,13 @@ export const Banco = () => {
 
     const handleFilter = (e) => {
         if(e.target.value == ""){
-            setBancos(searchApiData)
+            setItems(searchApiData)
         }else{
-            const filterResult = searchApiData.filter(item => item.Banco.toLowerCase().includes(e.target.value.toLowerCase()))
+            const filterResult = searchApiData.filter(item => item.Item.toLowerCase().includes(e.target.value.toLowerCase()))
             if (filterResult.length > 0) {
-                setBancos(filterResult)
+                setItems(filterResult)
             } else {
-                setBancos([{"Banco": "No hay información", "Estado": undefined}])
+                setItems([{"Item": "No hay información", "Estado": undefined}])
             }
         }
         setFilterVal(e.target.value)
@@ -199,11 +199,11 @@ export const Banco = () => {
 
 
     return(
-        <div className='banco' >
+        <div className='item' >
             <Tabla 
-                arrayData={bancos}
+                arrayData={items}
                 columns={columns}
-                title={"Administrar Bancos"}
+                title={"Administrar Items"}
                 filterVal={filterVal}
                 handleFilter={handleFilter}
                 openModal={openModal}
@@ -222,9 +222,9 @@ export const Banco = () => {
                         <div className="modal-body">
                             <input type="hidden" id='id'/>
                             <div className="input-group mb-3">
-                                <span className='input-group-text'><i className="fa-solid fa-building-columns"></i></span>
-                                <input type="text" id='first' className='form-control' placeholder='Banco' value={bancoNombre}
-                                onChange={(e) => setBancoNombre(e.target.value)} />
+                                <span className='input-group-text'><i className="fas fa-database"></i></span>
+                                <input type="text" id='first' className='form-control' placeholder='Item' value={item}
+                                onChange={(e) => setItem(e.target.value)} />
                             </div>
 
                             <div className="input-group mb-3">
@@ -238,7 +238,7 @@ export const Banco = () => {
 
 
                             <div className="d-grid col-6 mx-auto">
-                                <button onClick={() => validar(bancoId)} className='btn btn-success btn__save btn__save--modal'>
+                                <button onClick={() => validar(idItem)} className='btn btn-success btn__save btn__save--modal'>
                                     <i className="fa-solid fa-floppy-disk save__icon"></i>
                                 </button>
                             </div>
@@ -255,4 +255,4 @@ export const Banco = () => {
     )
 }
 
-export default Banco;
+export default Item;
