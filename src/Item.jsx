@@ -51,6 +51,13 @@ export const Item = () => {
         
     }
 
+    useEffect(() => {
+        obtenerDatos()
+
+        
+    }, [])
+
+
 
     // =========================
     // ==== POST Y PATCH =======

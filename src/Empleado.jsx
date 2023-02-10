@@ -9,19 +9,23 @@ import Tabla from './components/Tabla'
 
 export const Empleado = () => {
 
+
     const url = "https://tzone.cl:4503/empleado"
     const [empleados, setEmpleados] = useState([]);
     const [rut,setRut] = useState("")
     const [nombres,setNombres] = useState("")
     const [apellidos, setApellidos] = useState("")
-    // const [cuenta, setCuenta] = useState("")
-    // const [idBanco, setCuenta] = useState("")
-    // const [idEmpresa, setCuenta] = useState("")
-    // const [Imei, setCuenta] = useState("")
-    // const [numInicial, setCuenta] = useState("")
-    // const [estado, setEstado] = useState("")
-    // const [operation, setOperation] = useState(1)
-    // const [title, setTitle] = useState("")
+    const [cuenta, setCuenta] = useState("")
+    const [idBanco, setIdBanco] = useState("")
+    const [idEmpresa, setIdEmpresa] = useState("")
+    const [imei, setImei] = useState("")
+    const [numInicial, setNumInicial] = useState("")
+    const [estado, setEstado] = useState("")
+    const [operation, setOperation] = useState(1)
+    const [title, setTitle] = useState("")
+
+    const [empresas, setEmpresas] = useState([]);
+    const [bancos, setBancos] = useState([]);
 
     const header = {
         "Content-Type": "application/json",
@@ -40,8 +44,8 @@ export const Empleado = () => {
 
     useEffect(() => {
         obtenerDatos()
-
-        
+        obtenerDatosEmpresa()
+        obtenerDatosBanco()
     }, [])
 
     const obtenerDatos = async () =>{
@@ -57,28 +61,67 @@ export const Empleado = () => {
         
     }
 
+    const obtenerDatosEmpresa = async () =>{
+        try{
+            let result = await axios.get("https://tzone.cl:4503/empresa",{
+                headers: header,
+            })
+            setEmpresas(result.data)
+        }catch(err){
+            console.log(err)
+        }
+    }
+
+    const obtenerDatosBanco = async () =>{
+        try{
+            let result = await axios.get("https://tzone.cl:4503/banco",{
+                headers: header,
+            })
+            setBancos(result.data)
+        }catch(err){
+            console.log(err)
+        }
+    }
+
+
+
+ 
+
+      
 
     // =========================
     // ==== POST Y PATCH =======
     // =========================
 
-    const validar = (id) => {
+    const validar = (rutEmpleado) => {
         let parametros
         let metodo
-        if(rutEmpresa.trim() === ""){
-            show__alert("Escribe el rut de la empresa", "warning")
-        }else if(empresa.trim() === ""){
-            show__alert("Escribe el nombre de la empresa", "warning")
+        if(rut === ""){
+            show__alert("Escribe el rut del empleado", "warning")
+        }else if(nombres.trim() === ""){
+            show__alert("Escribe los nombres del empleado", "warning")
+        }else if(apellidos.trim() === ""){
+            show__alert("Escribe los apellidos del empleado", "warning")
+        }else if(cuenta.trim() === ""){
+            show__alert("Escribe la cuenta del empleado", "warning")
+        }else if(idBanco === ""){
+            show__alert("Selecciona el banco del empleado", "warning")
+        }else if(idEmpresa === ""){
+            show__alert("Selecciona la empresa del empleado", "warning")
+        }else if(imei.trim() === ""){
+            show__alert("Escribe el imei del empleado", "warning")
+        }else if(numInicial === ""){
+            show__alert("Escribe el numero inicial del empleado", "warning")
         }else if(estado === ""){
-            show__alert("Escribe el estado de la empresa", "warning")
+            show__alert("Escribe el estado del empleado", "warning")
         }else{
             if(operation === 1){
-                parametros = {RutEmpresa: rutEmpresa,Empresa: empresa.trim(),Estado:estado}
+                parametros = {Rut: rut, Nombres: nombres, Apellidos: apellidos, Cuenta: cuenta, IdBanco: idBanco, IdEmpresa: idEmpresa, Imei: imei, NumInicial: numInicial,Estado:estado}
                 metodo = "POST"
                 enviarSolicitud(metodo, url, parametros)
             }else{
-                parametros = {RutEmpresa: rutEmpresa,Empresa: empresa.trim(),Estado:estado}
-                enviarSolicitud("PATCH", `https://tzone.cl:4503/empresa/${id}`, parametros)
+                parametros = {Rut: rut, Nombres: nombres, Apellidos: apellidos, Cuenta: cuenta, IdBanco: idBanco, IdEmpresa: idEmpresa, Imei: imei, NumInicial: numInicial,Estado:estado}
+                enviarSolicitud("PATCH", `https://tzone.cl:4503/empleado/${rutEmpleado}`, parametros)
             }
             
         }
@@ -90,7 +133,7 @@ export const Empleado = () => {
     // ======= DELETE ==========
     // =========================
 
-    const deleteItem = (rut,nombres, apellidos) => {
+    const deleteItem = (rutEmpleado,nombres, apellidos) => {
         const MySwal = withReactContent(Swal)
         MySwal.fire({
             title: "Seguro que quieres eliminar al empleado " + nombres +" "+ apellidos + " ?",
@@ -100,8 +143,8 @@ export const Empleado = () => {
             showCancelButton:true,confirmButtonText:"Sí, eliminar",cancelButton:"Cancelar"
         }).then((result => {
             if(result.isConfirmed){
-                setIdEmpresa(id)
-                let urlDelete= `https://tzone.cl:4503/empresa/${rut}`
+                setRut(rutEmpleado)
+                let urlDelete= `https://tzone.cl:4503/empleado/${rutEmpleado}`
                 enviarSolicitud("DELETE", urlDelete)
             }else{
                 show__alert("El empleado NO fue eliminado", "info")
@@ -155,16 +198,28 @@ export const Empleado = () => {
         {
             name: "Cuenta",
             selector: row => row.Cuenta,
-            sortable: true
+            sortable: true,
         },
         {
             name: "IdBanco",
             selector: row => row.IdBanco,
-            sortable: true
+            sortable: true,
+            omit: true
+        },
+        {
+            name: "Banco",
+            selector: row => row.Banco,
+            sortable: true,
         },
         {
             name: "IdEmpresa",
             selector: row => row.IdEmpresa,
+            sortable: true,
+            omit: true
+        },
+        {
+            name: "Empresa",
+            selector: row => row.Empresa,
             sortable: true
         },
         {
@@ -174,7 +229,7 @@ export const Empleado = () => {
         },
         {
             name: "NumInicial",
-            selector: row => row.Empresa,
+            selector: row => row.NumInicial,
             sortable: true
         },
         {
@@ -203,25 +258,42 @@ export const Empleado = () => {
     // ======== MODAL ==========
     // =========================
 
-    const openModal = (op, id,rut, empresa, estado) => {
+    const openModal = (op,rut, nombres, apellidos, cuenta, idBanco, idEmpresa, imei, numInicial, estado) => {
+        setRut("")
+        setNombres("")
+        setApellidos("")
+        setCuenta("")
+        setIdBanco("")
         setIdEmpresa("")
-        setRutEmpresa("")
-        setEmpresa("")
+        setImei("")
+        setNumInicial("")
         setEstado("")
         setOperation(op)
         if(op === 1){
-            setTitle("Registrar Empresa")
+            setTitle("Registrar Empleado")
+            document.getElementById("first").removeAttribute('disabled', '');
+            window.setTimeout(function(){
+                document.getElementById("first").focus()
+            },500)
         }
         else if(op === 2){
-            setTitle("Editar Empresa")
-            setIdEmpresa(id)
-            setRutEmpresa(rut)
-            setEmpresa(empresa)
+            setTitle("Editar Empleado")
+            setRut(rut)
+            setNombres(nombres)
+            setApellidos(apellidos)
+            setCuenta(cuenta)
+            setIdBanco(idBanco)
+            setIdEmpresa(idEmpresa)
+            setImei(imei)
+            setNumInicial(numInicial)
             setEstado(estado)
+            console.log(idBanco, idEmpresa)
+            document.getElementById("first").setAttribute('disabled', '');
+            window.setTimeout(function(){
+                document.getElementById("second").focus()
+            },500)
         }
-        window.setTimeout(function(){
-            document.getElementById("first").focus()
-        },500)
+        
     }
 
     // =========================
@@ -230,13 +302,18 @@ export const Empleado = () => {
 
     const handleFilter = (e) => {
         if(e.target.value == ""){
-            setEmpresas(searchApiData)
+            setEmpleados(searchApiData)
         }else{
-            const filterResult = searchApiData.filter(item => item.Empresa.toLowerCase().includes(e.target.value.toLowerCase()) || item.RutEmpresa.toLowerCase().includes(e.target.value.toLowerCase()))
+            const filterResult = searchApiData.filter(item => item.Rut.toLowerCase().includes(e.target.value.toLowerCase()) 
+            || item.Nombres.toLowerCase().includes(e.target.value.toLowerCase())
+            || item.Apellidos.toLowerCase().includes(e.target.value.toLowerCase())
+            || item.Cuenta.includes(e.target.value.toLowerCase())
+            || item.Imei.toLowerCase().includes(e.target.value.toLowerCase())
+            )
             if (filterResult.length > 0) {
-                setEmpresas(filterResult)
+                setEmpleados(filterResult)
             } else {
-                setEmpresas([{"Empresa": "No hay información", "Estado": undefined}])
+                setEmpleados([{"Rut": "No hay información", "Estado": undefined}])
             }
         }
         setFilterVal(e.target.value)
@@ -244,7 +321,7 @@ export const Empleado = () => {
 
 
     return(
-        <div className='Empresa' >
+        <div className='empleado' >
             <Tabla 
                 arrayData={empleados}
                 columns={columns}
@@ -267,15 +344,61 @@ export const Empleado = () => {
                         <div className="modal-body">
                             <input type="hidden" id='id'/>
                             <div className="input-group mb-3">
-                                <span className='input-group-text'><i className="fas fa-id-badge"></i></span>
-                                <input type="text" id='first' className='form-control' placeholder='Rut Empresa' value={rutEmpresa}
-                                onChange={(e) => setRutEmpresa(e.target.value)} />
+                                <span className='input-group-text'><i className="fa-solid fa-user"></i></span>
+                                <input type="text" id='first' className='form-control' placeholder='Rut de empleado'  value={rut}
+                                onChange={(e) => setRut(e.target.value)} />
+                            </div>
+
+                            <div className="input-group mb-3">
+                                <span className='input-group-text'><i className="fa-solid fa-user"></i></span>
+                                <input type="text" id='second' className='form-control' placeholder='Nombres del empleado' value={nombres}
+                                onChange={(e) => setNombres(e.target.value)} />
+                            </div>
+
+                            <div className="input-group mb-3">
+                                <span className='input-group-text'><i className="fa-solid fa-user"></i></span>
+                                <input type="text"  className='form-control' placeholder='Apellidos del epleado' value={apellidos}
+                                onChange={(e) => setApellidos(e.target.value)} />
+                            </div>
+
+                            <div className="input-group mb-3">
+                                <span className='input-group-text'><i className="fa-solid fa-money-check"></i></span>
+                                <input type="number"  className='form-control' placeholder='Cuenta del empleado' value={cuenta}
+                                onChange={(e) => setCuenta(e.target.value)} />
+                            </div>
+
+                            <div className="input-group mb-3">
+                                <span className='input-group-text'><i className="fa-solid fa-building-columns"></i></span>
+                                <select className="form-select" aria-label="Default select example" name="banco" id='banco' onChange={(e) => setIdBanco(e.target.value)} value={idBanco}>
+                                    {
+                                        bancos.map((banco)=>{
+                                            return <option value={banco.IdBanco} key={banco.IdBanco} >{banco.Banco}</option>
+                                        })
+                                    }
+                                </select>
                             </div>
 
                             <div className="input-group mb-3">
                                 <span className='input-group-text'><i className="fas fa-building"></i></span>
-                                <input type="text" id='first' className='form-control' placeholder='Empresa' value={empresa}
-                                onChange={(e) => setEmpresa(e.target.value)} />
+                                <select className="form-select" aria-label="Default select example" name="estado" id='estado' onChange={(e) => setIdEmpresa(e.target.value)} value={idEmpresa}>
+                                {
+                                        empresas.map((empresa)=>{
+                                            return <option value={empresa.IdEmpresa} key={empresa.IdEmpresa} >{empresa.Empresa}</option>
+                                        })
+                                    }
+                                </select>
+                            </div>
+
+                            <div className="input-group mb-3">
+                                <span className='input-group-text'><i className="fa-solid fa-mobile-screen-button"></i></span>
+                                <input type="text"  className='form-control' placeholder='Imei del empleado' value={imei}
+                                onChange={(e) => setImei(e.target.value)} />
+                            </div>
+
+                            <div className="input-group mb-3">
+                                <span className='input-group-text'><i className="fa-solid fa-hashtag"></i></span>
+                                <input type="number"  className='form-control' placeholder='Numero Incial del empleado' value={numInicial}
+                                onChange={(e) => setNumInicial(e.target.value)} />
                             </div>
 
                             <div className="input-group mb-3">
@@ -287,9 +410,9 @@ export const Empleado = () => {
                                 </select>
                             </div>
 
-
+                            
                             <div className="d-grid col-6 mx-auto">
-                                <button onClick={() => validar(idEmpresa)} className='btn btn-success btn__save btn__save--modal'>
+                                <button onClick={() => validar(rut)} className='btn btn-success btn__save btn__save--modal'>
                                     <i className="fa-solid fa-floppy-disk save__icon"></i>
                                 </button>
                             </div>

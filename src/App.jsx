@@ -7,7 +7,7 @@ import About from './About'
 import Banco from './Banco'
 import Empresa from './Empresa'
 import Item from './Item'
-import Empleado from './Item'
+import Empleado from './Empleado'
 
 
 import './App.css'

@@ -239,7 +239,7 @@ export const Empresa = () => {
 
                             <div className="input-group mb-3">
                                 <span className='input-group-text'><i className="fas fa-building"></i></span>
-                                <input type="text" id='first' className='form-control' placeholder='Empresa' value={empresa}
+                                <input type="text" className='form-control' placeholder='Empresa' value={empresa}
                                 onChange={(e) => setEmpresa(e.target.value)} />
                             </div>
 

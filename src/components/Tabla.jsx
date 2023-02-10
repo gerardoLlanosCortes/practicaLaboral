@@ -27,7 +27,7 @@ export const Tabla = ({arrayData,title,filterVal,handleFilter, openModal,columns
                     <input type="text" className='form-control' placeholder='Buscar' value={filterVal}
                     onInput={(e) => handleFilter(e)}/>
                 </div>
-                <button onClick={() => openModal(1)} className="btn btn-success btn__add btn__save" data-bs-toggle="modal" data-bs-target="#modalTable">
+                <button onClick={() => openModal(1)} className="btn btn-success btn__add btn__save" id='idbtn__add' data-bs-toggle="modal" data-bs-target="#modalTable">
                     <i className="fa-solid fa-circle-plus circle-icon"></i>Añadir
                 </button>
             </div>
@@ -43,6 +43,7 @@ export const Tabla = ({arrayData,title,filterVal,handleFilter, openModal,columns
                 highlightOnHover
                 fixedHeader
                 fixedHeaderScrollHeight='100vh'
+                
             />
 
             
