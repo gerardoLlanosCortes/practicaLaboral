@@ -14,7 +14,7 @@ export const Login = () => {
       e.preventDefault()
 
       let item = {email, password};  
-      let result = await fetch("https://tzone.cl:4503/auth/login", {
+      let result = await fetch("http://localhost:4503/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

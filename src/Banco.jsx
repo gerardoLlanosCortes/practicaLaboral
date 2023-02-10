@@ -6,6 +6,7 @@ import withReactContent from 'sweetalert2-react-content'
 import Swal from "sweetalert2";
 
 import Tabla from './components/Tabla'
+import bancoService from './services/bancoService'
 
 export const Banco = () => {
 
@@ -40,9 +41,7 @@ export const Banco = () => {
 
     const obtenerDatos = async () =>{
         try{
-            let result = await axios.get(url,{
-                headers: header,
-            })
+            let result = await bancoService.getAll();
             setBancos(result.data)
             setSearchApiData(result.data)
         }catch(err){
@@ -56,7 +55,7 @@ export const Banco = () => {
     // ==== POST Y PATCH =======
     // =========================
 
-    const validar = (bancoId) => {
+    const validar = async (bancoId) => {
         let parametros
         let metodo
         if(bancoNombre.trim() === ""){
@@ -66,11 +65,14 @@ export const Banco = () => {
         }else{
             if(operation === 1){
                 parametros = {Banco:bancoNombre.trim(), Estado: estado}
-                metodo = "POST"
-                enviarSolicitud(metodo, url, parametros)
+                // metodo = "POST"
+                // enviarSolicitud(metodo, url, parametros)
+                await bancoService.insert(parametros)
             }else{
                 parametros = {Banco:bancoNombre.trim(), Estado: estado}
-                enviarSolicitud("PATCH", `https://tzone.cl:4503/banco/${bancoId}`, parametros)
+                // enviarSolicitud("PATCH", `https://tzone.cl:4503/banco/${bancoId}`, parametros)
+                await bancoService.update(bancoId, parametros)
+                
             }
             
         }
@@ -90,11 +92,12 @@ export const Banco = () => {
             confirmButtonColor: 'rgba(25, 135, 84, 0.800)',
             cancelButtonColor: '#d33',
             showCancelButton:true,confirmButtonText:"Sí, eliminar",cancelButton:"Cancelar"
-        }).then((result => {
+        }).then(( async result => {
             if(result.isConfirmed){
                 setBancoId(id)
-                let urlDelete= `https://tzone.cl:4503/banco/${id}`
-                enviarSolicitud("DELETE", urlDelete)
+                // let urlDelete= `https://tzone.cl:4503/banco/${id}`
+                // enviarSolicitud("DELETE", urlDelete)
+                await bancoService.del(id)
             }else{
                 show__alert("El banco NO fue eliminado", "info")
             }
@@ -180,7 +183,7 @@ export const Banco = () => {
     }
 
     // =========================
-    // ======== SEACRH =========
+    // ======== SEARCH =========
     // =========================
 
     const handleFilter = (e) => {
