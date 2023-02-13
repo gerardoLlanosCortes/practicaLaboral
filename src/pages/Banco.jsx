@@ -1,29 +1,20 @@
 import React from 'react'
 import { useState,useEffect } from 'react'
-import axios from 'axios'
-import {show__alert} from "./functions"
+import {show__alert} from "../utils/functions"
 import withReactContent from 'sweetalert2-react-content'
 import Swal from "sweetalert2";
 
-import Tabla from './components/Tabla'
-import bancoService from './services/bancoService'
+import Tabla from '../components/Tabla'
+import bancoService from '../services/bancoService'
 
 export const Banco = () => {
 
-    const url = "https://tzone.cl:4503/banco"
     const [bancos, setBancos] = useState([]);
     const [bancoId,setBancoId] = useState("")
     const [bancoNombre,setBancoNombre] = useState("")
     const [estado, setEstado] = useState("")
     const [operation, setOperation] = useState(1)
     const [title, setTitle] = useState("")
-
-    const header = {
-        "Content-Type": "application/json",
-        "Accept": 'application/json',
-        "authorization": "Bearer: " + localStorage.getItem("user-token")
-    }
-
     const [filterVal, setFilterVal] = useState("")
     const [searchApiData, setSearchApiData] = useState("")
     
@@ -56,22 +47,19 @@ export const Banco = () => {
     // =========================
 
     const validar = async (bancoId) => {
-        let parametros
-        let metodo
+        let parametros = {Banco:bancoNombre.trim(), Estado: estado}
+
         if(bancoNombre.trim() === ""){
             show__alert("Escribe el nombre del banco", "warning")
         }else if(estado === ""){
             show__alert("Escribe el estado del banco", "warning")
         }else{
             if(operation === 1){
-                parametros = {Banco:bancoNombre.trim(), Estado: estado}
-                // metodo = "POST"
-                // enviarSolicitud(metodo, url, parametros)
-                await bancoService.insert(parametros)
+                let result = await bancoService.insert(parametros)
+                enviarSolicitud(result)
             }else{
-                parametros = {Banco:bancoNombre.trim(), Estado: estado}
-                // enviarSolicitud("PATCH", `https://tzone.cl:4503/banco/${bancoId}`, parametros)
-                await bancoService.update(bancoId, parametros)
+                let result = await bancoService.update(bancoId, parametros)
+                enviarSolicitud(result)
                 
             }
             
@@ -95,9 +83,8 @@ export const Banco = () => {
         }).then(( async result => {
             if(result.isConfirmed){
                 setBancoId(id)
-                // let urlDelete= `https://tzone.cl:4503/banco/${id}`
-                // enviarSolicitud("DELETE", urlDelete)
-                await bancoService.del(id)
+                let result = await bancoService.del(id)
+                enviarSolicitud(result)
             }else{
                 show__alert("El banco NO fue eliminado", "info")
             }
@@ -110,20 +97,16 @@ export const Banco = () => {
     // ======= ENVIAR ==========
     // =========================
 
-    const enviarSolicitud = async(metodo, url, parametros) => {
-        await axios({method:metodo, url:url, headers:header, data:parametros})
-        .then(function(respuesta){
-            if(respuesta.statusText === "OK"){
-                let tipo = "success"
-                let mensaje = "Accion exitosa"
-                show__alert(mensaje,tipo)
+    const enviarSolicitud = (result) => {
+        if(result.statusText === "OK"){
+                show__alert("Accion exitosa","success")
                 document.getElementById("btnCerrar").click()
                 obtenerDatos()
-            }
-        }).catch(function(err){
+        }
+        else{
             show__alert("Error en la solicitud", "error")
             console.log(err)
-        })
+        }
     }
 
 
@@ -239,14 +222,15 @@ export const Banco = () => {
                                 </select>
                             </div>
 
-
-                            <div className="d-grid col-6 mx-auto">
-                                <button onClick={() => validar(bancoId)} className='btn btn-success btn__save btn__save--modal'>
-                                    <i className="fa-solid fa-floppy-disk save__icon"></i>
-                                </button>
-                            </div>
-                            <div className="modal-footer mt-3">
-                                <button type='button' className='btn btn-danger' id='btnCerrar' data-bs-dismiss="modal">Cerrar</button>
+                            <div className="d-flex justify-content-between btn__container">
+                                <div className="">
+                                    <button type='button' onClick={() => validar(bancoId)} className='btn btn-success btn__save btn__save--modal'>
+                                        <i className="fa-solid fa-floppy-disk save__icon"></i>
+                                    </button>
+                                </div>
+                                <div className="">
+                                    <button type='button' className='btn btn-danger btn__close' id='btnCerrar' data-bs-dismiss="modal">Cerrar</button>
+                                </div>
                             </div>
                         </div>
                     </div>

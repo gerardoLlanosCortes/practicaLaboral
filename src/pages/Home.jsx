@@ -2,21 +2,10 @@ import React from 'react'
 
 export const Home = () => {
   return (
-    // <div className="contenedor">
-    //   <div className="flex__container">
-    //     <div className='textos'>
-    //       <h1>Home</h1>
-    //       <h2>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque, rem!</h2>
-    //       <a href="#" className='btn__home'>Click</a>
-    //     </div>
-    //     <img src="./images/hero-img.svg" alt="" />
-    //   </div>
-   
-    // </div>
 
     <div className="container-sm">
-      <div className="row hero__main">
-        <div className="col-md-5 text-center ">
+      <div className="row hero__main flex-column-reverse flex-md-row">
+        <div className="col-md-5 text-center">
             <div className="home__texts d-flex flex-column justify-content-start">
               <h1>Home</h1>
               <h2>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque, rem!</h2>

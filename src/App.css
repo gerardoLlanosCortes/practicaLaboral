@@ -240,7 +240,7 @@ i{
 ======================== */
 
 .hero__main{
-  margin-top: 200px;
+  margin-top: 150px;
 }
 
 .home__texts h1{
@@ -362,7 +362,17 @@ i{
 }
 
 .btn__save--modal{
-  padding: 8px;
+  margin: auto;
+  padding: 8px 60px;
+}
+
+.btn__close{
+  margin: auto;
+  padding: 8px 16px;
+}
+
+.btn__container{
+  margin-top: 24px;
 }
 
 .edit.edit__icon i{
@@ -379,8 +389,99 @@ i{
 ================================ */
 
 
+@media (max-width: 1200px){
+  .container-sm{
+    max-width: 1000px;
+  }
 
-.rdt_Table{
+  .home__texts h1{
+    margin: 0 0 12px 0;
+    font-size: 48px;
+    color: #575a89;
+  }
+  
+  .home__texts h2{
+    font-size: 24px;
+  }
+  
+  
+  .btn__home{
+    margin-top: 20px;
+    width: 150px;
+    padding: 10px 0;
+  }
+  
+  .btn__home:hover{
+    background:#62a9e2;
+    width: 180px;
+    color: #fff;
+  }
+}
+
+
+@media (max-width: 992px){
+
+  .container-sm{
+    max-width: 800px;
+  }
+  
+  .home__texts h1{
+    margin: 0 0 12px 0;
+    font-size: 40px;
+    color: #575a89;
+  }
+  
+  .home__texts h2{
+    font-size: 20px;
+  }
+  
+  
+  .btn__home{
+    margin-top: 20px;
+    width: 150px;
+    padding: 10px 0;
+  }
+  
+  .btn__home:hover{
+    background:#62a9e2;
+    width: 180px;
+    color: #fff;
+  }
+}
+
+
+
+
+
+@media (max-width: 767px){
+  .container-sm{
+    max-width: 680px;
+  }
+
+  .hero__main{
+    padding: 0px 8px ;
+    margin-top: 100px;
+  }  
+
+  
+  .home__texts h1{
+    margin: 24px auto 16px ;
+    font-size: 56px;
+    color: #575a89;
+  }
+  
+  .home__texts h2{
+    text-align: center;
+    font-size: 28px;
+  }
+  
+  
+  .btn__home{
+    margin: 20px auto 0;
+    width: 150px;
+    padding: 10px 0;
+  }
   
 }
+
 

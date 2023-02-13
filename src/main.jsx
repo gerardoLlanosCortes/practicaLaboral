@@ -13,13 +13,14 @@ axios.interceptors.response.use(
 
 		if (error.code === 'ERR_NETWORK' || error.code === 'ERR_INTERNET_DISCONNECTED') {
 			// reportMessage({ tipo: "failure", titulo: "Error", mensaje: "No se pudo conectar con el servidor" });
-      console.log("No se pudo conectar con el servidor")
+      		console.log("No se pudo conectar con el servidor")
 			return Promise.reject(error);
 		}
 
 		if (error.response.status === 401) {
 			localStorage.removeItem("user-token")
-			window.location = '/login';
+			// window.location = '/login';
+			
 		}
 
 		if (error.response.status === 404) {

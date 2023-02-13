@@ -1,16 +1,17 @@
 import React from 'react'
 import { useState,useEffect } from 'react'
-import axios from 'axios'
-import {show__alert} from "./functions"
+import {show__alert} from "../utils/functions"
+import Tabla from '../components/Tabla'
 import withReactContent from 'sweetalert2-react-content'
 import Swal from "sweetalert2";
 
-import Tabla from './components/Tabla'
+
+import empleadoService from '../services/empleadoService'
+import bancoService from '../services/bancoService'
+import empresaService from '../services/empresaService'
 
 export const Empleado = () => {
 
-
-    const url = "https://tzone.cl:4503/empleado"
     const [empleados, setEmpleados] = useState([]);
     const [rut,setRut] = useState("")
     const [nombres,setNombres] = useState("")
@@ -26,12 +27,6 @@ export const Empleado = () => {
 
     const [empresas, setEmpresas] = useState([]);
     const [bancos, setBancos] = useState([]);
-
-    const header = {
-        "Content-Type": "application/json",
-        "Accept": 'application/json',
-        "authorization": "Bearer: " + localStorage.getItem("user-token")
-    }
 
     const [filterVal, setFilterVal] = useState("")
     const [searchApiData, setSearchApiData] = useState("")
@@ -50,9 +45,7 @@ export const Empleado = () => {
 
     const obtenerDatos = async () =>{
         try{
-            let result = await axios.get(url,{
-                headers: header,
-            })
+            let result = await empleadoService.getAll();
             setEmpleados(result.data)
             setSearchApiData(result.data)
         }catch(err){
@@ -63,39 +56,31 @@ export const Empleado = () => {
 
     const obtenerDatosEmpresa = async () =>{
         try{
-            let result = await axios.get("https://tzone.cl:4503/empresa",{
-                headers: header,
-            })
+            let result = await empresaService.getAll();
             setEmpresas(result.data)
         }catch(err){
             console.log(err)
         }
     }
 
+
     const obtenerDatosBanco = async () =>{
         try{
-            let result = await axios.get("https://tzone.cl:4503/banco",{
-                headers: header,
-            })
+            let result = await bancoService.getAll();
             setBancos(result.data)
         }catch(err){
             console.log(err)
         }
     }
-
-
-
- 
-
       
 
     // =========================
     // ==== POST Y PATCH =======
     // =========================
 
-    const validar = (rutEmpleado) => {
-        let parametros
-        let metodo
+    const validar = async (rutEmpleado) => {
+        let parametros = {Rut: rut, Nombres: nombres, Apellidos: apellidos, Cuenta: cuenta, IdBanco: idBanco, IdEmpresa: idEmpresa, Imei: imei, NumInicial: numInicial,Estado:estado}
+
         if(rut === ""){
             show__alert("Escribe el rut del empleado", "warning")
         }else if(nombres.trim() === ""){
@@ -116,12 +101,11 @@ export const Empleado = () => {
             show__alert("Escribe el estado del empleado", "warning")
         }else{
             if(operation === 1){
-                parametros = {Rut: rut, Nombres: nombres, Apellidos: apellidos, Cuenta: cuenta, IdBanco: idBanco, IdEmpresa: idEmpresa, Imei: imei, NumInicial: numInicial,Estado:estado}
-                metodo = "POST"
-                enviarSolicitud(metodo, url, parametros)
+                let result = await empleadoService.insert(parametros)
+                enviarSolicitud(result)
             }else{
-                parametros = {Rut: rut, Nombres: nombres, Apellidos: apellidos, Cuenta: cuenta, IdBanco: idBanco, IdEmpresa: idEmpresa, Imei: imei, NumInicial: numInicial,Estado:estado}
-                enviarSolicitud("PATCH", `https://tzone.cl:4503/empleado/${rutEmpleado}`, parametros)
+                let result = await empleadoService.update(rutEmpleado, parametros)
+                enviarSolicitud(result)
             }
             
         }
@@ -141,13 +125,13 @@ export const Empleado = () => {
             confirmButtonColor: 'rgba(25, 135, 84, 0.800)',
             cancelButtonColor: '#d33',
             showCancelButton:true,confirmButtonText:"Sí, eliminar",cancelButton:"Cancelar"
-        }).then((result => {
+        }).then(( async result => {
             if(result.isConfirmed){
                 setRut(rutEmpleado)
-                let urlDelete= `https://tzone.cl:4503/empleado/${rutEmpleado}`
-                enviarSolicitud("DELETE", urlDelete)
+                let result = await empleadoService.del(rutEmpleado)
+                enviarSolicitud(result)
             }else{
-                show__alert("El empleado NO fue eliminado", "info")
+                show__alert("El item NO fue eliminado", "info")
             }
         }))
     }
@@ -158,20 +142,16 @@ export const Empleado = () => {
     // ======= ENVIAR ==========
     // =========================
 
-    const enviarSolicitud = async(metodo, url, parametros) => {
-        await axios({method:metodo, url:url, headers:header, data:parametros})
-        .then(function(respuesta){
-            if(respuesta.statusText === "OK"){
-                let tipo = "success"
-                let mensaje = "Accion exitosa"
-                show__alert(mensaje,tipo)
-                document.getElementById("btnCerrar").click()
-                obtenerDatos()
-            }
-        }).catch(function(err){
+    const enviarSolicitud = (result) => {
+        if(result.statusText === "OK"){
+            show__alert("Accion exitosa","success")
+            document.getElementById("btnCerrar").click()
+            obtenerDatos()
+        }
+        else{
             show__alert("Error en la solicitud", "error")
             console.log(err)
-        })
+        }
     }
 
 
@@ -259,6 +239,7 @@ export const Empleado = () => {
     // =========================
 
     const openModal = (op,rut, nombres, apellidos, cuenta, idBanco, idEmpresa, imei, numInicial, estado) => {
+        setOperation(op)
         setRut("")
         setNombres("")
         setApellidos("")
@@ -268,7 +249,6 @@ export const Empleado = () => {
         setImei("")
         setNumInicial("")
         setEstado("")
-        setOperation(op)
         if(op === 1){
             setTitle("Registrar Empleado")
             document.getElementById("first").removeAttribute('disabled', '');
@@ -287,7 +267,7 @@ export const Empleado = () => {
             setImei(imei)
             setNumInicial(numInicial)
             setEstado(estado)
-            console.log(idBanco, idEmpresa)
+            
             document.getElementById("first").setAttribute('disabled', '');
             window.setTimeout(function(){
                 document.getElementById("second").focus()
@@ -370,6 +350,7 @@ export const Empleado = () => {
                             <div className="input-group mb-3">
                                 <span className='input-group-text'><i className="fa-solid fa-building-columns"></i></span>
                                 <select className="form-select" aria-label="Default select example" name="banco" id='banco' onChange={(e) => setIdBanco(e.target.value)} value={idBanco}>
+                                    <option value="">Selecciona un Banco</option>
                                     {
                                         bancos.map((banco)=>{
                                             return <option value={banco.IdBanco} key={banco.IdBanco} >{banco.Banco}</option>
@@ -381,7 +362,8 @@ export const Empleado = () => {
                             <div className="input-group mb-3">
                                 <span className='input-group-text'><i className="fas fa-building"></i></span>
                                 <select className="form-select" aria-label="Default select example" name="estado" id='estado' onChange={(e) => setIdEmpresa(e.target.value)} value={idEmpresa}>
-                                {
+                                    <option value="">Selecciona una Empresa</option>
+                                    {
                                         empresas.map((empresa)=>{
                                             return <option value={empresa.IdEmpresa} key={empresa.IdEmpresa} >{empresa.Empresa}</option>
                                         })
@@ -411,13 +393,15 @@ export const Empleado = () => {
                             </div>
 
                             
-                            <div className="d-grid col-6 mx-auto">
-                                <button onClick={() => validar(rut)} className='btn btn-success btn__save btn__save--modal'>
-                                    <i className="fa-solid fa-floppy-disk save__icon"></i>
-                                </button>
-                            </div>
-                            <div className="modal-footer mt-3">
-                                <button type='button' className='btn btn-danger' id='btnCerrar' data-bs-dismiss="modal">Cerrar</button>
+                            <div className="d-flex justify-content-between btn__container">
+                                <div className="">
+                                    <button type='button' onClick={() => validar(rut)} className='btn btn-success btn__save btn__save--modal'>
+                                        <i className="fa-solid fa-floppy-disk save__icon"></i>
+                                    </button>
+                                </div>
+                                <div className="">
+                                    <button type='button' className='btn btn-danger btn__close' id='btnCerrar' data-bs-dismiss="modal">Cerrar</button>
+                                </div>
                             </div>
                         </div>
                     </div>

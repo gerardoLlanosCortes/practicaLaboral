@@ -1,27 +1,22 @@
 import React from 'react'
 import { useState,useEffect } from 'react'
-import axios from 'axios'
-import {show__alert} from "./functions"
+import {show__alert} from "../utils/functions"
+import Tabla from '../components/Tabla'
 import withReactContent from 'sweetalert2-react-content'
 import Swal from "sweetalert2";
 
-import Tabla from './components/Tabla'
+
+
+import itemService from '../services/itemService'
 
 export const Item = () => {
 
-    const url = "https://tzone.cl:4503/item"
     const [items, setItems] = useState([]);
     const [idItem,setIdItem] = useState("")
     const [item,setItem] = useState("")
     const [estado, setEstado] = useState("")
     const [operation, setOperation] = useState(1)
     const [title, setTitle] = useState("")
-
-    const header = {
-        "Content-Type": "application/json",
-        "Accept": 'application/json',
-        "authorization": "Bearer: " + localStorage.getItem("user-token")
-    }
 
     const [filterVal, setFilterVal] = useState("")
     const [searchApiData, setSearchApiData] = useState("")
@@ -40,9 +35,7 @@ export const Item = () => {
 
     const obtenerDatos = async () =>{
         try{
-            let result = await axios.get(url,{
-                headers: header,
-            })
+            let result = await itemService.getAll();
             setItems(result.data)
             setSearchApiData(result.data)
         }catch(err){
@@ -51,34 +44,28 @@ export const Item = () => {
         
     }
 
-    useEffect(() => {
-        obtenerDatos()
-
-        
-    }, [])
-
 
 
     // =========================
     // ==== POST Y PATCH =======
     // =========================
 
-    const validar = (idItem) => {
-        let parametros
-        let metodo
+    const validar = async (idItem) => {
+        let parametros = {Item:item.trim(), Estado:estado}
         if(item.trim() === ""){
             show__alert("Escribe el nombre del item", "warning")
         }else if(estado === ""){
             show__alert("Escribe el estado del item", "warning")
         }else{
             if(operation === 1){
-                parametros = {Item:item.trim(), Estado:estado}
-                metodo = "POST"
-                enviarSolicitud(metodo, url, parametros)
+                let result = await itemService.insert(parametros)
+                enviarSolicitud(result)
             }else{
-                parametros = {Item:item.trim(), Estado:estado}
-                enviarSolicitud("PATCH", `https://tzone.cl:4503/item/${idItem}`, parametros)
+                let result = await itemService.update(idItem, parametros)
+                enviarSolicitud(result)
+                
             }
+            
             
         }
     }
@@ -97,11 +84,11 @@ export const Item = () => {
             confirmButtonColor: 'rgba(25, 135, 84, 0.800)',
             cancelButtonColor: '#d33',
             showCancelButton:true,confirmButtonText:"Sí, eliminar",cancelButton:"Cancelar"
-        }).then((result => {
+        }).then((async result => {
             if(result.isConfirmed){
                 setIdItem(id)
-                let urlDelete= `https://tzone.cl:4503/item/${id}`
-                enviarSolicitud("DELETE", urlDelete)
+                let result = await itemService.del(id)
+                enviarSolicitud(result)
             }else{
                 show__alert("El item NO fue eliminado", "info")
             }
@@ -114,20 +101,16 @@ export const Item = () => {
     // ======= ENVIAR ==========
     // =========================
 
-    const enviarSolicitud = async(metodo, url, parametros) => {
-        await axios({method:metodo, url:url, headers:header, data:parametros})
-        .then(function(respuesta){
-            if(respuesta.statusText === "OK"){
-                let tipo = "success"
-                let mensaje = "Accion exitosa"
-                show__alert(mensaje,tipo)
-                document.getElementById("btnCerrar").click()
-                obtenerDatos()
-            }
-        }).catch(function(err){
+    const enviarSolicitud = (result) => {
+        if(result.statusText === "OK"){
+            show__alert("Accion exitosa","success")
+            document.getElementById("btnCerrar").click()
+            obtenerDatos()
+        }
+        else{
             show__alert("Error en la solicitud", "error")
             console.log(err)
-        })
+        }
     }
 
 
@@ -244,13 +227,15 @@ export const Item = () => {
                             </div>
 
 
-                            <div className="d-grid col-6 mx-auto">
-                                <button onClick={() => validar(idItem)} className='btn btn-success btn__save btn__save--modal'>
-                                    <i className="fa-solid fa-floppy-disk save__icon"></i>
-                                </button>
-                            </div>
-                            <div className="modal-footer mt-3">
-                                <button type='button' className='btn btn-danger' id='btnCerrar' data-bs-dismiss="modal">Cerrar</button>
+                            <div className="d-flex justify-content-between btn__container">
+                                <div className="">
+                                    <button type='button' onClick={() => validar(idItem)} className='btn btn-success btn__save btn__save--modal'>
+                                        <i className="fa-solid fa-floppy-disk save__icon"></i>
+                                    </button>
+                                </div>
+                                <div className="">
+                                    <button type='button' className='btn btn-danger btn__close' id='btnCerrar' data-bs-dismiss="modal">Cerrar</button>
+                                </div>
                             </div>
                         </div>
                     </div>

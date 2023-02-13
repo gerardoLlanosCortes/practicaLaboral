@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { getHeaders } from '../utils/utils';
 
-const URL_ENDPOINT = '/banco';
+const URL_ENDPOINT = '/empleado';
+
 
 const getAll = async () => {
     const result = await axios.get(URL_ENDPOINT,{headers: getHeaders()});
@@ -27,5 +28,6 @@ const update = async (id,data) => {
     const result = await axios.patch(`${URL_ENDPOINT}/${id}`,data,{headers: getHeaders()});
     return result;
 }
+
 
 export default {getAll,getOne,insert,del,update}

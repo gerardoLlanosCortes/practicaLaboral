@@ -1,6 +1,6 @@
 import React from 'react'
 import {Link, Outlet, useNavigate} from 'react-router-dom'
-import {resultNameExport, resultEmailExport} from './Login'
+import {resultNameExport, resultEmailExport} from '../pages/Login'
 
 export const Layout = () => {
 	const navigate = useNavigate();
@@ -28,7 +28,7 @@ export const Layout = () => {
   return (
     <>
         <header>
-          <nav className="navbar navbar-expand-md ">
+          <nav className="navbar navbar-expand-lg ">
             <div className=" container-sm ">
               <a href="#" className="navbar-brand mb-1 ">
                   <i className="fa-solid fa-location-dot brand__logo"></i>

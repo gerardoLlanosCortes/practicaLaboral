@@ -1,15 +1,14 @@
 import React from 'react'
 import { useState,useEffect } from 'react'
-import axios from 'axios'
-import {show__alert} from "./functions"
+import {show__alert} from "../utils/functions"
+import Tabla from '../components/Tabla'
 import withReactContent from 'sweetalert2-react-content'
 import Swal from "sweetalert2";
 
-import Tabla from './components/Tabla'
+import empresaService from '../services/empresaService'
 
 export const Empresa = () => {
 
-    const url = "https://tzone.cl:4503/empresa"
     const [empresas, setEmpresas] = useState([]);
     const [idEmpresa,setIdEmpresa] = useState("")
     const [rutEmpresa,setRutEmpresa] = useState("")
@@ -17,12 +16,6 @@ export const Empresa = () => {
     const [estado, setEstado] = useState("")
     const [operation, setOperation] = useState(1)
     const [title, setTitle] = useState("")
-
-    const header = {
-        "Content-Type": "application/json",
-        "Accept": 'application/json',
-        "authorization": "Bearer: " + localStorage.getItem("user-token")
-    }
 
     const [filterVal, setFilterVal] = useState("")
     const [searchApiData, setSearchApiData] = useState("")
@@ -41,9 +34,7 @@ export const Empresa = () => {
 
     const obtenerDatos = async () =>{
         try{
-            let result = await axios.get(url,{
-                headers: header,
-            })
+            let result = await empresaService.getAll();
             setEmpresas(result.data)
             setSearchApiData(result.data)
         }catch(err){
@@ -57,9 +48,8 @@ export const Empresa = () => {
     // ==== POST Y PATCH =======
     // =========================
 
-    const validar = (id) => {
-        let parametros
-        let metodo
+    const validar = async (id) => {
+        let parametros = {RutEmpresa: rutEmpresa,Empresa: empresa.trim(),Estado:estado}
         if(rutEmpresa.trim() === ""){
             show__alert("Escribe el rut de la empresa", "warning")
         }else if(empresa.trim() === ""){
@@ -68,12 +58,12 @@ export const Empresa = () => {
             show__alert("Escribe el estado de la empresa", "warning")
         }else{
             if(operation === 1){
-                parametros = {RutEmpresa: rutEmpresa,Empresa: empresa.trim(),Estado:estado}
-                metodo = "POST"
-                enviarSolicitud(metodo, url, parametros)
+                let result = await empresaService.insert(parametros)
+                enviarSolicitud(result)
             }else{
-                parametros = {RutEmpresa: rutEmpresa,Empresa: empresa.trim(),Estado:estado}
-                enviarSolicitud("PATCH", `https://tzone.cl:4503/empresa/${id}`, parametros)
+                let result = await empresaService.update(id, parametros)
+                enviarSolicitud(result)
+                
             }
             
         }
@@ -93,11 +83,11 @@ export const Empresa = () => {
             confirmButtonColor: 'rgba(25, 135, 84, 0.800)',
             cancelButtonColor: '#d33',
             showCancelButton:true,confirmButtonText:"Sí, eliminar",cancelButton:"Cancelar"
-        }).then((result => {
+        }).then((async result => {
             if(result.isConfirmed){
                 setIdEmpresa(id)
-                let urlDelete= `https://tzone.cl:4503/empresa/${id}`
-                enviarSolicitud("DELETE", urlDelete)
+                let result = await empresaService.del(id)
+                enviarSolicitud(result)
             }else{
                 show__alert("La empresa NO fue eliminada", "info")
             }
@@ -110,20 +100,16 @@ export const Empresa = () => {
     // ======= ENVIAR ==========
     // =========================
 
-    const enviarSolicitud = async(metodo, url, parametros) => {
-        await axios({method:metodo, url:url, headers:header, data:parametros})
-        .then(function(respuesta){
-            if(respuesta.statusText === "OK"){
-                let tipo = "success"
-                let mensaje = "Accion exitosa"
-                show__alert(mensaje,tipo)
-                document.getElementById("btnCerrar").click()
-                obtenerDatos()
-            }
-        }).catch(function(err){
+    const enviarSolicitud = (result) => {
+        if(result.statusText === "OK"){
+            show__alert("Accion exitosa","success")
+            document.getElementById("btnCerrar").click()
+            obtenerDatos()
+        }
+        else{
             show__alert("Error en la solicitud", "error")
             console.log(err)
-        })
+        }
     }
 
 
@@ -253,13 +239,15 @@ export const Empresa = () => {
                             </div>
 
 
-                            <div className="d-grid col-6 mx-auto">
-                                <button onClick={() => validar(idEmpresa)} className='btn btn-success btn__save btn__save--modal'>
-                                    <i className="fa-solid fa-floppy-disk save__icon"></i>
-                                </button>
-                            </div>
-                            <div className="modal-footer mt-3">
-                                <button type='button' className='btn btn-danger' id='btnCerrar' data-bs-dismiss="modal">Cerrar</button>
+                            <div className="d-flex justify-content-between btn__container">
+                                <div className="">
+                                    <button type='button' onClick={() => validar(idEmpresa)} className='btn btn-success btn__save btn__save--modal'>
+                                        <i className="fa-solid fa-floppy-disk save__icon"></i>
+                                    </button>
+                                </div>
+                                <div className="">
+                                    <button type='button' className='btn btn-danger btn__close' id='btnCerrar' data-bs-dismiss="modal">Cerrar</button>
+                                </div>
                             </div>
                         </div>
                     </div>
