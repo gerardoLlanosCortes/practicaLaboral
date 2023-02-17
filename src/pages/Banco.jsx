@@ -215,7 +215,7 @@ export const Banco = () => {
 
                             <div className="input-group mb-3">
                                 <span className='input-group-text'><i className="fa-solid fa-rss"></i></span>
-                                <select className="form-select" aria-label="Default select example" name="estado" id='estado' onChange={(e) => setEstado(e.target.value)}>
+                                <select className="form-select" aria-label="Default select example" name="estado" id='estado' onChange={(e) => setEstado(e.target.value)} value={estado}>
                                     <option value="">Selecciona un Estado</option>
                                     <option value="1">Activo</option>
                                     <option value="0">Inactivo</option>

@@ -293,7 +293,7 @@ export const Empleado = () => {
             if (filterResult.length > 0) {
                 setEmpleados(filterResult)
             } else {
-                setEmpleados([{"Rut": "No hay información", "Estado": undefined}])
+                setEmpleados([{"Numero": "No hay información", "Estado": undefined}])
             }
         }
         setFilterVal(e.target.value)
@@ -385,7 +385,7 @@ export const Empleado = () => {
 
                             <div className="input-group mb-3">
                                 <span className='input-group-text'><i className="fa-solid fa-rss"></i></span>
-                                <select className="form-select" aria-label="Default select example" name="estado" id='estado' onChange={(e) => setEstado(e.target.value)}>
+                                <select className="form-select" aria-label="Default select example" name="estado" id='estado' onChange={(e) => setEstado(e.target.value)} value={estado}>
                                     <option value="">Selecciona un Estado</option>
                                     <option value="1">Activo</option>
                                     <option value="0">Inactivo</option>

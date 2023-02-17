@@ -8,6 +8,8 @@ import Banco from './pages/Banco'
 import Empresa from './pages/Empresa'
 import Item from './pages/Item'
 import Empleado from './pages/Empleado'
+import Rendicion from './pages/Rendicion'
+import RendicionInfo from './pages/RendicionInfo'
 
 
 import './App.css'
@@ -39,6 +41,8 @@ function App() {
       <Route path='empresa' element={<Empresa/>}/>
       <Route path='item' element={<Item/>}/>
       <Route path='empleado' element={<Empleado/>}/>
+      <Route path='rendicion' element={<Rendicion/>}/>
+      <Route path='rendicionInfo' element={<RendicionInfo/>}/>
     </Route>
     <Route path='*' element={<h1>not found</h1>}/>
   </Routes>

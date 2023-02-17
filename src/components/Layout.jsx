@@ -56,6 +56,8 @@ export const Layout = () => {
                       <li><Link to="/empresa" className='nav__anchor nav__anchor--dropdown dropdown-item'>Empresa</Link></li>
                       <li><Link to="/item" className='nav__anchor nav__anchor--dropdown dropdown-item'>Item</Link></li>
                       <li><Link to="/empleado" className='nav__anchor nav__anchor--dropdown dropdown-item'>Empleado</Link></li>
+                      <li><Link to="/rendicion" className='nav__anchor nav__anchor--dropdown dropdown-item'>Rendiciones</Link></li>
+                      
                     </ul>
                   </li>
                 </ul>
