@@ -366,6 +366,11 @@ i{
   padding: 8px 60px;
 }
 
+.btn__add--modal{
+  margin: auto;
+  padding: 8px 16px;
+}
+
 .btn__close{
   margin: auto;
   padding: 8px 16px;

@@ -12,6 +12,7 @@ import FormRendicionDetalle from '../components/FormRendicionDetalle'
 
 import rendicionService from '../services/rendicionService'
 
+
 export const Rendicion = () => {
 
     // Encabezado
@@ -59,17 +60,13 @@ export const Rendicion = () => {
     const obtenerOne = async (id) =>{
         try{
             let result = await rendicionService.getOne(id);
-            console.log(result.data.detalle)
+            // console.log(result.data.detalle)
             setRendicionesDet(result.data.detalle)
 
         }catch(err){
             console.log(err)
         }
     }
-
-
-    
-
 
 
     // =========================
@@ -267,7 +264,10 @@ export const Rendicion = () => {
             name:"Action",
             cell: row => (
                 <div>      
-                    <Link to="/rendicionInfo" className='edit edit__icon' data-toggle="modal"><i className='material-icons ' data-toggle="tooltip"  title='See' onClick={(e) => obtenerOne(row.IdRenEnc)}>&#xe417;</i></Link>
+                    {/* <Link to="/rendicionInfo" className='edit edit__icon' data-toggle="modal"><i className='material-icons ' data-toggle="tooltip"  title='See' onClick={(e) => obtenerOne(row.IdRenEnc)}>&#xe417;</i></Link> */}
+                    <a href="#" className='edit edit__icon' data-toggle="modal"><i className='material-icons ' data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#modalTable" title='See' onClick={() => openModal(3, row.IdRenEnc, row.Numero, row.Rut, row.Fecha, row.Obs, row.Estado)}>&#xe417;</i></a> 
+
+
                     <a href="#" className='edit edit__icon' data-toggle="modal"><i className='material-icons ' data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#modalTable" title='Edit' onClick={() => openModal(2, row.IdRenEnc, row.Numero, row.Rut, row.Fecha, row.Obs, row.Estado)}>&#xE254;</i></a> 
                     <a href="#" className='delete delete__icon' data-toggle="modal"><i className='material-icons' data-toggle="tooltip" title='Delete' onClick={() => deleteItem(row.IdItem, row.Item)}>&#xE872;</i></a>
                 </div>
@@ -294,10 +294,23 @@ export const Rendicion = () => {
         setEstadoEnc("")
         setOperation(op)
         if(op === 1){
+            obtenerOne(0)
             setTitle("Registrar Rendicion")
             window.setTimeout(function(){
+                const selects = document.querySelectorAll(".modal-body select")
+                const inputs = document.querySelectorAll(".modal-body input")
+                for (let i=0; i < btns.length; i++) {
+                    btns[i].removeAttribute("disabled", "");
+                }
+                for (let i=0; i < inputs.length; i++) {
+                    inputs[i].removeAttribute("disabled", "");
+                }
+                for (let i=0; i < selects.length; i++) {
+                    selects[i].removeAttribute("disabled", "");
+                }
+                document.getElementById("first").setAttribute("disabled", "");
                 document.getElementById("second").focus()
-            },500)
+            },100)
         }
         else if(op === 2){
             setTitle("Editar Rendición")
@@ -310,8 +323,45 @@ export const Rendicion = () => {
             obtenerOne(id)
 
             window.setTimeout(function(){
+                const selects = document.querySelectorAll(".modal-body select")
+                const inputs = document.querySelectorAll(".modal-body input")
+                const btns = document.querySelectorAll(".btn__modal")
+                for (let i=0; i < btns.length; i++) {
+                    btns[i].removeAttribute("disabled", "");
+                }
+                for (let i=0; i < inputs.length; i++) {
+                    inputs[i].removeAttribute("disabled", "");
+                }
+                for (let i=0; i < selects.length; i++) {
+                    selects[i].removeAttribute("disabled", "");
+                }
+                document.getElementById("first").setAttribute("disabled", "");
                 document.getElementById("second").focus()
-            },500)
+            },100)
+        }else if(op === 3){
+            setTitle("Ver Rendición")
+            setIdRenEnc(id)
+            setNumeroEnc(numero)
+            setRut(rut)
+            setFechaEnc(fecha)
+            setObsEnc(obs)
+            setEstadoEnc(estado)
+            obtenerOne(id)
+
+            window.setTimeout(function(){
+                const btns = document.querySelectorAll(".btn__modal")
+                for (let i=0; i < btns.length; i++) {
+                    btns[i].setAttribute("disabled", "");
+                }
+                const inputs = document.querySelectorAll(".modal-body input")
+                for (let i=0; i < inputs.length; i++) {
+                    inputs[i].setAttribute("disabled", "");
+                }
+                const selects = document.querySelectorAll("select")
+                for (let i=0; i < selects.length; i++) {
+                    selects[i].setAttribute("disabled", "");
+                }
+            },100)
         }
     }
 
@@ -333,6 +383,27 @@ export const Rendicion = () => {
             }
         }
         setFilterVal(e.target.value)
+    }
+
+    const añadirDetalle = () => {
+        const objDetalle = {
+            IdRenDet: v4(),
+            IdTipo: "",
+            IdItem: "",
+            FechaDocDet: "",
+            IdTipoDoc: "",
+            NumeroDoc: "",
+            ObsDet: "",
+            MontoTotal: "",
+            NombreImagen: ""
+        }
+        
+        setRendicionesDet( // Replace the state
+  [ // with a new array
+    objDetalle, // and one new item at the end
+    ...rendicionesDet // that contains all the old items
+  ]
+);
     }
 
 
@@ -399,14 +470,19 @@ export const Rendicion = () => {
                             
                             <div className="d-flex justify-content-between btn__container">
                                 <div className="">
-                                    <button type='button' onClick={() => validar(idRenEnc)} className='btn btn-success btn__save btn__save--modal'>
+                                    <button type='button' className='btn btn-success btn__modal btn__add--modal ' onClick={añadirDetalle}>Añadir Detalle</button>
+                                </div>
+                                <div className="">
+                                    <button type='button' onClick={() => validar(idRenEnc)} className='btn btn-success btn__modal btn__save btn__save--modal'>
                                         <i className="fa-solid fa-floppy-disk save__icon"></i>
                                     </button>
                                 </div>
                                 <div className="">
-                                    <button type='button' className='btn btn-danger btn__close' id='btnCerrar' data-bs-dismiss="modal">Cerrar</button>
+                                    <button type='button' className='btn btn-danger btn__close ' id='btnCerrar' data-bs-dismiss="modal">Cerrar</button>
                                 </div>
                             </div>
+
+
 
                            
                             { 

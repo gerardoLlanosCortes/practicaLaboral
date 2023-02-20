@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import itemService from '../services/itemService'
 
 export const FormRendicionDetalle = ({detalle}) => {
     const [idRenDet, setIdRenDet] = useState(detalle.IdRenDet)
@@ -11,7 +12,22 @@ export const FormRendicionDetalle = ({detalle}) => {
     const [montoTotal, setMontoTotal] = useState(detalle.MontoTotal)
     const [nombreImagen, setNombreImagen] = useState(detalle.NombreImagen)
 
-    console.log(detalle.IdRenDet)
+    const [item, setItem] = useState([])
+
+    useEffect(() => {
+        obtenerDatosItem()
+        
+    }, [])
+
+
+    const obtenerDatosItem = async () =>{
+        try{
+            let result = await itemService.getAll();
+            setItem(result.data)
+        }catch(err){
+            console.log(err)
+        }
+    }
 
   return (
     <div className="modal-footer mt-3 modal-xl">
@@ -30,16 +46,30 @@ export const FormRendicionDetalle = ({detalle}) => {
             </div>
             
             <div className="input-group mb-3">
-                <span className='input-group-text input-group-text--detalle'>ID Item</span>
-                <input type="text"  className='form-control' placeholder='Fecha' value={idItem}
-                onChange={(e) => setIdItem(e.target.value)} />
+                <span className='input-group-text input-group-text--detalle'>Item</span>
+                {/* <input type="text"  className='form-control' placeholder='Fecha' value={idItem}
+                onChange={(e) => setIdItem(e.target.value)} /> */}
+
+                <select className="form-select" aria-label="Default select example" name="estado" id='estado' onChange={(e) => setIdItem(e.target.value)} value={idItem}>
+                    <option value="">Selecciona un Item</option>
+                    {
+                        item.map((item)=>{
+                            return <option value={item.IdItem} key={item.IdItem} >{item.Item}</option>
+                        })
+                    }
+                </select>
             </div>
             
             
             <div className="input-group mb-3">
-                <span className='input-group-text input-group-text--detalle'>Fecha Doc</span>
+                {/* <span className='input-group-text input-group-text--detalle'>Fecha Doc</span>
                 <input type="text"  className='form-control' placeholder='Obs' value={fechaDocDet}
-                onChange={(e) => setFechaDocDet(e.target.value)} />
+                onChange={(e) => setFechaDocDet(e.target.value)} /> */}
+
+                <span className='input-group-text input-group-text--detalle'>Fecha Doc</span>
+                <input id="startDate" className="form-control" type="date" placeholder='Fecha' value={fechaDocDet || " "} 
+                onChange={(e) => {
+                    setFechaDocDet(e.target.value)}}/> 
             </div>
         </div>
 
@@ -79,7 +109,7 @@ export const FormRendicionDetalle = ({detalle}) => {
                 <input className="form-control" id="formFile" type="file" placeholder='Imagen' 
                 onChange={(e) => {
                     setNombreImagen(e.target.value)
-                    console.log(e.target.value)
+                    // console.log(e.target.value)
                 }}/>
             </div>
 
