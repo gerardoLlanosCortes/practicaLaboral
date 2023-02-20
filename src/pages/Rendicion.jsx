@@ -6,6 +6,7 @@ import withReactContent from 'sweetalert2-react-content'
 import Swal from "sweetalert2";
 import { v4 } from 'uuid'
 import {Link, Outlet, useNavigate} from 'react-router-dom'
+import FormRendicionDetalle from '../components/FormRendicionDetalle'
 // onClick={() => window.location.href="/rendicionInfo"}
 
 
@@ -26,18 +27,6 @@ export const Rendicion = () => {
     // Detalle
     // IdRenDet, IdTipo, IdItem, Fecha, FechaDoc, IdTipoDoc, NumeroDoc, Obs, MontoTotal, Estado, LastModified, FechaServer, RowGuidControl, IdRenEnc, NombreImagen
     const [rendicionesDet, setRendicionesDet] = useState([]);
-    const [idRenDet, setIdRenDet] = useState("")
-    const [idTipo,setIdTipo] = useState("")
-    const [tipo,setTipo] = useState("")
-    const [idItem,setIdItem] = useState("")
-    const [fechaDet, setFechaDet] = useState("")
-    const [fechaDocDet, setFechaDocDet] = useState("")
-    const [idTipoDoc, setIdTipoDoc] = useState("")
-    const [numeroDoc, setNumeroDoc] = useState("")
-    const [obsDet, setObsDet] = useState("")
-    const [montoTotal, setMontoTotal] = useState("")
-    const [estadoDet, setEstadoDet] = useState(1)
-    const [nombreImagen, setNombreImagen] = useState("")
 
 
     const [filterVal, setFilterVal] = useState("")
@@ -72,9 +61,6 @@ export const Rendicion = () => {
             let result = await rendicionService.getOne(id);
             console.log(result.data.detalle)
             setRendicionesDet(result.data.detalle)
-            // detalle.map(i =>{
-            //     console.log(i.IdRenDet)
-            // })
 
         }catch(err){
             console.log(err)
@@ -361,7 +347,7 @@ export const Rendicion = () => {
                 openModal={openModal}
                 />
 
-            <div id='modalTable' className="modal fade" aria-hidden="true">
+            <div id='modalTable' className="modal fade modal-xl" aria-hidden="true" >
                 <div className="modal-dialog">
                 <div className="modal-content">
                         <div className="modal-header">
@@ -420,197 +406,17 @@ export const Rendicion = () => {
                                 <div className="">
                                     <button type='button' className='btn btn-danger btn__close' id='btnCerrar' data-bs-dismiss="modal">Cerrar</button>
                                 </div>
-                                <div className="">
-                                    <button type='button' className='btn btn-danger btn__close' id='btnMostrar' data-bs-dismiss="modal">Mostrar</button>
-                                </div>
                             </div>
 
                            
                             { 
                                     rendicionesDet.map(detalle =>{
                                         return (
-                                        <div key={v4()} className="modal-footer mt-3">
-                                            <label className="h5">Detalle</label>
-                                            <input type="hidden" id='id'/>
-                                            <div  className="input-group mb-3">
-                                                <span  className='input-group-text'><i className="fa-solid fa-fingerprint"></i></span>
-                                                <input type="text" id='first' className='form-control' placeholder='ID Rendición' disabled key={detalle.IdRenDet}  value={detalle.IdRenDet}
-                                                onChange={(e) => setIdRenDet(e.target.value)} />
-                                            </div>
-                                            
-                                            <div className="input-group mb-3">
-                                                <span className='input-group-text'><i className="fa-solid fa-fingerprint"></i></span>
-                                                <input type="text" id='second' className='form-control' placeholder='Numero'  key={detalle.IdTipo} value={detalle.IdTipo}
-                                                onChange={(e) => setIdTipo(e.target.value)} />
-                                            </div>
-                                            
-                                            <div className="input-group mb-3">
-                                                <span className='input-group-text'><i className="fa-solid fa-database"></i></span>
-                                                <input type="text"  className='form-control' placeholder='Rut' key={detalle.Tipo} value={detalle.Tipo}
-                                                onChange={(e) => setTipo(e.target.value)} />
-                                            </div>
-                                            
-                                            <div className="input-group mb-3">
-                                                <span className='input-group-text'><i className="fa-solid fa-fingerprint"></i></span>
-                                                <input type="text"  className='form-control' placeholder='Fecha' key={detalle.IdItem} value={detalle.IdItem}
-                                                onChange={(e) => setIdItem(e.target.value)} />
-                                            </div>
-                                            
-                                            <div className="input-group mb-3">
-                                                <span className='input-group-text'><i className="fa-regular fa-calendar-days"></i></span>
-                                                <input type="text"  className='form-control' placeholder='Obs' key={detalle.FechaDet} value={detalle.Fecha}
-                                                onChange={(e) => setFechaDet(e.target.value)} />
-                                            </div>
-                                            
-                                            <div className="input-group mb-3">
-                                                <span className='input-group-text'><i className="fa-regular fa-calendar-days"></i></span>
-                                                <input type="text"  className='form-control' placeholder='Obs' key={detalle.FechaDocDet} value={detalle.FechaDoc}
-                                                onChange={(e) => setFechaDocDet(e.target.value)} />
-                                            </div>
-                                            
-                                            <div className="input-group mb-3">
-                                                <span className='input-group-text'><i className="fa-solid fa-fingerprint"></i></span>
-                                                <input type="text"  className='form-control' placeholder='Obs' key={detalle.IdTipoDoc} value={detalle.IdTipoDoc}
-                                                onChange={(e) => setIdTipoDoc(e.target.value)} />
-                                            </div>
-                                            
-                                            <div className="input-group mb-3">
-                                                <span className='input-group-text'><i className="fa-solid fa-hashtag"></i></span>
-                                                <input type="text"  className='form-control' placeholder='Obs' key={detalle.NumeroDoc} value={detalle.NumeroDoc}
-                                                onChange={(e) => setNumeroDoc(e.target.value)} />
-                                            </div>
-                                            
-                                            <div className="input-group mb-3">
-                                                <span className='input-group-text'><i className="fa-solid fa-circle-info"></i></span>
-                                                <input type="text"  className='form-control' placeholder='Obs' key={detalle.ObsDet} value={detalle.Obs}
-                                                onChange={(e) => setObsDet(e.target.value)} />
-                                            </div>
-                                            
-                                            <div className="input-group mb-3">
-                                                <span className='input-group-text'><i className="fa-solid fa-dollar-sign"></i></span>
-                                                <input type="text"  className='form-control' placeholder='Monto Total' key={detalle.MontoTotal} value={detalle.MontoTotal}
-                                                onChange={(e) => setMontoTotal(e.target.value)} />
-                                            </div>
-                                            
-                                            <div className="input-group mb-3">
-                                                <span className='input-group-text'><i className="fa-solid fa-rss"></i></span>
-                                                <select className="form-select" aria-label="Default select example" name="estado" id='estado' onChange={(e) => setEstadoDet(e.target.value)}
-                                                key={detalle.EstadoDet} value={detalle.Estado}>
-                                                    <option value="">Selecciona un Estado</option>
-                                                    <option value="1">Activo</option>
-                                                    <option value="0">Inactivo</option>
-                                                </select>
-                                            </div>
-                                            
-                                            <div className="input-group mb-3">
-                                                <span className='input-group-text'><i className="fa-solid fa-money-check"></i></span>
-                                                <input type="text"  className='form-control' placeholder='Imagen' key={detalle.NombreImagen} value={detalle.NombreImagen}
-                                                onChange={(e) => setNombreImagen(e.target.value)} />
-                                            </div>
-                                            
-                                            <div className="">
-                                                <button type='button' onClick={() => validar(idRenEnc)} className='btn btn-success btn__save btn__save--modal'>
-                                                    <i className="fa-solid fa-floppy-disk save__icon"></i>
-                                                </button>
-                                            </div>
-                                            
-                                        </div>
+                                        <FormRendicionDetalle
+                                        detalle={detalle} 
+                                        key={detalle.IdRenDet}/>
                                         )
                                     })
-                                
-                            
-                                
-                            
-                            
-                                    
-
-// <div className="modal-footer mt-3">
-// <label className="h5">Detalle</label>
-// <input type="hidden" id='id'/>
-// <div className="input-group mb-3">
-//     <span className='input-group-text'><i className="fa-solid fa-user"></i></span>
-//     <input type="text" id='first' className='form-control' placeholder='ID Rendición' disabled  value={idRenDet}
-//     onChange={(e) => setIdRenDet(e.target.value)} />
-// </div>
-
-// <div className="input-group mb-3">
-//     <span className='input-group-text'><i className="fa-solid fa-user"></i></span>
-//     <input type="text" id='second' className='form-control' placeholder='Numero'  value={idTipo}
-//     onChange={(e) => setIdTipo(e.target.value)} />
-// </div>
-
-// <div className="input-group mb-3">
-//     <span className='input-group-text'><i className="fa-solid fa-user"></i></span>
-//     <input type="text"  className='form-control' placeholder='Rut' value={tipo}
-//     onChange={(e) => setTipo(e.target.value)} />
-// </div>
-
-// <div className="input-group mb-3">
-//     <span className='input-group-text'><i className="fa-solid fa-user"></i></span>
-//     <input type="text"  className='form-control' placeholder='Fecha' value={idItem}
-//     onChange={(e) => setIdItem(e.target.value)} />
-// </div>
-
-// <div className="input-group mb-3">
-//     <span className='input-group-text'><i className="fa-solid fa-money-check"></i></span>
-//     <input type="text"  className='form-control' placeholder='Obs' value={fechaDet}
-//     onChange={(e) => setFechaDet(e.target.value)} />
-// </div>
-
-// <div className="input-group mb-3">
-//     <span className='input-group-text'><i className="fa-solid fa-money-check"></i></span>
-//     <input type="text"  className='form-control' placeholder='Obs' value={fechaDocDet}
-//     onChange={(e) => setFechaDocDet(e.target.value)} />
-// </div>
-
-// <div className="input-group mb-3">
-//     <span className='input-group-text'><i className="fa-solid fa-money-check"></i></span>
-//     <input type="text"  className='form-control' placeholder='Obs' value={idTipoDoc}
-//     onChange={(e) => setIdTipoDoc(e.target.value)} />
-// </div>
-
-// <div className="input-group mb-3">
-//     <span className='input-group-text'><i className="fa-solid fa-money-check"></i></span>
-//     <input type="text"  className='form-control' placeholder='Obs' value={numeroDoc}
-//     onChange={(e) => setNumeroDoc(e.target.value)} />
-// </div>
-
-// <div className="input-group mb-3">
-//     <span className='input-group-text'><i className="fa-solid fa-money-check"></i></span>
-//     <input type="text"  className='form-control' placeholder='Obs' value={obsDet}
-//     onChange={(e) => setObsDet(e.target.value)} />
-// </div>
-
-// <div className="input-group mb-3">
-//     <span className='input-group-text'><i className="fa-solid fa-money-check"></i></span>
-//     <input type="text"  className='form-control' placeholder='Obs' value={montoTotal}
-//     onChange={(e) => setMontoTotal(e.target.value)} />
-// </div>
-
-// <div className="input-group mb-3">
-//     <span className='input-group-text'><i className="fa-solid fa-rss"></i></span>
-//     <select className="form-select" aria-label="Default select example" name="estado" id='estado' onChange={(e) => setEstadoDet(e.target.value)}
-//     value={estadoDet}>
-//         <option value="">Selecciona un Estado</option>
-//         <option value="1">Activo</option>
-//         <option value="0">Inactivo</option>
-//     </select>
-// </div>
-
-// <div className="input-group mb-3">
-//     <span className='input-group-text'><i className="fa-solid fa-money-check"></i></span>
-//     <input type="text"  className='form-control' placeholder='Obs' value={nombreImagen}
-//     onChange={(e) => setNombreImagen(e.target.value)} />
-// </div>
-
-// <div className="">
-//     <button type='button' onClick={() => validar(idRenEnc)} className='btn btn-success btn__save btn__save--modal'>
-//         <i className="fa-solid fa-floppy-disk save__icon"></i>
-//     </button>
-// </div>
-
-// </div>
-
                             }
                         </div>
                         

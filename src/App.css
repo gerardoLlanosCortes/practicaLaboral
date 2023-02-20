@@ -384,6 +384,16 @@ i{
   color: rgb(220, 53, 69);
 }
 
+
+
+.input-group-text--detalle{
+  width: 120px;
+}
+
+.flex--detalle{
+  gap: 10px;
+}
+
 /* =============================
 ========= MEDIA QUERIES ========
 ================================ */
