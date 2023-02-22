@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getHeaders } from '../utils/utils';
+import { getHeaders, getHeadersData } from '../utils/utils';
 
 const URL_ENDPOINT = '/rendicion';
 
@@ -34,7 +34,7 @@ const updateEnc = async (id,data) => {
 // Detalle
 
 const insertDet = async (idEnc,data) => {
-    const result = await axios.post(`${URL_ENDPOINT}/${idEnc}`,data,{headers: getHeaders()});
+    const result = await axios.post(`${URL_ENDPOINT}/${idEnc}`,data,{headers: getHeadersData()});
     return result;
 }
 
@@ -44,7 +44,7 @@ const delDet = async (idEnc,idDet) => {
 }
 
 const updateDet = async (idEnc,idDet,data) => {
-    const result = await axios.patch(`${URL_ENDPOINT}/${idEnc}/${idDet}`,data,{headers: getHeaders()});
+    const result = await axios.patch(`${URL_ENDPOINT}/${idEnc}/${idDet}`,data,{headers: getHeadersData()});
     return result;
 }
 

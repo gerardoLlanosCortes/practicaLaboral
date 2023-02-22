@@ -7,8 +7,8 @@ import Swal from "sweetalert2";
 import { v4 } from 'uuid'
 import {Link, Outlet, useNavigate} from 'react-router-dom'
 import FormRendicionDetalle from '../components/FormRendicionDetalle'
-import itemService from '../services/itemService'
-import tipoService from '../services/tipoService'
+// onClick={() => window.location.href="/rendicionInfo"}
+
 
 import rendicionService from '../services/rendicionService'
 
@@ -35,12 +35,6 @@ export const Rendicion = () => {
     const [operation, setOperation] = useState(1)
     const [title, setTitle] = useState("")
 
-    const [guardar, setGuardar] = useState(false)
-    const [formDetalle, setFormDetalle] = useState([])
-
-    const [items, setItems] = useState([])
-    const [tipos, setTipos] = useState([])
-
 
     // =========================
     // ======== GET ============
@@ -48,23 +42,8 @@ export const Rendicion = () => {
 
     useEffect(() => {
         obtenerDatos()
-        obtenerDatosItems()
-        obtenerDatosTipos()
+        
     }, [])
-
-    useEffect(() => {
-        console.log(formDetalle.length, rendicionesDet.length)
-        if(guardar && formDetalle.length === rendicionesDet.length) {
-            console.log("pasa")
-            Promise.all(formDetalle)
-            .then(result => {
-                enviarSolicitud(result[0])
-            })
-            .catch(reason => {
-                console.log(reason)
-            });
-        }
-    }, [formDetalle])
 
     const obtenerDatos = async () =>{
         try{
@@ -81,33 +60,13 @@ export const Rendicion = () => {
     const obtenerOne = async (id) =>{
         try{
             let result = await rendicionService.getOne(id);
+            // console.log(result.data.detalle)
             setRendicionesDet(result.data.detalle)
 
         }catch(err){
             console.log(err)
         }
     }
-
-    const obtenerDatosItems = async () =>{
-        try{
-            let result = await itemService.getAll();
-            setItems(result.data)
-        }catch(err){
-            console.log(err)
-        }
-    }
-
-    const obtenerDatosTipos = async () =>{
-        try{
-            
-            let result = await tipoService.getAll();
-            setTipos(result.data)
-            
-        }catch(err){
-            console.log(err)
-        }
-    }
-
 
 
     // =========================
@@ -140,13 +99,11 @@ export const Rendicion = () => {
                 enviarSolicitud(result)
                 
             }else{
-                let result = await rendicionService.updateEnc(id, parametros)
-                setGuardar(true)
-                // formDetalle.forEach(async (el) => {
-                //     console.log("pasa")
-                //     await rendicionService.updateDet(el.idRenEnc, el.idRenDet , el.formdata)
-                // });
+                // let result = await rendicionService.updateEnc(id, parametros)
                 // enviarSolicitud(result)
+                rendicionesDet.map(detalle => {
+                    validarDet(id, detalle)
+                })
             }
         }
     }
@@ -176,6 +133,77 @@ export const Rendicion = () => {
         }))
     }
 
+
+    // =========================
+    // === POST Y PATCH DET ====
+    // =========================
+
+    const validarDet = async (idEnc,detalle) => {
+        let parametros = {
+            IdTipo:detalle.IdTipo,
+            IdItem:detalle.IdItem,
+            Fecha:detalle.Fecha,
+            IdTipoDoc:detalle.IdTipoDoc,
+            NumeroDoc:detalle.NumeroDoc,
+            MontoTotal:detalle.MontoTotal,
+            Obs:detalle.Obs.trim(),
+            NombreImagen:detalle.NombreImagen,
+        }
+
+
+        if(detalle.idTipo=== ""){
+            show__alert("Escribe el id tipo del detalle", "warning")
+        }else if(detalle.IdItem === ""){
+            show__alert("Escribe la id item del detalle", "warning")
+        }else if(detalle.Fecha === ""){
+            show__alert("Escribe la fecha del detalle", "warning")
+        }else if(detalle.IdTipoDoc === ""){
+            show__alert("Ingresa el tipo de doc del detalle", "warning")
+        }else if(detalle.NumeroDoc === ""){
+            show__alert("Ingresa el numero de doc del detalle", "warning")
+        }else if(detalle.MontoTotal === ""){
+            show__alert("Ingresa el monto total del detalle", "warning")
+        // }else if(detalle.Obs === ""){
+        //     show__alert("Ingresa una obs del detalle", "warning")
+        // }else if(detalle.NombreImagen === ""){
+        //     show__alert("Ingresa una imagen del detalle", "warning")
+        }else{
+            if(operation === 1){
+                let result = await rendicionService.insertDet(idEnc,parametros)
+                enviarSolicitud(result)
+            }else{
+                let result = await rendicionService.updateDet(idEnc, detalle.IdRenDet , parametros)
+                enviarSolicitud(result)
+                
+            }
+            
+            
+        }
+    }
+
+
+    // =========================
+    // ======= DELETE DET ======
+    // =========================
+
+    const deleteDet = (id,numeroDoc) => {
+        const MySwal = withReactContent(Swal)
+        MySwal.fire({
+            title: "Seguro que quieres eliminar el documento " + numeroDoc + " ?",
+            icon: "question",
+            confirmButtonColor: 'rgba(25, 135, 84, 0.800)',
+            cancelButtonColor: '#d33',
+            showCancelButton:true,confirmButtonText:"Sí, eliminar",cancelButton:"Cancelar"
+        }).then((async result => {
+            if(result.isConfirmed){
+                setIdRenDet(id)
+                let result = await rendicionService.delDet(id)
+                enviarSolicitud(result)
+            }else{
+                show__alert("El detalle NO fue eliminado", "info")
+            }
+        }))
+    }
 
 
 
@@ -260,17 +288,7 @@ export const Rendicion = () => {
         setEstadoEnc("")
         setOperation(op)
         if(op === 1){
-            setRendicionesDet([{
-                IdRenDet: v4(),
-                IdTipo: "",
-                IdItem: "",
-                FechaDoc: "",
-                IdTipoDoc: "",
-                NumeroDoc: "",
-                Obs: "",
-                MontoTotal: "",
-                NombreImagen: ""
-            }])
+            obtenerOne(0)
             setTitle("Registrar Rendicion")
             window.setTimeout(function(){
                 const selects = document.querySelectorAll(".modal-body select")
@@ -367,13 +385,12 @@ export const Rendicion = () => {
             IdRenDet: v4(),
             IdTipo: "",
             IdItem: "",
-            FechaDoc: "",
+            FechaDocDet: "",
             IdTipoDoc: "",
             NumeroDoc: "",
-            Obs: "",
+            ObsDet: "",
             MontoTotal: "",
-            NombreImagen: "",
-            isNew: true
+            NombreImagen: ""
         }
         
         setRendicionesDet([ objDetalle, ...rendicionesDet ]);
@@ -444,12 +461,12 @@ export const Rendicion = () => {
                             
                             <div className="d-flex justify-content-between btn__container">
                                 <div className="">
+                                    <button type='button' className='btn btn-success btn__modal btn__add--modal ' onClick={añadirDetalle}>Añadir Detalle</button>
+                                </div>
+                                <div className="">
                                     <button type='button' onClick={() => validar(idRenEnc)} className='btn btn-success btn__modal btn__save btn__save--modal'>
                                         <i className="fa-solid fa-floppy-disk save__icon"></i>
                                     </button>
-                                </div>
-                                <div className="">
-                                    <button type='button' className='btn btn-success btn__modal btn__add--modal ' onClick={añadirDetalle}>Añadir Detalle</button>
                                 </div>
                                 <div className="">
                                     <button type='button' className='btn btn-danger btn__close ' id='btnCerrar' data-bs-dismiss="modal">Cerrar</button>
@@ -463,15 +480,8 @@ export const Rendicion = () => {
                                     rendicionesDet.map(detalle =>{
                                         return (
                                         <FormRendicionDetalle
-                                        formDetalle={formDetalle}
-                                        setFormDetalle={setFormDetalle}
-                                        guardar={guardar}
-                                        setGuardar={setGuardar}
-                                        idEnc={idRenEnc}
                                         detalle={detalle} 
-                                        key={detalle.IdRenDet}
-                                        items={items}
-                                        tipos={tipos}/>
+                                        key={detalle.IdRenDet}/>
                                         )
                                     })
                             }

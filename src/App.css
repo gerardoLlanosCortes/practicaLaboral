@@ -389,7 +389,9 @@ i{
   color: rgb(220, 53, 69);
 }
 
-
+.input-group-text--encabezado{
+  width: 200px;
+}
 
 .input-group-text--detalle{
   width: 120px;

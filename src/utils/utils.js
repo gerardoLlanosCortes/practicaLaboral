@@ -5,3 +5,11 @@ export const getHeaders = () => {
         "authorization": "Bearer: " + localStorage.getItem("user-token")
     }
 }
+
+export const getHeadersData = () => {
+    return {
+        "Content-Type": "multipart/form-data",
+        "Accept": 'application/json',
+        "authorization": "Bearer: " + localStorage.getItem("user-token")
+    }
+}
