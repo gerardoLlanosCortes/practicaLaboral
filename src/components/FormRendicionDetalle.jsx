@@ -90,6 +90,8 @@ export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formD
         }
         else{
             if(detalle.isNew){
+                console.log(...formDetalle)
+                console.log(formdata)
                 setFormDetalle([...formDetalle,rendicionService.insertDet(idRenEnc, formdata)])
             }else{
                 setFormDetalle([...formDetalle,rendicionService.updateDet(idRenEnc, idRenDet , formdata)])
@@ -119,10 +121,9 @@ export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formD
             onChange={(e) => setIdRenDet(e.target.value)} />
         </div>
 
-        <div className="d-flex justify-content-between w-100 flex--detalle">
+        <div className="d-flex justify-content-between w-100 flex--gap">
             <div className="input-group mb-3">
                 <span className='input-group-text input-group-text--detalle'>Tipo</span>
-                {/* <input type="text" id='second' className='form-control' placeholder='Tipo' value={idTipo} onChange={(e) => setIdTipo(e.target.value)}/> */}
                 <select className="form-select" id='second' aria-label="Default select example" name="tipo"  onChange={(e) => {setIdTipo(e.target.value)}} value={idTipo}>
                     <option value="">Selecciona un Tipo</option>
                     {
@@ -148,7 +149,7 @@ export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formD
             
             <div className="input-group mb-3">
                 <span className='input-group-text input-group-text--detalle'>Fecha Doc</span>
-                <input id="startDate" className="form-control" type="date" placeholder='Fecha del documento' value={fechaDocDet || defaultFecha()} 
+                <input id="startDate" className="form-control" type="date" placeholder='Fecha del documento' value={fechaDocDet || setFechaDocDet(defaultFecha())} 
                 onChange={(e) => {
                     setFechaDocDet(e.target.value)}}/> 
             </div>

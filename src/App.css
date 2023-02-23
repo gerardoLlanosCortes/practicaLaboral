@@ -404,14 +404,14 @@ i{
 
 
 .input-group-text--encabezado{
-  width: 200px;
+  width: 180px;
 }
 
 .input-group-text--detalle{
   width: 120px;
 }
 
-.flex--detalle{
+.flex--gap{
   gap: 10px;
 }
 

@@ -56,20 +56,18 @@ export const Rendicion = () => {
     }, [])
 
     useEffect(() => {
-        console.log(formDetalle.length === rendicionesDet.length)
-        console.log(formDetalle.length)
-        console.log(rendicionesDet.length)
-        console.log(rendicionesDet)
-        console.log(formDetalle)
-
         if(guardar && formDetalle.length === rendicionesDet.length) {
             console.log("pasa")
             Promise.all(formDetalle)
             .then(result => {
                 console.log(result)
+                setGuardar(false)
+                setFormDetalle([])
                 enviarSolicitud(result[0])
             })
             .catch(reason => {
+                setGuardar(false)
+                setFormDetalle([])
                 console.log(reason)
             });
         }
@@ -279,15 +277,15 @@ export const Rendicion = () => {
     // =========================
 
     const openModal = (op, id, numero, rut,  fecha, obs, estado) => {
-        if(op === 1){
-            setIdRenEnc(v4())
-            setNumeroEnc("")
-            setRut("")
-            setFechaEnc("")
-            setObsEnc("")
-            setEstadoEnc("")
-            setOperation(op)
+        setIdRenEnc(v4())
+        setNumeroEnc("")
+        setRut("")
+        setFechaEnc("")
+        setObsEnc("")
+        setEstadoEnc("")
+        setOperation(op)
 
+        if(op === 1){
             setRendicionesDet([{
                 IdRenDet: v4(),
                 IdTipo: "",
@@ -469,11 +467,11 @@ export const Rendicion = () => {
                         <div className="modal-body">
                             <input type="hidden" id='id'/>
                             <div className="input-group mb-3">
-                                <span className='input-group-text input-group-text--encabezado'>ID Rendición</span>
-                                <input type="text" id='first' className='form-control' placeholder='ID Rendición' disabled  value={idRenEnc}
+                                <input type="text" id='first' className='form-control' placeholder='ID Rendición' hidden   value={idRenEnc}
                                 onChange={(e) => setIdRenEnc(e.target.value)} />
                             </div>
 
+                        <div className="d-flex justify-content-between w-100 flex--gap">
                             <div className="input-group mb-3">
                                 <span className='input-group-text input-group-text--encabezado'>Numero de Rendición</span>
                                 <input type="text" id='second' className='form-control' placeholder='Ingrese Numero de Rendición'  value={numeroEnc}
@@ -487,18 +485,28 @@ export const Rendicion = () => {
                                     <option value="">Selecciona un Rut</option>
                                     {
                                         empleados.map((empleado)=>{
-                                            return <option value={empleado.Rut} key={empleado.Rut} >{empleado.Rut}</option>
+                                            return <option value={empleado.Rut} key={empleado.Rut} >{empleado.Nombres+ " "  + empleado.Apellidos + " - "  + empleado.Rut}</option>
                                         })
                                     }
                                 </select>
                             </div>
+                        </div>
 
+                        <div className="d-flex justify-content-between w-100 flex--gap">
                             <div className="input-group mb-3">
                                 <span className='input-group-text input-group-text--encabezado'>Fecha</span>
                                 <input type="text"  className='form-control' placeholder='Fecha' value={fechaEnc}
                                 onChange={(e) => setFechaEnc(e.target.value)} />
                             </div>
 
+                            {/* <div className="input-group mb-3">
+                                <span className='input-group-text input-group-text--encabezado'>Fecha</span>
+                                <input id="startDate" className="form-control" type="date" placeholder='Fecha de rendición' value={fechaEnc || defaultFecha()} 
+                                onChange={(e) => {
+                                    setFechaEnc(e.target.value)}}/> 
+                            </div> */}
+
+                        
                             <div className="input-group mb-3">
                                 <span className='input-group-text input-group-text--encabezado'>Observación</span>
                                 <input type="text"  className='form-control' placeholder='Ingrese observación' value={obsEnc}
@@ -514,21 +522,21 @@ export const Rendicion = () => {
                                     <option value="0">Inactivo</option>
                                 </select>
                             </div>
+                        </div>
 
-                            
-                            <div className="d-flex justify-content-between btn__container">
-                                <div className="">
-                                    <button type='button' onClick={() => validar(idRenEnc)} className='btn btn-success btn__modal btn__save btn__save--modal'>
-                                        <i className="fa-solid fa-floppy-disk save__icon"></i>
-                                    </button>
-                                </div>
-                                <div className="">
-                                    <button type='button' className='btn btn-success btn__modal btn__add--modal ' onClick={añadirDetalle}>Añadir Detalle</button>
-                                </div>
-                                <div className="">
-                                    <button type='button' className='btn btn-danger btn__modal ' >Eliminar Rendición</button>
-                                </div>
+                        <div className="d-flex justify-content-between btn__container mt-2 mb-4">
+                            <div className="">
+                                <button type='button' onClick={() => validar(idRenEnc)} className='btn btn-success btn__modal btn__save btn__save--modal'>
+                                    <i className="fa-solid fa-floppy-disk save__icon"></i>
+                                </button>
                             </div>
+                            <div className="">
+                                <button type='button' className='btn btn-success btn__modal btn__add--modal ' onClick={añadirDetalle}>Añadir Detalle</button>
+                            </div>
+                            <div className="">
+                                <button type='button' className='btn btn-danger btn__modal ' >Eliminar Rendición</button>
+                            </div>
+                        </div>
 
 
 
