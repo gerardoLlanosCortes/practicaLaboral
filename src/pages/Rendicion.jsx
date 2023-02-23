@@ -260,7 +260,7 @@ export const Rendicion = () => {
 
 
                     <a href="#" className='edit edit__icon' data-toggle="modal"><i className='material-icons ' data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#modalTable" title='Edit' onClick={() => openModal(2, row.IdRenEnc, row.Numero, row.Rut, row.Fecha, row.Obs, row.Estado)}>&#xE254;</i></a> 
-                    <a href="#" className='delete delete__icon' data-toggle="modal"><i className='material-icons' data-toggle="tooltip" title='Delete' onClick={() => deleteItem(row.IdItem, row.Item)}>&#xE872;</i></a>
+                    <a href="#" className='delete delete__icon' data-toggle="modal"><i className='material-icons' data-toggle="tooltip" title='Delete' onClick={() => deleteItem(row.IdRenEnc, row.NumeroEnc)}>&#xE872;</i></a>
                 </div>
             ),
             
@@ -534,7 +534,7 @@ export const Rendicion = () => {
                                 <button type='button' className='btn btn-success btn__modal btn__add--modal ' onClick={añadirDetalle}>Añadir Detalle</button>
                             </div>
                             <div className="">
-                                <button type='button' className='btn btn-danger btn__modal ' >Eliminar Rendición</button>
+                                <button type='button' className='btn btn-danger btn__modal' onClick={() => deleteItem(idRenEnc, numeroEnc)} >Eliminar Rendición</button>
                             </div>
                         </div>
 

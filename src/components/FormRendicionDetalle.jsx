@@ -90,8 +90,6 @@ export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formD
         }
         else{
             if(detalle.isNew){
-                console.log(...formDetalle)
-                console.log(formdata)
                 setFormDetalle([...formDetalle,rendicionService.insertDet(idRenEnc, formdata)])
             }else{
                 setFormDetalle([...formDetalle,rendicionService.updateDet(idRenEnc, idRenDet , formdata)])
