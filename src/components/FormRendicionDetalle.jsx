@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import rendicionService from '../services/rendicionService'
 
 
-export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formDetalle, setFormDetalle, items, tipos}) => {
+export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formDetalle, setFormDetalle, items, tipos, deleteDet, defaultFecha}) => {
     const [idRenEnc, setIdRenEnc] = useState(idEnc)
     const [idRenDet, setIdRenDet] = useState(detalle.IdRenDet)
     const [idTipo,setIdTipo] = useState(detalle.IdTipo)
@@ -29,23 +29,23 @@ export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formD
     // ======= DELETE DET ======
     // =========================
 
-    const deleteDet = (idEnc,idDet,numeroDoc) => {
-        const MySwal = withReactContent(Swal)
-        MySwal.fire({
-            title: "Seguro que quieres eliminar el detalle " + numeroDoc + " ?",
-            icon: "question",
-            confirmButtonColor: 'rgba(25, 135, 84, 0.800)',
-            cancelButtonColor: '#d33',
-            showCancelButton:true,confirmButtonText:"Sí, eliminar",cancelButton:"Cancelar"
-        }).then((async result => {
-            if(result.isConfirmed){
-                let result = await rendicionService.delDet(idEnc, idDet)
-                enviarSolicitud(result)
-            }else{
-                show__alert("El detalle NO fue eliminado", "info")
-            }
-        }))
-    }
+    // const deleteDet = (idEnc,idDet,numeroDoc) => {
+    //     const MySwal = withReactContent(Swal)
+    //     MySwal.fire({
+    //         title: "Seguro que quieres eliminar el detalle " + numeroDoc + " ?",
+    //         icon: "question",
+    //         confirmButtonColor: 'rgba(25, 135, 84, 0.800)',
+    //         cancelButtonColor: '#d33',
+    //         showCancelButton:true,confirmButtonText:"Sí, eliminar",cancelButton:"Cancelar"
+    //     }).then((async result => {
+    //         if(result.isConfirmed){
+    //             let result = await rendicionService.delDet(idEnc, idDet)
+    //             enviarSolicitud(result)
+    //         }else{
+    //             show__alert("El detalle NO fue eliminado", "info")
+    //         }
+    //     }))
+    // }
 
 
     // =========================
@@ -97,16 +97,16 @@ export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formD
         }
     }
     
-    const enviarSolicitud = (result) => {
-        if(result.statusText === "OK"){
-            show__alert("Accion exitosa","success")
-            // document.getElementById("btnCerrar").click()
-        }
-        else{
-            show__alert("Error en la solicitud", "error")
-            console.log(err)
-        }
-    }
+    // const enviarSolicitud = (result) => {
+    //     if(result.statusText === "OK"){
+    //         show__alert("Accion exitosa","success")
+    //         // document.getElementById("btnCerrar").click()
+    //     }
+    //     else{
+    //         show__alert("Error en la solicitud", "error")
+    //         console.log(err)
+    //     }
+    // }
 
 
   return (
@@ -135,9 +135,6 @@ export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formD
             
             <div className="input-group mb-3">
                 <span className='input-group-text input-group-text--detalle'>Item</span>
-                {/* <input type="text"  className='form-control' placeholder='Fecha' value={idItem}
-                onChange={(e) => setIdItem(e.target.value)} /> */}
-
                 <select className="form-select" aria-label="Default select example" name="item" id='item' onChange={(e) => setIdItem(e.target.value)} value={idItem}>
                     <option value="">Selecciona un Item</option>
                     {
@@ -150,12 +147,8 @@ export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formD
             
             
             <div className="input-group mb-3">
-                {/* <span className='input-group-text input-group-text--detalle'>Fecha Doc</span>
-                <input type="text"  className='form-control' placeholder='Obs' value={fechaDocDet}
-                onChange={(e) => setFechaDocDet(e.target.value)} /> */}
-
                 <span className='input-group-text input-group-text--detalle'>Fecha Doc</span>
-                <input id="startDate" className="form-control" type="date" placeholder='Fecha del documento' value={fechaDocDet || " "} 
+                <input id="startDate" className="form-control" type="date" placeholder='Fecha del documento' value={fechaDocDet || defaultFecha()} 
                 onChange={(e) => {
                     setFechaDocDet(e.target.value)}}/> 
             </div>
@@ -197,20 +190,14 @@ export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formD
                 <input className="form-control" id="formFile" type="file" 
                 onChange={(e) => {
                     setNombreImagen(e.target.files[0])
-                    // console.log(e.target.files[0].name)
                 }}/>
             </div>
 
         </div>
     
         <div className="d-flex justify-content-end btn__container w-100">
-            {/* <div className="">
-                <button type='button' onClick={() => validarDet()} className='btn btn-success btn__modal btn__save btn__save--modal'>
-                    <i className="fa-solid fa-floppy-disk save__icon"></i>
-                </button>
-            </div> */}
             <div className="">
-                <button type='button' className='btn btn-danger btn__modal ' onClick={() => deleteDet(idRenEnc,idRenDet,numeroDoc)}>Eliminar Detalle</button>
+                <button type='button' className='btn btn-danger btn__modal ' onClick={() => deleteDet(idRenEnc,idRenDet,numeroDoc, detalle.isNew)}>Eliminar Detalle</button>
             </div>
             
         </div>

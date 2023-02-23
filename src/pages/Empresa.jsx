@@ -82,7 +82,7 @@ export const Empresa = () => {
             icon: "question",
             confirmButtonColor: 'rgba(25, 135, 84, 0.800)',
             cancelButtonColor: '#d33',
-            showCancelButton:true,confirmButtonText:"Sí, eliminar",cancelButton:"Cancelar"
+            showCancelButton:true,confirmButtonText:"Sí, eliminar",cancelButtonText:"Cancelar"
         }).then((async result => {
             if(result.isConfirmed){
                 setIdEmpresa(id)
@@ -213,24 +213,24 @@ export const Empresa = () => {
                     <div className="modal-content">
                         <div className="modal-header">
                             <label className="h5">{title}</label>
-                            <button type='button' className='btn-close' data-bs-miss="modal" aria-label='Close'></button>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" id='btnCerrar'></button>
                         </div>
                         <div className="modal-body">
                             <input type="hidden" id='id'/>
                             <div className="input-group mb-3">
-                                <span className='input-group-text'><i className="fas fa-id-badge"></i></span>
-                                <input type="text" id='first' className='form-control' placeholder='Rut Empresa' value={rutEmpresa}
+                                <span className='input-group-text input-group-text__modal--empresa'>Rut Empresa</span>
+                                <input type="text" id='first' className='form-control' placeholder='Ingresar Rut Empresa' value={rutEmpresa}
                                 onChange={(e) => setRutEmpresa(e.target.value)} />
                             </div>
 
                             <div className="input-group mb-3">
-                                <span className='input-group-text'><i className="fas fa-building"></i></span>
-                                <input type="text" className='form-control' placeholder='Empresa' value={empresa}
+                            <span className='input-group-text input-group-text__modal--empresa'>Empresa</span>
+                                <input type="text" className='form-control' placeholder='Nombre Empresa' value={empresa}
                                 onChange={(e) => setEmpresa(e.target.value)} />
                             </div>
 
                             <div className="input-group mb-3">
-                                <span className='input-group-text'><i className="fa-solid fa-rss"></i></span>
+                                <span className='input-group-text input-group-text__modal--empresa'>Estado</span>
                                 <select className="form-select" aria-label="Default select example" name="estado" id='estado' onChange={(e) => setEstado(e.target.value)} value={estado}>
                                     <option value="">Selecciona un Estado</option>
                                     <option value="1">Activo</option>
@@ -239,14 +239,11 @@ export const Empresa = () => {
                             </div>
 
 
-                            <div className="d-flex justify-content-between btn__container">
+                            <div className="d-flex justify-content-end btn__container">
                                 <div className="">
                                     <button type='button' onClick={() => validar(idEmpresa)} className='btn btn-success btn__save btn__save--modal'>
                                         <i className="fa-solid fa-floppy-disk save__icon"></i>
                                     </button>
-                                </div>
-                                <div className="">
-                                    <button type='button' className='btn btn-danger btn__close' id='btnCerrar' data-bs-dismiss="modal">Cerrar</button>
                                 </div>
                             </div>
                         </div>

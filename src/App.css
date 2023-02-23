@@ -322,6 +322,7 @@ i{
 ======== CRUD ============
 ======================== */
 
+
 .rdt_TableHeadRow{
   font-weight: 700;
   font-size: .9rem;
@@ -388,6 +389,19 @@ i{
 .delete.delete__icon i{
   color: rgb(220, 53, 69);
 }
+
+.input-group-text__modal{
+  width: 100px;
+}
+
+.input-group-text__modal--empresa{
+  width: 150px;
+}
+
+.input-group-text__modal--empleado{
+  width: 150px;
+}
+
 
 .input-group-text--encabezado{
   width: 200px;

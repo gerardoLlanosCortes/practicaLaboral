@@ -11,6 +11,7 @@ import itemService from '../services/itemService'
 import tipoService from '../services/tipoService'
 
 import rendicionService from '../services/rendicionService'
+import empleadoService from '../services/empleadoService'
 
 
 export const Rendicion = () => {
@@ -40,6 +41,7 @@ export const Rendicion = () => {
 
     const [items, setItems] = useState([])
     const [tipos, setTipos] = useState([])
+    const [empleados, setEmpleados] = useState([])
 
 
     // =========================
@@ -50,14 +52,21 @@ export const Rendicion = () => {
         obtenerDatos()
         obtenerDatosItems()
         obtenerDatosTipos()
+        obtenerDatosEmpleados()
     }, [])
 
     useEffect(() => {
-        console.log(formDetalle.length, rendicionesDet.length)
+        console.log(formDetalle.length === rendicionesDet.length)
+        console.log(formDetalle.length)
+        console.log(rendicionesDet.length)
+        console.log(rendicionesDet)
+        console.log(formDetalle)
+
         if(guardar && formDetalle.length === rendicionesDet.length) {
             console.log("pasa")
             Promise.all(formDetalle)
             .then(result => {
+                console.log(result)
                 enviarSolicitud(result[0])
             })
             .catch(reason => {
@@ -108,6 +117,17 @@ export const Rendicion = () => {
         }
     }
 
+    const obtenerDatosEmpleados = async () =>{
+        try{
+            
+            let result = await empleadoService.getAll();
+            setEmpleados(result.data)
+            
+        }catch(err){
+            console.log(err)
+        }
+    }
+
 
 
     // =========================
@@ -140,13 +160,9 @@ export const Rendicion = () => {
                 enviarSolicitud(result)
                 
             }else{
+                setGuardar(false)
                 let result = await rendicionService.updateEnc(id, parametros)
                 setGuardar(true)
-                // formDetalle.forEach(async (el) => {
-                //     console.log("pasa")
-                //     await rendicionService.updateDet(el.idRenEnc, el.idRenDet , el.formdata)
-                // });
-                // enviarSolicitud(result)
             }
         }
     }
@@ -164,7 +180,7 @@ export const Rendicion = () => {
             icon: "question",
             confirmButtonColor: 'rgba(25, 135, 84, 0.800)',
             cancelButtonColor: '#d33',
-            showCancelButton:true,confirmButtonText:"Sí, eliminar",cancelButton:"Cancelar"
+            showCancelButton:true,confirmButtonText:"Sí, eliminar",cancelButtonText:"Cancelar"
         }).then((async result => {
             if(result.isConfirmed){
                 setIdRenEnc(id)
@@ -188,6 +204,17 @@ export const Rendicion = () => {
             show__alert("Accion exitosa","success")
             document.getElementById("btnCerrar").click()
             obtenerDatos()
+        }
+        else{
+            show__alert("Error en la solicitud", "error")
+            console.log(err)
+        }
+    }
+
+    const enviarSolicitudModal = (result) => {
+        if(result.statusText === "OK"){
+            show__alert("Accion exitosa","success")
+            // document.getElementById("btnCerrar").click()
         }
         else{
             show__alert("Error en la solicitud", "error")
@@ -252,14 +279,15 @@ export const Rendicion = () => {
     // =========================
 
     const openModal = (op, id, numero, rut,  fecha, obs, estado) => {
-        setIdRenEnc(v4())
-        setNumeroEnc("")
-        setRut("")
-        setFechaEnc("")
-        setObsEnc("")
-        setEstadoEnc("")
-        setOperation(op)
         if(op === 1){
+            setIdRenEnc(v4())
+            setNumeroEnc("")
+            setRut("")
+            setFechaEnc("")
+            setObsEnc("")
+            setEstadoEnc("")
+            setOperation(op)
+
             setRendicionesDet([{
                 IdRenDet: v4(),
                 IdTipo: "",
@@ -271,6 +299,7 @@ export const Rendicion = () => {
                 MontoTotal: "",
                 NombreImagen: ""
             }])
+            
             setTitle("Registrar Rendicion")
             window.setTimeout(function(){
                 const selects = document.querySelectorAll(".modal-body select")
@@ -342,8 +371,9 @@ export const Rendicion = () => {
         }
     }
 
+
     // =========================
-    // ======== SEACRH =========
+    // ======== SEARCH =========
     // =========================
 
     const handleFilter = (e) => {
@@ -380,6 +410,42 @@ export const Rendicion = () => {
     
     }
 
+    const deleteDet = (idEnc,idDet,numeroDoc, isNew) => {
+        const MySwal = withReactContent(Swal)
+        MySwal.fire({
+            title: "Seguro que quieres eliminar el detalle " + numeroDoc + " ?",
+            icon: "question",
+            confirmButtonColor: 'rgba(25, 135, 84, 0.800)',
+            cancelButtonColor: '#d33',
+            showCancelButton:true,confirmButtonText:"Sí, eliminar",cancelButtonText:"Cancelar"
+        }).then((async result => {
+            if(result.isConfirmed){
+                if(isNew){
+                    setRendicionesDet(rendicionesDet.filter(item => item.IdRenDet !== idDet));
+                    show__alert("Accion exitosa","success")
+                }else{
+                    let result = await rendicionService.delDet(idEnc, idDet)
+                    enviarSolicitudModal(result)
+                    setRendicionesDet(rendicionesDet.filter(item => item.IdRenDet !== idDet));
+                }
+                
+            }else{
+                show__alert("El detalle NO fue eliminado", "info")
+            }
+        }))
+    }
+
+    const defaultFecha = () => {
+        let date = new Date();
+        let day = date.getDate();
+        let month = date.getMonth() + 1;
+        let year = date.getFullYear();
+        if (month < 10) month = "0" + month;
+        if (day < 10) day = "0" + day;
+        let today = year + "-" + month + "-" + day;     
+        return today;
+    }
+
 
     return(
         <div className='item' >
@@ -396,9 +462,10 @@ export const Rendicion = () => {
                 <div className="modal-dialog">
                 <div className="modal-content">
                         <div className="modal-header">
-                            <label className="h5">{title}</label>
-                            <button type='button' className='btn-close' data-bs-miss="modal" aria-label='Close'></button>
+                            <label className="h5 my-auto">{title}</label>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" id='btnCerrar'></button>
                         </div>
+
                         <div className="modal-body">
                             <input type="hidden" id='id'/>
                             <div className="input-group mb-3">
@@ -409,14 +476,21 @@ export const Rendicion = () => {
 
                             <div className="input-group mb-3">
                                 <span className='input-group-text input-group-text--encabezado'>Numero de Rendición</span>
-                                <input type="text" id='second' className='form-control' placeholder='Numero'  value={numeroEnc}
+                                <input type="text" id='second' className='form-control' placeholder='Ingrese Numero de Rendición'  value={numeroEnc}
                                 onChange={(e) => setNumeroEnc(e.target.value)} />
                             </div>
 
                             <div className="input-group mb-3">
                                 <span className='input-group-text input-group-text--encabezado'>Rut</span>
-                                <input type="text"  className='form-control' placeholder='Rut' value={rut}
-                                onChange={(e) => setRut(e.target.value)} />
+
+                                <select className="form-select" aria-label="Default select example" name="item" id='item' onChange={(e) => setRut(e.target.value)} value={rut}>
+                                    <option value="">Selecciona un Rut</option>
+                                    {
+                                        empleados.map((empleado)=>{
+                                            return <option value={empleado.Rut} key={empleado.Rut} >{empleado.Rut}</option>
+                                        })
+                                    }
+                                </select>
                             </div>
 
                             <div className="input-group mb-3">
@@ -427,7 +501,7 @@ export const Rendicion = () => {
 
                             <div className="input-group mb-3">
                                 <span className='input-group-text input-group-text--encabezado'>Observación</span>
-                                <input type="text"  className='form-control' placeholder='Obs' value={obsEnc}
+                                <input type="text"  className='form-control' placeholder='Ingrese observación' value={obsEnc}
                                 onChange={(e) => setObsEnc(e.target.value)} />
                             </div>
 
@@ -452,7 +526,7 @@ export const Rendicion = () => {
                                     <button type='button' className='btn btn-success btn__modal btn__add--modal ' onClick={añadirDetalle}>Añadir Detalle</button>
                                 </div>
                                 <div className="">
-                                    <button type='button' className='btn btn-danger btn__close ' id='btnCerrar' data-bs-dismiss="modal">Cerrar</button>
+                                    <button type='button' className='btn btn-danger btn__modal ' >Eliminar Rendición</button>
                                 </div>
                             </div>
 
@@ -471,7 +545,9 @@ export const Rendicion = () => {
                                         detalle={detalle} 
                                         key={detalle.IdRenDet}
                                         items={items}
-                                        tipos={tipos}/>
+                                        tipos={tipos}
+                                        deleteDet={deleteDet}
+                                        defaultFecha={defaultFecha}/>
                                         )
                                     })
                             }

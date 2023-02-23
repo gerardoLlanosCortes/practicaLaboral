@@ -124,7 +124,7 @@ export const Empleado = () => {
             icon: "question",
             confirmButtonColor: 'rgba(25, 135, 84, 0.800)',
             cancelButtonColor: '#d33',
-            showCancelButton:true,confirmButtonText:"Sí, eliminar",cancelButton:"Cancelar"
+            showCancelButton:true,confirmButtonText:"Sí, eliminar",cancelButtonText:"Cancelar"
         }).then(( async result => {
             if(result.isConfirmed){
                 setRut(rutEmpleado)
@@ -319,36 +319,36 @@ export const Empleado = () => {
                     <div className="modal-content">
                         <div className="modal-header">
                             <label className="h5">{title}</label>
-                            <button type='button' className='btn-close' data-bs-miss="modal" aria-label='Close'></button>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" id='btnCerrar'></button>
                         </div>
                         <div className="modal-body">
                             <input type="hidden" id='id'/>
                             <div className="input-group mb-3">
-                                <span className='input-group-text'><i className="fa-solid fa-user"></i></span>
+                                <span className='input-group-text input-group-text__modal--empleado'>Rut</span>
                                 <input type="text" id='first' className='form-control' placeholder='Rut de empleado'  value={rut}
                                 onChange={(e) => setRut(e.target.value)} />
                             </div>
 
                             <div className="input-group mb-3">
-                                <span className='input-group-text'><i className="fa-solid fa-user"></i></span>
+                                <span className='input-group-text input-group-text__modal--empleado'>Nombres</span>
                                 <input type="text" id='second' className='form-control' placeholder='Nombres del empleado' value={nombres}
                                 onChange={(e) => setNombres(e.target.value)} />
                             </div>
 
                             <div className="input-group mb-3">
-                                <span className='input-group-text'><i className="fa-solid fa-user"></i></span>
+                                <span className='input-group-text input-group-text__modal--empleado'>Apellidos</span>
                                 <input type="text"  className='form-control' placeholder='Apellidos del epleado' value={apellidos}
                                 onChange={(e) => setApellidos(e.target.value)} />
                             </div>
 
                             <div className="input-group mb-3">
-                                <span className='input-group-text'><i className="fa-solid fa-money-check"></i></span>
+                            <span className='input-group-text input-group-text__modal--empleado'>Cuenta</span>
                                 <input type="number"  className='form-control' placeholder='Cuenta del empleado' value={cuenta}
                                 onChange={(e) => setCuenta(e.target.value)} />
                             </div>
 
                             <div className="input-group mb-3">
-                                <span className='input-group-text'><i className="fa-solid fa-building-columns"></i></span>
+                                <span className='input-group-text input-group-text__modal--empleado'>Banco</span>
                                 <select className="form-select" aria-label="Default select example" name="banco" id='banco' onChange={(e) => setIdBanco(e.target.value)} value={idBanco}>
                                     <option value="">Selecciona un Banco</option>
                                     {
@@ -360,7 +360,7 @@ export const Empleado = () => {
                             </div>
 
                             <div className="input-group mb-3">
-                                <span className='input-group-text'><i className="fas fa-building"></i></span>
+                                <span className='input-group-text input-group-text__modal--empleado'>Empresa</span>
                                 <select className="form-select" aria-label="Default select example" name="estado" id='estado' onChange={(e) => setIdEmpresa(e.target.value)} value={idEmpresa}>
                                     <option value="">Selecciona una Empresa</option>
                                     {
@@ -372,19 +372,19 @@ export const Empleado = () => {
                             </div>
 
                             <div className="input-group mb-3">
-                                <span className='input-group-text'><i className="fa-solid fa-mobile-screen-button"></i></span>
+                                <span className='input-group-text input-group-text__modal--empleado'>Imei</span>
                                 <input type="text"  className='form-control' placeholder='Imei del empleado' value={imei}
                                 onChange={(e) => setImei(e.target.value)} />
                             </div>
 
                             <div className="input-group mb-3">
-                                <span className='input-group-text'><i className="fa-solid fa-hashtag"></i></span>
+                                <span className='input-group-text input-group-text__modal--empleado'>Numero Inicial</span>
                                 <input type="number"  className='form-control' placeholder='Numero Incial del empleado' value={numInicial}
                                 onChange={(e) => setNumInicial(e.target.value)} />
                             </div>
 
                             <div className="input-group mb-3">
-                                <span className='input-group-text'><i className="fa-solid fa-rss"></i></span>
+                                <span className='input-group-text input-group-text__modal--empleado'>Estado</span>
                                 <select className="form-select" aria-label="Default select example" name="estado" id='estado' onChange={(e) => setEstado(e.target.value)} value={estado}>
                                     <option value="">Selecciona un Estado</option>
                                     <option value="1">Activo</option>
@@ -393,14 +393,11 @@ export const Empleado = () => {
                             </div>
 
                             
-                            <div className="d-flex justify-content-between btn__container">
+                            <div className="d-flex justify-content-end btn__container">
                                 <div className="">
                                     <button type='button' onClick={() => validar(rut)} className='btn btn-success btn__save btn__save--modal'>
                                         <i className="fa-solid fa-floppy-disk save__icon"></i>
                                     </button>
-                                </div>
-                                <div className="">
-                                    <button type='button' className='btn btn-danger btn__close' id='btnCerrar' data-bs-dismiss="modal">Cerrar</button>
                                 </div>
                             </div>
                         </div>
