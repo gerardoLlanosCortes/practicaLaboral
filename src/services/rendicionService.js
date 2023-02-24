@@ -48,5 +48,9 @@ const updateDet = async (idEnc,idDet,data) => {
     return result;
 }
 
+const getImage = async (nombreImagen) => {
+    const result = await axios.get(`/public/`+ nombreImagen);
+    return result;
+}
 
-export default {getAll,getOne,insertEnc,delEnc,updateEnc, insertDet, delDet, updateDet}
+export default {getAll,getOne,insertEnc,delEnc,updateEnc, insertDet, delDet, updateDet, getImage}

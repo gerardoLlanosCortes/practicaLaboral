@@ -4,6 +4,7 @@ import withReactContent from 'sweetalert2-react-content'
 import Swal from "sweetalert2";
 
 import rendicionService from '../services/rendicionService'
+import { width } from '@mui/system';
 
 
 export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formDetalle, setFormDetalle, items, tipos, deleteDet, defaultFecha}) => {
@@ -108,6 +109,30 @@ export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formD
     //     }
     // }
 
+    function previewFile() {
+        let preview = document.querySelector('img');
+        let file    = document.querySelector('input[type=file]').files[0];
+        let reader  = new FileReader();
+      
+        reader.onloadend = function () {
+          preview.src = reader.result;
+        }
+      
+        if (file) {
+          reader.readAsDataURL(file);
+        } else {
+          preview.src = "";
+        }
+    }
+
+    const mostrarImagen = () => {
+        if(nombreImagen == ""){
+            return "http://localhost:4503/public/no-image.png"
+        }else{
+            return "http://localhost:4503/public/" + nombreImagen
+        }
+    }
+
 
   return (
     <div className="modal-footer mt-3 modal-xl">
@@ -154,7 +179,7 @@ export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formD
         </div>
 
         
-        <div className="d-flex justify-content-between w-100 flex--detalle">
+        <div className="d-flex justify-content-between w-100 flex--detalle flex--gap">
             <div className="input-group mb-3">
                 <span className='input-group-text input-group-text--detalle'>ID Tipo Doc</span>
                 <select className="form-select" aria-label="Default select example" name="estado" id='estado' value={idTipoDoc}
@@ -178,18 +203,25 @@ export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formD
             </div>
         </div>
         
-        <div className="d-flex justify-content-between w-100 flex--detalle">
-            <div className="input-group mb-3">
+        <div className="d-flex justify-content-between w-100 flex--detalle flex--gap">
+            <div className="input-group mb-3 my-auto input__height">
                 <span className='input-group-text input-group-text--detalle'>Monto Total</span>
-                <input type="text"  className='form-control' placeholder='Monto Total' value={montoTotal}
+                <input type="text"  className='form-control ' placeholder='Monto Total' value={montoTotal}
                 onChange={(e) => setMontoTotal(e.target.value)} />
             </div>
             
-            <div className="input-group mb-3">
-                <input className="form-control" id="formFile" type="file" 
+            <div className="input-group mb-3 my-auto input__height">
+                <input className="form-control " id="formFile" type="file" 
                 onChange={(e) => {
                     setNombreImagen(e.target.files[0])
+                    previewFile()
                 }}/>
+            </div>
+
+            <div className="input-group mb-3 my-auto">
+                <a href={mostrarImagen()} target="_blank">
+                    <img className='img__detalle d-block' src={mostrarImagen()} alt=""/>
+                </a>
             </div>
 
         </div>
