@@ -49,24 +49,13 @@ export const Empresa = () => {
     // =========================
 
     const validar = async (id) => {
-        let parametros = {RutEmpresa: rutEmpresa,Empresa: empresa.trim(),Estado:estado}
-        if(rutEmpresa.trim() === ""){
-            show__alert("Escribe el rut de la empresa", "warning")
-        }else if(empresa.trim() === ""){
-            show__alert("Escribe el nombre de la empresa", "warning")
-        }else if(estado === ""){
-            show__alert("Escribe el estado de la empresa", "warning")
-        }else{
-            if(operation === 1){
-                let result = await empresaService.insert(parametros)
-                enviarSolicitud(result)
-            }else{
-                let result = await empresaService.update(id, parametros)
-                enviarSolicitud(result)
-                
-            }
-            
-        }
+        let parametros = {RutEmpresa: rutEmpresa,Empresa: empresa,Estado:estado}
+
+        if(rutEmpresa === "" || rutEmpresa === undefined) show__alert("Escribe el rut de la empresa", "warning")
+        else if(empresa === "" || empresa === undefined) show__alert("Escribe el nombre de la empresa", "warning")
+        else if(empresa === "" || empresa === undefined) show__alert("Selecciona el estado de la empresa", "warning")
+        else (operation === 1) ? enviarSolicitud( await empresaService.insert(parametros)) : enviarSolicitud(await empresaService.update(id, parametros))
+
     }
 
 
