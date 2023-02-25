@@ -47,23 +47,12 @@ export const Banco = () => {
     // =========================
 
     const validar = async (bancoId) => {
-        let parametros = {Banco:bancoNombre.trim(), Estado: estado}
-
-        if(bancoNombre.trim() === ""){
-            show__alert("Escribe el nombre del banco", "warning")
-        }else if(estado === ""){
-            show__alert("Escribe el estado del banco", "warning")
-        }else{
-            if(operation === 1){
-                let result = await bancoService.insert(parametros)
-                enviarSolicitud(result)
-            }else{
-                let result = await bancoService.update(bancoId, parametros)
-                enviarSolicitud(result)
-                
-            }
-            
-        }
+        let parametros = {Banco:bancoNombre, Estado: estado}
+        
+        if(bancoNombre === "" || bancoNombre === undefined) show__alert("Escribe el nombre del banco", "warning")
+        else if(bancoNombre.length <= 2 || bancoNombre.length > 200) show__alert("El nombre del banco debe tener entre 3 y 200 carácteres", "warning")
+        else if(estado === "" || estado === undefined) show__alert("Seleeciona el estado del banco", "warning")
+        else (operation === 1) ? enviarSolicitud(await bancoService.insert(parametros)) : enviarSolicitud(await bancoService.update(bancoId, parametros))   
     }
 
 
@@ -228,9 +217,6 @@ export const Banco = () => {
                                         <i className="fa-solid fa-floppy-disk save__icon"></i>
                                     </button>
                                 </div>
-                                {/* <div className="">
-                                    <button type='button' className='btn btn-danger btn__close' id='btnCerrar' data-bs-dismiss="modal">Cerrar</button>
-                                </div> */}
                             </div>
                         </div>
                     </div>

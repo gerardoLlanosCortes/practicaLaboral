@@ -7,7 +7,7 @@ import rendicionService from '../services/rendicionService'
 import { width } from '@mui/system';
 
 
-export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formDetalle, setFormDetalle, items, tipos, deleteDet, defaultFecha}) => {
+export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formDetalle, setFormDetalle, items, tipos, rendicionesDet, defaultFecha, setRendicionesDet}) => {
     const [idRenEnc, setIdRenEnc] = useState(idEnc)
     const [idRenDet, setIdRenDet] = useState(detalle.IdRenDet)
     const [idTipo,setIdTipo] = useState(detalle.IdTipo)
@@ -17,30 +17,14 @@ export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formD
     const [numeroDoc, setNumeroDoc] = useState(detalle.NumeroDoc)
     const [obsDet, setObsDet] = useState(detalle.Obs)
     const [montoTotal, setMontoTotal] = useState(detalle.MontoTotal)
-    const [estado, setEstado] = useState(detalle.Estado)
     const [nombreImagen, setNombreImagen] = useState(detalle.NombreImagen)
 
-    const [urlImagen, setUrlImagen] = useState("")
-
-    
     useEffect(() => {
-        setEstado(detalle.Estado)
-    })
-
-
-    useEffect(() => {
-        (guardar)? validarDet() :setFormDetalle([])
+        console.log("useeffect", guardar)
+        if(guardar) {
+            validarDet()
+        }
     }, [guardar])
-
-    useEffect(() =>{
-        if(nombreImagen == ""){
-            setUrlImagen("http://localhost:4503/public/no-image.png")
-        }
-        
-        else{
-            setUrlImagen("http://localhost:4503/public/" + nombreImagen)
-        }
-    }, [])
 
     // =========================
     // === POST Y PATCH DET ====
@@ -56,7 +40,6 @@ export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formD
         formdata.append("NumeroDoc", numeroDoc)
         formdata.append("MontoTotal", montoTotal)
         formdata.append("Obs", obsDet)
-        formdata.append("Estado", estado)
         formdata.append("NombreImagen", nombreImagen)
             
         
@@ -81,20 +64,22 @@ export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formD
             setGuardar(false)
         }else if(obsDet === ""){
             show__alert("Ingresa la observación del detalle", "warning")
-            setGuardar(false)        
-
+            setGuardar(false)
         }
         else{
-            console.log("detalle valido")
             if(detalle.isNew){
                 setFormDetalle([...formDetalle,rendicionService.insertDet(idRenEnc, formdata)])
-
             }else{
-                setFormDetalle((prevState) => [...prevState,rendicionService.updateDet(idRenEnc, idRenDet , formdata)])
+                // await rendicionService.delDet(idEnc, idDet)
+                // const footer = document.querySelectorAll('.modal-footer')
+                // console.log(document.querySelectorAll('.modal-footer'))
+                // for (let i = 0; i < footer.length; i++) {
+                //         if(footer[i].hidden) await rendicionService.delDet(idRenEnc, idRenDet)
+                // }
+                setFormDetalle([...formDetalle,rendicionService.updateDet(idRenEnc, idRenDet , formdata)])
             }   
         }
     }
-    
 
     function previewFile() {
         let preview = document.querySelector('img');
@@ -108,10 +93,48 @@ export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formD
         if (file) {
           reader.readAsDataURL(file);
         } else {
-            preview.src = "http://localhost:4503/public/no-image.png";
+          preview.src = "";
+        }
+    }
+
+    const mostrarImagen = () => {
+        console.log(nombreImagen)
+        console.log(detalle.NombreImagen)
+        if(nombreImagen == ""){
+            return "http://localhost:4503/public/no-image.png"
+        }else{
+            return "http://localhost:4503/public/" + nombreImagen
         }
     }
     
+
+    const deleteDet = (idEnc,idDet,numeroDoc, isNew) => {
+        const MySwal = withReactContent(Swal)
+        MySwal.fire({
+            title: "Seguro que quieres eliminar el detalle " + numeroDoc + " ?",
+            icon: "question",
+            confirmButtonColor: 'rgba(25, 135, 84, 0.800)',
+            cancelButtonColor: '#d33',
+            showCancelButton:true,confirmButtonText:"Sí, eliminar",cancelButtonText:"Cancelar"
+        }).then((async result => {
+            if(result.isConfirmed){
+                if(isNew){
+                    setRendicionesDet(rendicionesDet.filter(item => item.IdRenDet !== idDet));
+                    show__alert("Accion exitosa","success")
+                }else{
+                    let result = await rendicionService.delDet(idEnc, idDet)
+                    enviarSolicitudModal(result)
+                    setRendicionesDet(rendicionesDet.filter(item => item.IdRenDet !== idDet));
+                    // let detalle = e.target.parentElement.parentElement.parentElement
+                    // detalle.setAttribute("hidden", "")
+                    // console.log(detalle)
+                }
+                
+            }else{
+                show__alert("El detalle NO fue eliminado", "info")
+            }
+        }))
+    }
 
 
   return (
@@ -199,8 +222,8 @@ export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formD
             </div>
 
             <div className="input-group mb-3 my-auto">
-                <a className='imagen__link'  target="_blank">
-                    <img className='img__detalle d-block' src={urlImagen}  alt=""/>
+                <a href={mostrarImagen()} target="_blank">
+                    <img className='img__detalle d-block' src={mostrarImagen()} alt=""/>
                 </a>
             </div>
 
@@ -208,7 +231,7 @@ export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formD
     
         <div className="d-flex justify-content-end btn__container w-100">
             <div className="">
-                <button type='button' className='btn btn-danger btn__modal '  onClick={() => deleteDet(idRenEnc,idRenDet,numeroDoc, detalle.isNew)}>Eliminar Detalle</button>
+                <button type='button' className='btn btn-danger btn__modal ' onClick={(e) => deleteDet( idRenEnc,idRenDet,numeroDoc, detalle.isNew)}>Eliminar Detalle</button>
             </div>
             
         </div>

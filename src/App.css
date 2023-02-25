@@ -357,7 +357,6 @@ i{
 }
 
 .btn__save{
-  background-color: rgba(25, 135, 84, 0.800);
   border: none;
   padding: 2px;
 }
@@ -416,7 +415,7 @@ i{
 }
 
 .img__detalle{
-  width: 100px;
+  width: 50px;
 }
 .input__height{
   height: 40px;

@@ -33,9 +33,9 @@ export const Rendicion = () => {
 
     const [filterVal, setFilterVal] = useState("")
     const [searchApiData, setSearchApiData] = useState("")
-
     const [operation, setOperation] = useState(1)
     const [title, setTitle] = useState("")
+
     const [guardar, setGuardar] = useState(false)
     const [formDetalle, setFormDetalle] = useState([])
 
@@ -57,17 +57,17 @@ export const Rendicion = () => {
 
     useEffect(() => {
         if(guardar && formDetalle.length === rendicionesDet.length) {
-            console.log("pasa")
             Promise.all(formDetalle)
             .then(result => {
-                console.log(result)
+                setGuardar(false)
+                setFormDetalle([])
                 enviarSolicitud(result[0])
             })
             .catch(reason => {
+                setGuardar(false)
+                setFormDetalle([])
                 console.log(reason)
             });
-            setGuardar(false)
-            setFormDetalle([])
         }
     }, [formDetalle])
 
@@ -76,7 +76,6 @@ export const Rendicion = () => {
             let result = await rendicionService.getAll();
             setRendicionesEnc(result.data)
             setSearchApiData(result.data)
-            console.log(result.data)
         }catch(err){
             console.log(err)
         }
@@ -86,10 +85,8 @@ export const Rendicion = () => {
 
     const obtenerOne = async (id) =>{
         try{
-            setRendicionesDet([])
             let result = await rendicionService.getOne(id);
             setRendicionesDet(result.data.detalle)
-            console.log("obtenerOne")
 
         }catch(err){
             console.log(err)
@@ -133,7 +130,7 @@ export const Rendicion = () => {
     // === POST Y PATCH ENC ====
     // =========================
 
-    const validar = async (id) => {
+    const validar = async (id, idDet) => {
         let parametros = {
             IdRenEnc:idRenEnc,
             Numero:numeroEnc,
@@ -159,8 +156,8 @@ export const Rendicion = () => {
                 enviarSolicitud(result)
                 
             }else{
-                console.log("----validar----", guardar)
-                let result = await rendicionService.updateEnc(id, parametros)
+                setGuardar(false)
+                await rendicionService.updateEnc(id, parametros)
                 setGuardar(true)
             }
         }
@@ -261,7 +258,6 @@ export const Rendicion = () => {
 
 
                     <a href="#" className='edit edit__icon' data-toggle="modal"><i className='material-icons ' data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#modalTable" title='Edit' onClick={() => openModal(2, row.IdRenEnc, row.Numero, row.Rut, row.Fecha, row.Obs, row.Estado)}>&#xE254;</i></a> 
-
                     <a href="#" className='delete delete__icon' data-toggle="modal"><i className='material-icons' data-toggle="tooltip" title='Delete' onClick={() => deleteItem(row.IdRenEnc, row.NumeroEnc)}>&#xE872;</i></a>
                 </div>
             ),
@@ -279,6 +275,10 @@ export const Rendicion = () => {
     // =========================
 
     const openModal = (op, id, numero, rut,  fecha, obs, estado) => {
+        const modalFooter = document.querySelectorAll(".modal-footer")
+        for (let i=0; i < modalFooter.length; i++) {
+            modalFooter[i].removeAttribute("hidden", "");
+        }
         setIdRenEnc(v4())
         setNumeroEnc("")
         setRut("")
@@ -297,7 +297,6 @@ export const Rendicion = () => {
                 NumeroDoc: "",
                 Obs: "",
                 MontoTotal: "",
-                Estado: 1,
                 NombreImagen: ""
             }])
             
@@ -381,9 +380,7 @@ export const Rendicion = () => {
         if(e.target.value == ""){
             setRendicionesEnc(searchApiData)
         }else{
-            const filterResult = searchApiData.filter(item => 
-            item.Numero.toString().includes(e.target.value)||
-            item.Rut.toLowerCase().includes(e.target.value.toLowerCase())||
+            const filterResult = searchApiData.filter(item => item.Rut.toLowerCase().includes(e.target.value.toLowerCase())||
             item.Fecha.toLowerCase().includes(e.target.value.toLowerCase())||
             item.Obs.toLowerCase().includes(e.target.value.toLowerCase()))
             if (filterResult.length > 0) {
@@ -405,7 +402,6 @@ export const Rendicion = () => {
             NumeroDoc: "",
             Obs: "",
             MontoTotal: "",
-            Estado: 1,
             NombreImagen: "",
             isNew: true
         }
@@ -414,38 +410,34 @@ export const Rendicion = () => {
     
     }
 
-    const deleteDet = (idEnc,idDet,numeroDoc, isNew) => {
-        const MySwal = withReactContent(Swal)
-        MySwal.fire({
-            title: "Seguro que quieres eliminar el detalle " + numeroDoc + " ?",
-            icon: "question",
-            confirmButtonColor: 'rgba(25, 135, 84, 0.800)',
-            cancelButtonColor: '#d33',
-            showCancelButton:true,confirmButtonText:"Sí, eliminar",cancelButtonText:"Cancelar"
-        }).then((async result => {
-            if(result.isConfirmed){
-                if(isNew){
-                    setRendicionesDet(rendicionesDet.filter(item => item.IdRenDet !== idDet));
-                    show__alert("Accion exitosa","success")
-                }else{
-                    // let result = await rendicionService.delDet(idEnc, idDet)
-                    // enviarSolicitudModal(result)
-                    // setRendicionesDet(rendicionesDet.filter(item => item.IdRenDet !== idDet));
-
-                    setRendicionesDet(rendicionesDet.map(el => {
-                        if(el.IdRenDet === idDet){
-                            el.Estado = 2
-                            console.log(el.Estado)
-                        }
-                        return el
-                    }))
-                }
+    // const deleteDet = (idEnc,idDet,numeroDoc, isNew) => {
+    //     const MySwal = withReactContent(Swal)
+    //     MySwal.fire({
+    //         title: "Seguro que quieres eliminar el detalle " + numeroDoc + " ?",
+    //         icon: "question",
+    //         confirmButtonColor: 'rgba(25, 135, 84, 0.800)',
+    //         cancelButtonColor: '#d33',
+    //         showCancelButton:true,confirmButtonText:"Sí, eliminar",cancelButtonText:"Cancelar"
+    //     }).then((async result => {
+    //         if(result.isConfirmed){
+    //             if(isNew){
+    //                 setRendicionesDet(rendicionesDet.filter(item => item.IdRenDet !== idDet));
+    //                 show__alert("Accion exitosa","success")
+    //             }else{
+    //                 let result = await rendicionService.delDet(idEnc, idDet)
+    //                 enviarSolicitudModal(result)
+    //                 setRendicionesDet(rendicionesDet.filter(item => item.IdRenDet !== idDet));
+    //                         rendicionesDet.map(detalle =>{
+    //                             let detalles = document.querySelectorAll(".modal-footer").value
+    //                             console.log(detalles)
+    //                         })
+    //             }
                 
-            }else{
-                show__alert("El detalle NO fue eliminado", "info")
-            }
-        }))
-    }
+    //         }else{
+    //             show__alert("El detalle NO fue eliminado", "info")
+    //         }
+    //     }))
+    // }
 
     const defaultFecha = () => {
         let date = new Date();
@@ -509,17 +501,9 @@ export const Rendicion = () => {
                         <div className="d-flex justify-content-between w-100 flex--gap">
                             <div className="input-group mb-3">
                                 <span className='input-group-text input-group-text--encabezado'>Fecha</span>
-                                <input type="datetime-local"  className='form-control' placeholder='Fecha' value={fechaEnc}
+                                <input type="text"  className='form-control' placeholder='Fecha' value={fechaEnc}
                                 onChange={(e) => setFechaEnc(e.target.value)} />
                             </div>
-
-                            {/* <div className="input-group mb-3">
-                                <span className='input-group-text input-group-text--encabezado'>Fecha</span>
-                                <input id="startDate" className="form-control" type="date" placeholder='Fecha de rendición' value={fechaEnc || defaultFecha()} 
-                                onChange={(e) => {
-                                    setFechaEnc(e.target.value)}}/> 
-                            </div> */}
-
                         
                             <div className="input-group mb-3">
                                 <span className='input-group-text input-group-text--encabezado'>Observación</span>
@@ -541,12 +525,12 @@ export const Rendicion = () => {
 
                         <div className="d-flex justify-content-between btn__container mt-2 mb-4">
                             <div className="">
-                                <button type='button' onClick={() => validar(idRenEnc)} className='btn btn-success btn__modal btn__save btn__save--modal' disabled={guardar}>
+                                <button type='button' onClick={() => validar(idRenEnc)} className='btn btn-success btn__modal btn__save btn__save--modal'>
                                     <i className="fa-solid fa-floppy-disk save__icon"></i>
                                 </button>
                             </div>
                             <div className="">
-                                <button type='button' className='btn btn-success btn__modal' onClick={añadirDetalle}>Añadir Detalle</button>
+                                <button type='button' className='btn btn-success btn__modal btn__add--modal ' onClick={añadirDetalle}>Añadir Detalle</button>
                             </div>
                             <div className="">
                                 <button type='button' className='btn btn-danger btn__modal' onClick={() => deleteItem(idRenEnc, numeroEnc)} >Eliminar Rendición</button>
@@ -559,19 +543,20 @@ export const Rendicion = () => {
                             { 
                                     rendicionesDet.map(detalle =>{
                                         return (
-                                        <div key={detalle.IdRenDet} className={(detalle.Estado == 2)? "d-none" : "" }>
-                                            <FormRendicionDetalle
-                                            formDetalle={formDetalle}
-                                            setFormDetalle={setFormDetalle}
-                                            guardar={guardar}
-                                            setGuardar={setGuardar}
-                                            idEnc={idRenEnc}
-                                            detalle={detalle} 
-                                            items={items}
-                                            tipos={tipos}
-                                            deleteDet={deleteDet}
-                                            defaultFecha={defaultFecha}/>
-                                        </ div>
+                                        <FormRendicionDetalle
+                                        formDetalle={formDetalle}
+                                        setFormDetalle={setFormDetalle}
+                                        guardar={guardar}
+                                        setGuardar={setGuardar}
+                                        idEnc={idRenEnc}
+                                        detalle={detalle} 
+                                        key={detalle.IdRenDet}
+                                        items={items}
+                                        tipos={tipos}
+                                        // deleteDet={deleteDet}
+                                        defaultFecha={defaultFecha}
+                                        rendicionesDet={rendicionesDet}
+                                        setRendicionesDet={setRendicionesDet}/>
                                         )
                                     })
                             }
