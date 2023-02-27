@@ -134,36 +134,21 @@ export const Rendicion = () => {
     // =========================
 
     const validar = async (id) => {
-        let parametros = {
-            IdRenEnc:idRenEnc,
-            Numero:numeroEnc,
-            Rut:rut.trim(),
-            Fecha:fechaEnc.trim(),
-            Obs:obsEnc.trim(),
-            Estado:estadoEnc
-        }
+        let parametros = {IdRenEnc:idRenEnc,Numero:numeroEnc,Rut:rut,Fecha:fechaEnc,Obs:obsEnc.trim(),Estado:estadoEnc}
 
-        if(numeroEnc=== ""){
-            show__alert("Escribe el numero de la rendicion", "warning")
-        }else if(rut === ""){
-            show__alert("Escribe el Rut de la rendicion", "warning")
-        }else if(fechaEnc === ""){
-            show__alert("Escribe la fecha de la rendicion", "warning")
-        }else if(obsEnc === ""){
-            show__alert("Escribe el obs de la rendicion", "warning")
-        }else if(estadoEnc === ""){
-            show__alert("Ingresa el estado de la rendicion", "warning")
-        }else{
-            if(operation === 1){
-                let result = await rendicionService.insertEnc(parametros)
-                enviarSolicitud(result)
-                
-            }else{
-                console.log("----validar----", guardar)
-                let result = await rendicionService.updateEnc(id, parametros)
-                setGuardar(true)
-            }
-        }
+        if(!/^([0-9])*$/.test(numeroEnc)) show__alert("El número de encabezado solo debe poseer carácteres númericos", "warning")
+        else if(numeroEnc === "" || numeroEnc === undefined) show__alert("Escribe el número de encabezado de la rendición", "warning")
+
+        else if(rut === "" || rut === undefined) show__alert("Selecciona el rut del empleado", "warning")
+
+        else if(fechaEnc === "" || fechaEnc === undefined) show__alert("Selecciona la fecha de rendición", "warning")
+
+        else if(obsEnc.trim() === "" || obsEnc === undefined) show__alert("Escribe la observación de la rendicion", "warning")
+        else if(obsEnc.length < 1 || obsEnc.length > 200) show__alert("la observación de la rendicion debe tener entre 1 y 200 carácteres", "warning")
+        
+        else if(estadoEnc === "" || estadoEnc === undefined) show__alert("Selecciona el estado de la rendición", "warning")
+
+        else (operation === 1) ? enviarSolicitud(await rendicionService.insertEnc(parametros)) : setGuardar(await rendicionService.updateEnc(id, parametros))
     }
 
 
@@ -203,17 +188,6 @@ export const Rendicion = () => {
             show__alert("Accion exitosa","success")
             document.getElementById("btnCerrar").click()
             obtenerDatos()
-        }
-        else{
-            show__alert("Error en la solicitud", "error")
-            console.log(err)
-        }
-    }
-
-    const enviarSolicitudModal = (result) => {
-        if(result.statusText === "OK"){
-            show__alert("Accion exitosa","success")
-            // document.getElementById("btnCerrar").click()
         }
         else{
             show__alert("Error en la solicitud", "error")
@@ -428,10 +402,6 @@ export const Rendicion = () => {
                     setRendicionesDet(rendicionesDet.filter(item => item.IdRenDet !== idDet));
                     show__alert("Accion exitosa","success")
                 }else{
-                    // let result = await rendicionService.delDet(idEnc, idDet)
-                    // enviarSolicitudModal(result)
-                    // setRendicionesDet(rendicionesDet.filter(item => item.IdRenDet !== idDet));
-
                     setRendicionesDet(rendicionesDet.map(el => {
                         if(el.IdRenDet === idDet){
                             el.Estado = 2
@@ -481,7 +451,7 @@ export const Rendicion = () => {
                         <div className="modal-body">
                             <input type="hidden" id='id'/>
                             <div className="input-group mb-3">
-                                <input type="text" id='first' className='form-control' placeholder='ID Rendición' hidden   value={idRenEnc}
+                                <input type="number" id='first' className='form-control' placeholder='ID Rendición' hidden   value={idRenEnc}
                                 onChange={(e) => setIdRenEnc(e.target.value)} />
                             </div>
 
@@ -512,14 +482,6 @@ export const Rendicion = () => {
                                 <input type="datetime-local"  className='form-control' placeholder='Fecha' value={fechaEnc}
                                 onChange={(e) => setFechaEnc(e.target.value)} />
                             </div>
-
-                            {/* <div className="input-group mb-3">
-                                <span className='input-group-text input-group-text--encabezado'>Fecha</span>
-                                <input id="startDate" className="form-control" type="date" placeholder='Fecha de rendición' value={fechaEnc || defaultFecha()} 
-                                onChange={(e) => {
-                                    setFechaEnc(e.target.value)}}/> 
-                            </div> */}
-
                         
                             <div className="input-group mb-3">
                                 <span className='input-group-text input-group-text--encabezado'>Observación</span>

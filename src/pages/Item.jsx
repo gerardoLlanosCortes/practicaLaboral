@@ -52,22 +52,10 @@ export const Item = () => {
 
     const validar = async (idItem) => {
         let parametros = {Item:item.trim(), Estado:estado}
-        if(item.trim() === ""){
-            show__alert("Escribe el nombre del item", "warning")
-        }else if(estado === ""){
-            show__alert("Escribe el estado del item", "warning")
-        }else{
-            if(operation === 1){
-                let result = await itemService.insert(parametros)
-                enviarSolicitud(result)
-            }else{
-                let result = await itemService.update(idItem, parametros)
-                enviarSolicitud(result)
-                
-            }
-            
-            
-        }
+        if(item.trim() === "" || item === undefined) show__alert("Escribe el el nombre del item", "warning")
+        else if(item.length <= 2 || item.length > 100) show__alert("El item debe tener entre 3 y 100 carácteres", "warning")
+        else if(estado === "" || estado === undefined) show__alert("Selecciona el estado del item", "warning")
+        else (operation === 1) ? enviarSolicitud(await itemService.insert(parametros)) : enviarSolicitud(await itemService.update(idItem, parametros))            
     }
 
 

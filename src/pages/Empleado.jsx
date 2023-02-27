@@ -79,36 +79,34 @@ export const Empleado = () => {
     // =========================
 
     const validar = async (rutEmpleado) => {
-        let parametros = {Rut: rut, Nombres: nombres, Apellidos: apellidos, Cuenta: cuenta, IdBanco: idBanco, IdEmpresa: idEmpresa, Imei: imei, NumInicial: numInicial,Estado:estado}
+        let parametros = {Rut: rut, Nombres: nombres.trim(), Apellidos: apellidos.trim(), Cuenta: cuenta, IdBanco: idBanco, IdEmpresa: idEmpresa, Imei: imei.trim(), NumInicial: numInicial,Estado:estado}
 
-        if(rut === ""){
-            show__alert("Escribe el rut del empleado", "warning")
-        }else if(nombres.trim() === ""){
-            show__alert("Escribe los nombres del empleado", "warning")
-        }else if(apellidos.trim() === ""){
-            show__alert("Escribe los apellidos del empleado", "warning")
-        }else if(cuenta.trim() === ""){
-            show__alert("Escribe la cuenta del empleado", "warning")
-        }else if(idBanco === ""){
-            show__alert("Selecciona el banco del empleado", "warning")
-        }else if(idEmpresa === ""){
-            show__alert("Selecciona la empresa del empleado", "warning")
-        }else if(imei.trim() === ""){
-            show__alert("Escribe el imei del empleado", "warning")
-        }else if(numInicial === ""){
-            show__alert("Escribe el numero inicial del empleado", "warning")
-        }else if(estado === ""){
-            show__alert("Escribe el estado del empleado", "warning")
-        }else{
-            if(operation === 1){
-                let result = await empleadoService.insert(parametros)
-                enviarSolicitud(result)
-            }else{
-                let result = await empleadoService.update(rutEmpleado, parametros)
-                enviarSolicitud(result)
-            }
-            
-        }
+        if(rut === "" || rut === undefined) show__alert("Escribe el rut del empleado", "warning")
+        else if(rut.length > 12) show__alert("Rut de máximo 12 caracteres", "warning")
+        else if(! /\b(\d{1,3}(?:(\.)\d{3}){2}(-)[\dkK])\b/gm.test(rut)) show__alert("Rut no valido, debe incluir puntos y guion")
+
+        else if(nombres.trim() === "" || nombres === undefined) show__alert("Escribe el nombre completo del empleado", "warning")
+        else if(nombres.length <= 2 || nombres.length > 50) show__alert("Nombre del empleado debe tener entre 3 y 50 carácteres", "warning")
+
+        else if(apellidos.trim() === "" || apellidos === undefined) show__alert("Escribe el apellido completo del empleado", "warning")
+        else if(apellidos.length <= 2 || apellidos.length > 50) show__alert("Apellido del empleado debe tener entre 3 y 50 carácteres", "warning")
+        
+
+        else if(!/^([0-9])*$/.test(cuenta)) show__alert("La cuenta solo debe poseer carácteres númericos", "warning")
+        else if(cuenta === "" || apellidos === undefined) show__alert("Escribe la cuenta del empleado", "warning")
+        else if(cuenta.length < 1 || cuenta.length > 15) show__alert("Nombre del empleado debe tener entre 1 y 15 carácteres", "warning")
+
+        else if(idBanco === "" || idBanco === undefined) show__alert("Selecciona el banco del empleado", "warning")
+        else if(idEmpresa === "" || idEmpresa === undefined) show__alert("Selecciona la empresa del empleado", "warning")
+    
+        else if(imei.trim() === "" || imei === undefined) show__alert("Escribe el Imei del empleado", "warning")
+        else if(imei.length < 1 || imei.length > 15) show__alert("Imei del empleado debe tener entre 1 y 15 carácteres", "warning")
+
+        else if(!/^([0-9])*$/.test(numInicial)) show__alert("El número inicial solo debe poseer carácteres númericos", "warning")
+        else if(numInicial === "" || numInicial === undefined) show__alert("Escribe el número inicial del empleado", "warning")
+
+        else if(estado === "" || estado === undefined) show__alert("Selecciona el estado del empleado", "warning")
+        else (operation === 1) ? enviarSolicitud(await empleadoService.insert(parametros)) : enviarSolicitud(await empleadoService.update(rutEmpleado, parametros)) 
     }
 
 
@@ -344,7 +342,7 @@ export const Empleado = () => {
                             <div className="input-group mb-3">
                             <span className='input-group-text input-group-text__modal--empleado'>Cuenta</span>
                                 <input type="number"  className='form-control' placeholder='Cuenta del empleado' value={cuenta}
-                                onChange={(e) => setCuenta(e.target.value)} />
+                                onChange={(e) => setCuenta(e.target.value)}   />
                             </div>
 
                             <div className="input-group mb-3">

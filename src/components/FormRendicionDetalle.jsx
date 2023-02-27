@@ -59,39 +59,55 @@ export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formD
         formdata.append("Estado", estado)
         formdata.append("NombreImagen", nombreImagen)
             
-        
+        if(idTipo === "" || idTipo === undefined){
+            show__alert("Selecciona el tipo del detalle", "warning") 
+            setGuardar(false)
+        } 
 
-        if(idTipo === ""){
-            show__alert("Escribe el id tipo del detalle", "warning")
+        else if(idItem === "" || idItem === undefined){
+            show__alert("Selecciona el item del detalle", "warning")
             setGuardar(false)
-        }else if(idItem === ""){
-            show__alert("Escribe la id item del detalle", "warning")
-            setGuardar(false)
-        }else if(fechaDocDet === ""){
-            show__alert("Escribe la fecha del detalle", "warning")
-            setGuardar(false)
-        }else if(idTipoDoc === ""){
-            show__alert("Ingresa el tipo de doc del detalle", "warning")
-            setGuardar(false)
-        }else if(numeroDoc === ""){
-            show__alert("Ingresa el numero de doc del detalle", "warning")
-            setGuardar(false)
-        }else if(montoTotal === ""){
-            show__alert("Ingresa el monto total del detalle", "warning")
-            setGuardar(false)
-        }else if(obsDet === ""){
-            show__alert("Ingresa la observación del detalle", "warning")
-            setGuardar(false)        
+        } 
 
+        else if(fechaDocDet === "" || fechaDocDet === undefined){
+            show__alert("Selecciona la fecha del detalle", "warning") //!
+            setGuardar(false)
         }
-        else{
-            console.log("detalle valido")
-            if(detalle.isNew){
-                setFormDetalle([...formDetalle,rendicionService.insertDet(idRenEnc, formdata)])
+ 
+        else if(idTipoDoc === "" || idTipoDoc === undefined){
+            show__alert("Selecciona el tipo de documento del detalle", "warning")
+            setGuardar(false)
+        } 
 
-            }else{
-                setFormDetalle((prevState) => [...prevState,rendicionService.updateDet(idRenEnc, idRenDet , formdata)])
-            }   
+        else if(!/^([0-9])*$/.test(numeroDoc)){
+            show__alert("El número de documento solo debe poseer carácteres númericos", "warning")
+            setGuardar(false)
+        }
+
+        else if(numeroDoc === "" || numeroDoc === undefined){
+            show__alert("Escribe el número de documento del detalle", "warning")
+            setGuardar(false)
+        } 
+
+        else if(!/^([0-9])*$/.test(montoTotal)){
+            show__alert("El monto total solo debe poseer carácteres númericos", "warning")
+            setGuardar(false)
+        }
+
+        else if(montoTotal === "" || montoTotal === undefined){
+            show__alert("Escribe el monto total del detalle", "warning")
+            setGuardar(false)
+        } 
+
+        else if(obsDet === "" || obsDet === undefined){
+            show__alert("Ingresa la observación del detalle", "warning")
+            setGuardar(false)
+        } 
+        
+        else{
+            (detalle.isNew)
+            ? setFormDetalle([...formDetalle,rendicionService.insertDet(idRenEnc, formdata)]) 
+            : setFormDetalle((prevState) => [...prevState,rendicionService.updateDet(idRenEnc, idRenDet , formdata)])
         }
     }
     
@@ -172,7 +188,7 @@ export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formD
             
             <div className="input-group mb-3">
                 <span className='input-group-text input-group-text--detalle'>Numero Doc</span>
-                <input type="text"  className='form-control' placeholder='Numero del documento' value={numeroDoc}
+                <input type="number"  className='form-control' placeholder='Numero del documento' value={numeroDoc}
                 onChange={(e) => setNumeroDoc(e.target.value)} />
             </div>
             
@@ -186,7 +202,7 @@ export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formD
         <div className="d-flex justify-content-between w-100 flex--detalle flex--gap">
             <div className="input-group mb-3 my-auto input__height">
                 <span className='input-group-text input-group-text--detalle'>Monto Total</span>
-                <input type="text"  className='form-control ' placeholder='Monto Total' value={montoTotal}
+                <input type="number"  className='form-control ' placeholder='Monto Total' value={montoTotal}
                 onChange={(e) => setMontoTotal(e.target.value)} />
             </div>
             

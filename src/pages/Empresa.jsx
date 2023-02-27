@@ -49,13 +49,15 @@ export const Empresa = () => {
     // =========================
 
     const validar = async (id) => {
-        let parametros = {RutEmpresa: rutEmpresa,Empresa: empresa,Estado:estado}
+        let parametros = {RutEmpresa: rutEmpresa,Empresa: empresa.trim(),Estado:estado}
 
         if(rutEmpresa === "" || rutEmpresa === undefined) show__alert("Escribe el rut de la empresa", "warning")
-        else if(empresa === "" || empresa === undefined) show__alert("Escribe el nombre de la empresa", "warning")
-        else if(empresa === "" || empresa === undefined) show__alert("Selecciona el estado de la empresa", "warning")
+        if(rutEmpresa.length > 12) show__alert("Rut de máximo 12 caracteres", "warning")
+        else if(! /\b(\d{1,3}(?:(\.)\d{3}){2}(-)[\dkK])\b/gm.test(rutEmpresa)) show__alert("Rut no valido, debe incluir puntos y guion")
+        else if(empresa.trim() === "" || empresa === undefined) show__alert("Escribe el nombre de la empresa", "warning")
+        else if(empresa.length <= 2 || empresa.length > 20) show__alert("El nombre de la empresa debe tener entre 3 y 20 carácteres", "warning")
+        else if(estado === "" || estado === undefined) show__alert("Selecciona el estado de la empresa", "warning")
         else (operation === 1) ? enviarSolicitud( await empresaService.insert(parametros)) : enviarSolicitud(await empresaService.update(id, parametros))
-
     }
 
 

@@ -47,11 +47,11 @@ export const Banco = () => {
     // =========================
 
     const validar = async (bancoId) => {
-        let parametros = {Banco:bancoNombre, Estado: estado}
-        
-        if(bancoNombre === "" || bancoNombre === undefined) show__alert("Escribe el nombre del banco", "warning")
+        let parametros = {Banco:bancoNombre.trim(), Estado: estado}
+
+        if(bancoNombre.trim() === "" || bancoNombre === undefined) show__alert("Escribe el nombre del banco", "warning")
         else if(bancoNombre.length <= 2 || bancoNombre.length > 200) show__alert("El nombre del banco debe tener entre 3 y 200 carácteres", "warning")
-        else if(estado === "" || estado === undefined) show__alert("Seleeciona el estado del banco", "warning")
+        else if(estado === "" || estado === undefined) show__alert("Selecciona el estado del banco", "warning")
         else (operation === 1) ? enviarSolicitud(await bancoService.insert(parametros)) : enviarSolicitud(await bancoService.update(bancoId, parametros))   
     }
 
