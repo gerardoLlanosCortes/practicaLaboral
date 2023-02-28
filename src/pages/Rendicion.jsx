@@ -7,11 +7,13 @@ import Swal from "sweetalert2";
 import { v4 } from 'uuid'
 import {Link, Outlet, useNavigate} from 'react-router-dom'
 import FormRendicionDetalle from '../components/FormRendicionDetalle'
+import PDFFile from '../components/PDFFile'
 import itemService from '../services/itemService'
 import tipoService from '../services/tipoService'
 
 import rendicionService from '../services/rendicionService'
 import empleadoService from '../services/empleadoService'
+import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer'
 
 
 export const Rendicion = () => {
@@ -76,25 +78,24 @@ export const Rendicion = () => {
             let result = await rendicionService.getAll();
             setRendicionesEnc(result.data)
             setSearchApiData(result.data)
-            console.log(result.data)
         }catch(err){
             console.log(err)
         }
     }
 
-    // Get one
 
     const obtenerOne = async (id) =>{
         try{
             setRendicionesDet([])
             let result = await rendicionService.getOne(id);
             setRendicionesDet(result.data.detalle)
-            console.log("obtenerOne")
+            // console.log("obtenerOne")
 
         }catch(err){
             console.log(err)
         }
     }
+
 
     const obtenerDatosItems = async () =>{
         try{
@@ -237,6 +238,9 @@ export const Rendicion = () => {
                     <a href="#" className='edit edit__icon' data-toggle="modal"><i className='material-icons ' data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#modalTable" title='Edit' onClick={() => openModal(2, row.IdRenEnc, row.Numero, row.Rut, row.Fecha, row.Obs, row.Estado)}>&#xE254;</i></a> 
 
                     <a href="#" className='delete delete__icon' data-toggle="modal"><i className='material-icons' data-toggle="tooltip" title='Delete' onClick={() => deleteItem(row.IdRenEnc, row.NumeroEnc)}>&#xE872;</i></a>
+                    
+                    <PDFDownloadLink document={<PDFFile/>} fileName="ArchivoDePrueba"><button>Download</button></PDFDownloadLink>
+                    {/* <PDFViewer></PDFViewer> */}
                 </div>
             ),
             

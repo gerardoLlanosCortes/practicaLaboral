@@ -456,6 +456,17 @@ i{
 }
 
 
+/*  */
+
+.tableColors:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+View {
+  border-collapse: collapse;
+}
+
+
 @media (max-width: 992px){
 
   .container-sm{

@@ -53,4 +53,6 @@ const getImage = async (nombreImagen) => {
     return result;
 }
 
+
+
 export default {getAll,getOne,insertEnc,delEnc,updateEnc, insertDet, delDet, updateDet, getImage}
