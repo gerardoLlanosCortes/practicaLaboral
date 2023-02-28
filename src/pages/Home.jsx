@@ -18,7 +18,7 @@ export const Home = () => {
       <div className="row">
         <div className="col-sm-4">
           <div className="card">
-          <img src="https://via.placeholder.com/150" className="card-img-top" alt="..." />
+          <img src="https://loremflickr.com/150/150" className="card-img-top" alt="..." />
             <div className="card-body">
               <h5 className="card-title">Special title treatment</h5>
               <p className="card-text">With supporting text below as a natural lead-in to additional content.</p>
@@ -28,7 +28,7 @@ export const Home = () => {
         </div>
         <div className="col-sm-4">
           <div className="card">
-            <img src="https://via.placeholder.com/150" className="card-img-top" alt="..." />
+            <img src="https://loremflickr.com/150/150" className="card-img-top" alt="..." />
             <div className="card-body">
               <h5 className="card-title">Special title treatment</h5>
               <p className="card-text">With supporting text below as a natural lead-in to additional content.</p>
@@ -37,7 +37,7 @@ export const Home = () => {
           </div>
         </div>
         <div className="col-sm-4">
-          <img src="https://via.placeholder.com/150" className="card-img-top" alt="..." />
+          <img src="https://loremflickr.com/150/150" className="card-img-top" alt="..." />
           <div className="card">
             <div className="card-body">
               <h5 className="card-title">Special title treatment</h5>
