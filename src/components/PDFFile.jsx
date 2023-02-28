@@ -6,7 +6,6 @@ import { padding } from '@mui/system';
 const COL_ANCHO_1 = 10;
 const COL_ANCHO_2 = 20;
 
-
 const styles = StyleSheet.create({
 	page: {
     paddingTop: 35,
@@ -112,8 +111,11 @@ const styles = StyleSheet.create({
     margin: 5,
     fontSize: 10,
   },
-
-
+  tablaCeldaTotal: {
+    margin: 5,
+    fontSize: 10,
+    textAlign: "right"
+  },
   contenedorTabla: {
     marginBottom: 16
   },
@@ -145,7 +147,36 @@ const styles = StyleSheet.create({
   
 });
 
-export const PDFFile = () => {
+export const PDFFile = ({rendicionesEncOne, rendicionDet, resumenes, items}) => {
+
+  const total = () => {
+    let suma = 0
+    rendicionDet.map(detalle => {
+      suma += detalle.MontoTotal
+    })
+    return suma
+  }
+
+  const funcion = (itemId) => {
+    let res = 0
+    resumenes.map((resumen, i) => {
+      if(itemId === resumen.IdItem){
+        res = resumen.MontoTotal
+      }
+    })
+    return res
+  }
+
+  // const resumenes = rendicionesEncOne.resumen
+  
+  
+  // console.log(rendicionesEncOne)
+  // console.log(resumenes)
+  // console.log(rendicionDet)
+  // console.log(items)
+
+
+
   return (
     <Document>
 		<Page size="A4" style={styles.page} >
@@ -165,12 +196,12 @@ export const PDFFile = () => {
             <Text style={styles.headertitles}>CTA. Pago:</Text>
           </View>
           <View >
-            <Text style={styles.headertexts}>101</Text>
-            <Text style={styles.headertexts}>Diego Eduardo Cortés Sánchez</Text>
-            <Text style={styles.headertexts}>16.171.514-K</Text>
-            <Text style={styles.headertexts}>APPZONE SPA</Text>
-            <Text style={styles.headertexts}>Administracion</Text>
-            <Text style={styles.headertexts}>Banco Santander, Nro.Cuenta: 81630069</Text>
+            <Text style={styles.headertexts}>{rendicionesEncOne.Numero}</Text>
+            <Text style={styles.headertexts}>{rendicionesEncOne.Empleado}</Text>
+            <Text style={styles.headertexts}>{rendicionesEncOne.Rut}</Text>
+            <Text style={styles.headertexts}>{rendicionesEncOne.Empresa}</Text>
+            <Text style={styles.headertexts}>Administración</Text>
+            <Text style={styles.headertexts}>Banco {rendicionesEncOne.Banco}, Nro.Cuenta: {rendicionesEncOne.Cuenta}</Text>
           </View>
         </View>
 
@@ -194,78 +225,23 @@ export const PDFFile = () => {
         
         {/*Aqui se recorre un arreglo y se muestran los datos*/}
         <View style={styles.anchoContenedor}>
-          <View style={styles.tablaFila}>
-            <View style={styles.anchoColumnaIndice}>
-              <Text style={styles.tablaCelda}>1</Text>
-            </View>
-            <View style={styles.anchoColumnaItem}>
-              <Text style={styles.tablaCelda}>Combustibles Con Factura </Text>
-            </View>
-            <View style={styles.anchoColumnaValor}>
-              <Text style={styles.tablaCelda}>$ 68.597</Text>
-            </View>
-          </View>
 
-          <View style={styles.tablaFila}>
-            <View style={styles.anchoColumnaIndice}>
-              <Text style={styles.tablaCelda}>2</Text>
-            </View>
-            <View style={styles.anchoColumnaItem}>
-              <Text style={styles.tablaCelda}>Combustibles con boleta </Text>
-            </View>
-            <View style={styles.anchoColumnaValor}>
-              <Text style={styles.tablaCelda}>$ 86</Text>
-            </View>
-          </View>
-
-          <View style={styles.tablaFila}>
-            <View style={styles.anchoColumnaIndice}>
-              <Text style={styles.tablaCelda}>3</Text>
-            </View>
-            <View style={styles.anchoColumnaItem}>
-              <Text style={styles.tablaCelda}>Mantención - Reparación</Text>
-            </View>
-            <View style={styles.anchoColumnaValor}>
-              <Text style={styles.tablaCelda}>$ 0</Text>
-            </View>
-          </View>
-
-          <View style={styles.tablaFila}>
-            <View style={styles.anchoColumnaIndice}>
-              <Text style={styles.tablaCelda}>4</Text>
-            </View>
-            <View style={styles.anchoColumnaItem}>
-              <Text style={styles.tablaCelda}>Viaje nacional</Text>
-            </View>
-            <View style={styles.anchoColumnaValor}>
-              <Text style={styles.tablaCelda}>$ 0</Text>
-            </View>
-          </View>
-
-          <View style={styles.tablaFila}>
-            <View style={styles.anchoColumnaIndice}>
-              <Text style={styles.tablaCelda}>5</Text>
-            </View>
-            <View style={styles.anchoColumnaItem}>
-              <Text style={styles.tablaCelda}>Estacionamientos</Text>
-            </View>
-            <View style={styles.anchoColumnaValor}>
-              <Text style={styles.tablaCelda}>$ 0</Text>
-            </View>
-          </View>
-
-          <View style={styles.tablaFila}>
-            <View style={styles.anchoColumnaIndice}>
-              <Text style={styles.tablaCelda}>6</Text>
-            </View>
-            <View style={styles.anchoColumnaItem}>
-              <Text style={styles.tablaCelda}>Colación personal</Text>
-            </View>
-            <View style={styles.anchoColumnaValor}>
-              <Text style={styles.tablaCelda}>$ 0</Text>
-            </View>
-          </View>
-
+          {items.map((item, indice) => {
+            return(
+              <View style={styles.tablaFila} key={indice}>
+                <View style={styles.anchoColumnaIndice}>
+                  <Text style={styles.tablaCelda}>{indice + 1}</Text>
+                </View>
+                <View style={styles.anchoColumnaItem}>
+                  <Text style={styles.tablaCelda}>{item.Item}</Text>
+                </View>
+                <View style={styles.anchoColumnaValor}>
+                  <Text style={styles.tablaCeldaTotal}>$ {funcion(item.IdItem)} </Text>
+                </View>
+              </View>
+            )
+          })}
+          
         {/* ESTE VAS ASI AL FINAL DEL ARREGLO RECORRIDO YA QUE ES EL TOTAL */}
           <View style={styles.tablaFila}>
             <View style={styles.anchoColumnaIndice}>
@@ -275,7 +251,8 @@ export const PDFFile = () => {
               <Text style={styles.tablaCelda}>Total</Text>
             </View>
             <View style={styles.anchoColumnaValor}>
-              <Text style={styles.tablaCelda}>$ 0</Text>
+
+              <Text style={styles.tablaCeldaTotal}>$ {total()}</Text>
             </View>
           </View>
         </View>

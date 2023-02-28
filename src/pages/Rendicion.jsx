@@ -13,7 +13,6 @@ import tipoService from '../services/tipoService'
 
 import rendicionService from '../services/rendicionService'
 import empleadoService from '../services/empleadoService'
-import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer'
 
 
 export const Rendicion = () => {
@@ -89,7 +88,8 @@ export const Rendicion = () => {
             setRendicionesDet([])
             let result = await rendicionService.getOne(id);
             setRendicionesDet(result.data.detalle)
-            // console.log("obtenerOne")
+            console.log(result.data.detalle)
+            console.log(result.data)
 
         }catch(err){
             console.log(err)
@@ -239,8 +239,6 @@ export const Rendicion = () => {
 
                     <a href="#" className='delete delete__icon' data-toggle="modal"><i className='material-icons' data-toggle="tooltip" title='Delete' onClick={() => deleteItem(row.IdRenEnc, row.NumeroEnc)}>&#xE872;</i></a>
                     
-                    <PDFDownloadLink document={<PDFFile/>} fileName="ArchivoDePrueba"><button>Download</button></PDFDownloadLink>
-                    {/* <PDFViewer></PDFViewer> */}
                 </div>
             ),
             

@@ -1,14 +1,57 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import PDFFile from '../components/PDFFile'
 import { PDFDownloadLink,  PDFViewer} from '@react-pdf/renderer'
 import { height } from '@mui/system'
+import rendicionService from '../services/rendicionService'
+import itemService from '../services/itemService'
 
 export const Home = () => {
+
+  const [rendicionDet, setRendicionDet] = useState([]);
+  const [resumenes, setResumenes] = useState([]);
+  const [rendicionesEnc, setRendicionesEnc] = useState([]);
+  const [rendicionesEncOne, setRendicionesEncOne] = useState([]);
+  const [items, setItems] = useState([]);
+  
 
   const openModal = () => {
     console.log("click al modal")
   }
 
+  useEffect(() => {
+    obtenerDatos()
+    obtenerDatosItems()
+  },[])
+
+
+  const obtenerOne = async (id) =>{
+    try{
+      let result = await rendicionService.getOne(id);
+      setRendicionDet(result.data.detalle)
+      setResumenes(result.data.resumen)
+      setRendicionesEncOne(result.data)
+    }catch(err){
+      console.log(err)
+    }
+  }
+
+  const obtenerDatos = async () =>{
+    try{
+      let result = await rendicionService.getAll();
+      setRendicionesEnc(result.data)
+    }catch(err){
+      console.log(err)
+    }
+  }
+
+  const obtenerDatosItems = async () =>{
+    try{
+        let result = await itemService.getAll();
+        setItems(result.data)
+    }catch(err){
+        console.log(err)
+    }
+}
 
 
 
@@ -16,43 +59,34 @@ export const Home = () => {
   <div className="container-sm">
     <div className="container-sm">
       <div className="row">
-        <div className="col-sm-4">
-          <div className="card">
-          <img src="https://loremflickr.com/150/150" className="card-img-top" alt="..." />
-            <div className="card-body">
-              <h5 className="card-title">Special title treatment</h5>
-              <p className="card-text">With supporting text below as a natural lead-in to additional content.</p>
-              <a href="#" data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#modalTable"  className="btn btn-primary">Go somewhere</a>
+        {rendicionesEnc.map((encabezado) => {
+          return (
+            <div className="col-sm-4" key={encabezado.IdRenEnc}>
+              <div className="card">
+              <img src="https://loremflickr.com/100/100" className="card-img-top" alt="..." />
+                <div className="card-body">
+                  <h5 className="card-title">{encabezado.Numero}</h5>
+                  <p className="card-text">{encabezado.Rut}</p>
+                  <a href="#" data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#modalTable"  className="btn btn-danger" onClick={() => obtenerOne(encabezado.IdRenEnc)}>Ver PDF</a>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div className="col-sm-4">
-          <div className="card">
-            <img src="https://loremflickr.com/150/150" className="card-img-top" alt="..." />
-            <div className="card-body">
-              <h5 className="card-title">Special title treatment</h5>
-              <p className="card-text">With supporting text below as a natural lead-in to additional content.</p>
-              <a href="#" data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#modalTable"  className="btn btn-primary">Go somewhere</a>
-            </div>
-          </div>
-        </div>
-        <div className="col-sm-4">
-          <img src="https://loremflickr.com/150/150" className="card-img-top" alt="..." />
-          <div className="card">
-            <div className="card-body">
-              <h5 className="card-title">Special title treatment</h5>
-              <p className="card-text">With supporting text below as a natural lead-in to additional content.</p>
-              <a href="#" onClick={() => openModal()} className="btn btn-primary">Go somewhere</a>
-            </div>
-          </div>
-        </div>
+          )
+        })} 
       </div>
 
 
       <div id='modalTable' className="modal fade modal-xl" aria-hidden="true">
         <div className="modal-dialog">
             <div className="modal-content">
-              <PDFViewer style={{width:"100%", height:"93vh"}}><PDFFile/></PDFViewer>
+              <PDFViewer style={{width:"100%", height:"93vh"}}>
+                <PDFFile
+                rendicionesEncOne={rendicionesEncOne}
+                rendicionDet={rendicionDet}
+                resumenes={resumenes}
+                items={items}
+                />
+              </PDFViewer>
             </div>
         </div>
       </div>
