@@ -53,6 +53,14 @@ export const Home = () => {
     }
 }
 
+const total = () => {
+  let suma = 0
+  rendicionDet.map(detalle => {
+    suma += detalle.MontoTotal
+  })
+  return suma
+}
+
 
 
   return (
@@ -63,10 +71,11 @@ export const Home = () => {
           return (
             <div className="col-sm-4" key={encabezado.IdRenEnc}>
               <div className="card">
-              <img src="https://loremflickr.com/100/100" className="card-img-top" alt="..." />
+              <img src="./images/tax.jpg" style={{width: "100%"}} className="card-img-top" alt="..." />
                 <div className="card-body">
-                  <h5 className="card-title">{encabezado.Numero}</h5>
-                  <p className="card-text">{encabezado.Rut}</p>
+                  <h5 className="card-title">Numero de Rendición: {encabezado.Numero}</h5>
+                  <p className="card-text">Responsable: {encabezado.Empleado}</p>
+                  <p className="card-text">Monto Total: $ 0</p>
                   <a href="#" data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#modalTable"  className="btn btn-danger" onClick={() => obtenerOne(encabezado.IdRenEnc)}>Ver PDF</a>
                 </div>
               </div>
