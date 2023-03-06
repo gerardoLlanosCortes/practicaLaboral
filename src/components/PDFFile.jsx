@@ -1,11 +1,41 @@
-import React from 'react';
-import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
-import { padding } from '@mui/system';
-import { Hidden } from '@mui/material';
+import React, { useState, useEffect } from 'react'
 
+import { Document, Page, Text, View, StyleSheet, Image, Font } from '@react-pdf/renderer';
+import RobotoRegular from "../assets/fonts/Roboto-Regular.ttf"
+import RobotoBold from "../assets/fonts/Roboto-Bold.ttf"
+import RobotoLight from "../assets/fonts/Roboto-Light.ttf"
+import RobotoThin from "../assets/fonts/Roboto-Thin.ttf"
+import { fontFamily } from '@mui/system';
+import {formatNumbers} from '../utils/utils'
 
-const COL_ANCHO_1 = 10;
-const COL_ANCHO_2 = 20;
+Font.register({
+  family: 'Roboto-regular',
+  format: "truetype",
+  src: RobotoRegular,
+}
+);
+
+Font.register({
+  family: 'Roboto-bold',
+  format: "truetype",
+  src: RobotoBold,
+}
+);
+
+Font.register({
+  family: 'Roboto-light',
+  format: "truetype",
+  src: RobotoLight,
+}
+);
+
+Font.register({
+  family: 'Roboto-thin',
+  format: "truetype",
+  src: RobotoThin,
+}
+);
+
 
 const styles = StyleSheet.create({
 	page: {
@@ -13,33 +43,34 @@ const styles = StyleSheet.create({
     paddingBottom: 65,
     paddingLeft: 35,
     paddingRight: 35,
+    fontFamily: "Roboto-regular"
   },
   title: {
     fontSize: 10,
     marginBottom: 8,
-    fontWeight: "bold",
-    textAlign: "center",
+    fontFamily: "Roboto-bold",
+    textAlign: "center"
   },
   subTitle: {
     fontSize: 9,
     marginBottom: 20,
-    fontWeight: "bold",
+    fontFamily: "Roboto-bold",
     textAlign: "center",
   },
   tableTitles: {
     fontSize: 9,
     marginBottom: 8,
-    fontWeight: "bold",
+    fontFamily: "Roboto-bold",
     textAlign: "center",
   },
   headertitles: {
     fontSize: 9,
-    fontWeight: "bold",
     marginBottom: 4,
+    fontFamily: "Roboto-bold",
   },
   headertexts: {
     fontSize: 9,
-    marginBottom: 4
+    marginBottom: 4,
   },
   image: {
     marginVertical: 15,
@@ -53,7 +84,7 @@ const styles = StyleSheet.create({
     color: "white",
     margin: 5,
     fontSize: 10,
-    fontWeight: 500,
+    fontFamily: "Roboto-bold",
   },
   tabla: {
     // display: "table",
@@ -68,15 +99,15 @@ const styles = StyleSheet.create({
   },
   tablaColumnaIndice: {
     width: "5%",
-    backgroundColor: "#1ABD9C"
+    backgroundColor: "#7eb8e7"
   },
   tablaColumnaItem: {
     width: "65%",
-    backgroundColor: "#1ABD9C"
+    backgroundColor: "#7eb8e7"
   },
   tablaColumnaValor: {
     width: "30%",
-    backgroundColor: "#1ABD9C"
+    backgroundColor: "#7eb8e7"
   },
   anchoContenedor: {
     display: "flex",
@@ -90,6 +121,7 @@ const styles = StyleSheet.create({
 	  border: "1px solid gray",
     borderLeftWidth: 0,
     borderTopwidth: 0,
+    fontFamily: "Roboto-bold"
   },
   anchoColumnaItem: {
     width: "65%",
@@ -103,24 +135,32 @@ const styles = StyleSheet.create({
     borderLeftWidth: 0,
     borderTopwidth: 0,
   },
-  
-
-
   tablaCeldaTotal: {
     margin: 5,
     fontSize: 10,
-    textAlign: "right"
+    textAlign: "right",
+    fontFamily: "Roboto-bold",
+  },
+  tablaCeldaFecha: {
+    margin: 5,
+    fontSize: 10,
+    fontFamily: "Roboto-bold",
+  },
+  tablaCeldaIndice: {
+    margin: 5,
+    fontSize: 10,
+    fontFamily: "Roboto-bold",
   },
   contenedorTabla: {
     marginBottom: 16
   },
   tablaColumna: {
     flex: 1,
-    backgroundColor: "#1ABD9C"
+    backgroundColor: "#7eb8e7"
   },
   tablaColumnaDetalle: {
     flex: 3,
-    backgroundColor: "#1ABD9C"
+    backgroundColor: "#7eb8e7"
   },
   anchoColumna: {
     flex: 1,
@@ -130,10 +170,6 @@ const styles = StyleSheet.create({
   },
   anchoColumnaDetalle: {
     flex: 3,
-    // flexGrow: 3,
-    // flexShrink: 1,
-    // flexBasis: 0,
-    // width: 200,
     height: "auto",
 	  border: "1px solid gray",
     borderLeftWidth: 0,
@@ -145,19 +181,20 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 5,
     fontSize: 10,
+    fontFamily: "Roboto-light"
   },
 
   
 });
 
-export const PDFFile = ({rendicionesEncOne, rendicionDet, resumenes, items}) => {
+export const PDFFile = ({rendicionesEncOne, rendicionDet, resumenes, items, tipos}) => {
 
   const total = () => {
     let suma = 0
     rendicionDet.map(detalle => {
       suma += detalle.MontoTotal
     })
-    return suma
+    return formatNumbers(suma)
   }
 
   const funcion = (itemId) => {
@@ -167,7 +204,7 @@ export const PDFFile = ({rendicionesEncOne, rendicionDet, resumenes, items}) => 
         res = resumen.MontoTotal
       }
     })
-    return res
+    return formatNumbers(res)
   }
 
   const totalDetalles= (tipo) => {
@@ -177,18 +214,22 @@ export const PDFFile = ({rendicionesEncOne, rendicionDet, resumenes, items}) => 
         suma += detalle.MontoTotal
       }
     })
-    return suma
+    return formatNumbers(suma)
   }
 
-  // const resumenes = rendicionesEncOne.resumen
-  
-  
-  console.log(rendicionesEncOne)
-  console.log(resumenes)
-  console.log(rendicionDet)
-  console.log(items)
+  const getImagen = (nombreImagen) =>{
+    if(nombreImagen == ""){
+      return "http://localhost:4503/public/no-image.png"
+    }
+    
+    else{
+        return "http://localhost:4503/public/" + nombreImagen
+    }
+  }
 
-
+  // const fechaDesde = () => {
+  //   return 
+  // }
 
   return (
     <Document>
@@ -196,7 +237,7 @@ export const PDFFile = ({rendicionesEncOne, rendicionDet, resumenes, items}) => 
 
         <View>
           <Text style={styles.title}> FORMULARIO DE RENDICIÓN DE GASTOS </Text>
-          <Text style={styles.subTitle}> Desde: 2022-11-08 - Hasta: 2022-11-08 </Text>
+          <Text style={styles.subTitle}> Desde: {rendicionDet[0].FechaDoc} - Hasta: {rendicionDet[rendicionDet.length-1].FechaDoc} </Text>
         </View>
 
         <View style={{flexDirection: 'row', gap: "32px", marginBottom: "12px"}}>
@@ -220,7 +261,6 @@ export const PDFFile = ({rendicionesEncOne, rendicionDet, resumenes, items}) => 
 
         <Text style={{display: "inline-block",width: "100%",borderTop: "0.5px solid gray",marginBottom: "16px"}} ></Text>
         
-
       <View style={styles.conetendorFirstTable}>
         <View style={styles.tabla}>
           <View style={styles.tablaFila}>
@@ -235,15 +275,14 @@ export const PDFFile = ({rendicionesEncOne, rendicionDet, resumenes, items}) => 
             </View>
           </View>
         </View>
-        
-        {/*Aqui se recorre un arreglo y se muestran los datos*/}
-        <View style={styles.anchoContenedor}>
+      
 
+        <View style={styles.anchoContenedor}>
           {items.map((item, indice) => {
             return(
               <View style={styles.tablaFila} key={indice}>
                 <View style={styles.anchoColumnaIndice}>
-                  <Text style={styles.tablaCelda}>{indice + 1}</Text>
+                  <Text style={styles.tablaCeldaIndice}>{indice + 1}</Text>
                 </View>
                 <View style={styles.anchoColumnaItem}>
                   <Text style={styles.tablaCelda}>{item.Item}</Text>
@@ -254,14 +293,12 @@ export const PDFFile = ({rendicionesEncOne, rendicionDet, resumenes, items}) => 
               </View>
             )
           })}
-          
-        {/* ESTE VAS ASI AL FINAL DEL ARREGLO RECORRIDO YA QUE ES EL TOTAL */}
           <View style={styles.tablaFila}>
             <View style={styles.anchoColumnaIndice}>
               <Text style={styles.tablaCelda}></Text>
             </View>
             <View style={styles.anchoColumnaItem}>
-              <Text style={styles.tablaCelda}>Total</Text>
+              <Text style={styles.tablaCelda}>TOTAL</Text>
             </View>
             <View style={styles.anchoColumnaValor}>
               <Text style={styles.tablaCeldaTotal}>$ {total()}</Text>
@@ -269,290 +306,109 @@ export const PDFFile = ({rendicionesEncOne, rendicionDet, resumenes, items}) => 
           </View>
         </View>
       </View>
+    </Page>
+
+
+    <Page size="A4" style={styles.page}>
+      {tipos.map((tipo, index) => {
+        return(
+          <View style={styles.contenedorTabla} key={index}>
+            <Text style={styles.tableTitles}>DETALLE DE GASTOS EN {tipo.Tipo.toUpperCase()}</Text>
+            <View style={styles.tabla}>
+              <View style={styles.tablaFila}>
+                <View style={styles.tablaColumna}>
+                  <Text style={styles.tablaCeldaHeader}>Fecha</Text>
+                </View>
+                <View style={styles.tablaColumna}>
+                  <Text style={styles.tablaCeldaHeader}>Boleta</Text>
+                </View>
+                <View style={styles.tablaColumna}>
+                  <Text style={styles.tablaCeldaHeader}>Factura</Text>
+                </View>
+                <View style={styles.tablaColumnaDetalle}>
+                  <Text style={styles.tablaCeldaHeader}>Detalle</Text>
+                </View>
+                <View style={styles.tablaColumna}>
+                  <Text style={styles.tablaCeldaHeader}>Total</Text>
+                </View>
+              </View>
+            </View>
+          
+
+            <View style={styles.anchoContenedor}>
+              {rendicionDet.map((detalle, indice) => {
+                if(detalle.Tipo === tipo.Tipo){
+                  return (
+                    <View style={styles.tablaFila}  key={indice}>
+                      <View style={styles.anchoColumna}>
+                        <Text style={styles.tablaCeldaFecha}>{detalle.FechaDoc}</Text>
+                      </View>
+                      <View style={styles.anchoColumna}>
+                        <Text style={styles.tablaCelda}>{(detalle.TipoDoc === "BOLETA")? detalle.NumeroDoc : undefined}</Text>
+                      </View>
+                      <View style={styles.anchoColumna}>
+                        <Text style={styles.tablaCelda}>{(detalle.TipoDoc === "FACTURA")? detalle.NumeroDoc : undefined}</Text>
+                      </View>
+                      <View style={styles.anchoColumnaDetalle}>
+                        <Text style={styles.tablaCelda}>{detalle.Obs}</Text>
+                      </View>
+                      <View style={styles.anchoColumna}>
+                        <Text style={styles.tablaCeldaTotal}>$ {formatNumbers(detalle.MontoTotal)}</Text>
+                      </View>
+                    </View>
+                  )
+                }
+              }              
+              )}
+              <View style={styles.tablaFila}>
+                <View style={styles.anchoColumna}>
+                  <Text style={styles.tablaCelda}></Text>
+                </View>
+                <View style={styles.anchoColumna}>
+                  <Text style={styles.tablaCelda}></Text>
+                </View>
+                <View style={styles.anchoColumna}>
+                  <Text style={styles.tablaCelda}></Text>
+                </View>
+                <View style={styles.anchoColumnaDetalle}>
+                  <Text style={styles.tablaCelda}>TOTAL</Text>
+                </View>
+                <View style={styles.anchoColumna}>
+                  <Text style={styles.tablaCeldaTotal}>$ {totalDetalles(tipo.Tipo)}</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+          
+        )
+      })}
+
       
     </Page>
-
-
-{/* ============================================================
-====================================================================
-===================================================================
-============================================================ */}
-
-
-
-    <Page size="A4" style={styles.page}>
-      <View style={styles.contenedorTabla}>
-        <Text style={styles.tableTitles}>DETALLE DE GASTOS EN PEAJES</Text>
-        <View style={styles.tabla}>
-          <View style={styles.tablaFila}>
-            <View style={styles.tablaColumna}>
-              <Text style={styles.tablaCeldaHeader}>Fecha</Text>
+      
+    
+    {rendicionDet.map((detalle, index) => {
+      return(
+        <Page size="A4" style={styles.page} key={index}>
+          <View>
+            <Text style={styles.tableTitles}>IMAGENES {detalle.TipoDoc.toUpperCase()}</Text>
+            <View style={{flexDirection: 'row', gap: "32px", margin: "20px 0", justifyContent: "center"}}>
+            <View >
+              <Text style={styles.headertitles}>FECHA DOCUMENTO:</Text>
+              <Text style={styles.headertitles}>NUMERO DOCUMENTO:</Text>
+              <Text style={styles.headertitles}>MONTO TOTAL:</Text>
             </View>
-            <View style={styles.tablaColumna}>
-              <Text style={styles.tablaCeldaHeader}>Boleta</Text>
-            </View>
-            <View style={styles.tablaColumna}>
-              <Text style={styles.tablaCeldaHeader}>Factura</Text>
-            </View>
-            <View style={styles.tablaColumnaDetalle}>
-              <Text style={styles.tablaCeldaHeader}>Detalle</Text>
-            </View>
-            <View style={styles.tablaColumna}>
-              <Text style={styles.tablaCeldaHeader}>Total</Text>
+            <View >
+              <Text style={styles.headertexts}>{detalle.FechaDoc}</Text>
+              <Text style={styles.headertexts}>{detalle.NumeroDoc}</Text>
+              <Text style={styles.headertexts}>$ {formatNumbers(detalle.MontoTotal)}</Text>
             </View>
           </View>
-        </View>
-
-        {/*Aqui se recorre un arreglo y se muestran los datos*/}
-        <View style={styles.anchoContenedor}>
-            {rendicionDet.map((detalle, indice) => {
-              if(detalle.Tipo === "Peajes"){
-                return (
-                  <View style={styles.tablaFila}  key={indice}>
-                    <View style={styles.anchoColumna}>
-                      <Text style={styles.tablaCelda}>{detalle.FechaDoc}</Text>
-                    </View>
-                    <View style={styles.anchoColumna}>
-                      <Text style={styles.tablaCelda}>{(detalle.TipoDoc === "BOLETA")? detalle.NumeroDoc : undefined}</Text>
-                    </View>
-                    <View style={styles.anchoColumna}>
-                      <Text style={styles.tablaCelda}>{(detalle.TipoDoc === "FACTURA")? detalle.NumeroDoc : undefined}</Text>
-                    </View>
-                    <View style={styles.anchoColumnaDetalle}>
-                      <Text style={styles.tablaCelda}>{detalle.Obs}</Text>
-                    </View>
-                    <View style={styles.anchoColumna}>
-                      <Text style={styles.tablaCeldaTotal}>$ {detalle.MontoTotal}</Text>
-                    </View>
-                  </View>
-                )
-              }
-            })}
-          
-          <View style={styles.tablaFila}>
-            <View style={styles.anchoColumna}>
-              <Text style={styles.tablaCelda}></Text>
-            </View>
-            <View style={styles.anchoColumna}>
-              <Text style={styles.tablaCelda}></Text>
-            </View>
-            <View style={styles.anchoColumna}>
-              <Text style={styles.tablaCelda}></Text>
-            </View>
-            <View style={styles.anchoColumnaDetalle}>
-              <Text style={styles.tablaCelda}>Total</Text>
-            </View>
-            <View style={styles.anchoColumna}>
-              <Text style={styles.tablaCeldaTotal}>$ {totalDetalles("Peajes")}</Text>
-            </View>
+          <Image src={getImagen(detalle.NombreImagen)} style={{width: 400,marginVertical: 15, marginHorizontal: "auto",}}></Image>
           </View>
-        </View>
-      </View>
-
-
-      {/* ============================================================
-      ====================================================================
-      ===================================================================
-      ============================================================ */}
-
-      <View style={styles.contenedorTabla}>
-        <Text style={styles.tableTitles}>DETALLE DE GASTOS EN COLACIONES</Text>
-        <View style={styles.tabla}>
-          <View style={styles.tablaFila}>
-            <View style={styles.tablaColumna}>
-              <Text style={styles.tablaCeldaHeader}>Fecha</Text>
-            </View>
-            <View style={styles.tablaColumna}>
-              <Text style={styles.tablaCeldaHeader}>Boleta</Text>
-            </View>
-            <View style={styles.tablaColumna}>
-              <Text style={styles.tablaCeldaHeader}>Factura</Text>
-            </View>
-            <View style={styles.tablaColumnaDetalle}>
-              <Text style={styles.tablaCeldaHeader}>Detalle</Text>
-            </View>
-            <View style={styles.tablaColumna}>
-              <Text style={styles.tablaCeldaHeader}>Total</Text>
-            </View>
-          </View>
-        </View>
-        
-        {/*Aqui se recorre un arreglo y se muestran los datos*/}
-        <View style={styles.anchoContenedor}>
-            {rendicionDet.map((detalle, indice) => {
-              if(detalle.Tipo === "Colaciones"){
-                return (
-                  <View style={styles.tablaFila}  key={indice}>
-                    <View style={styles.anchoColumna}>
-                      <Text style={styles.tablaCelda}>{detalle.FechaDoc}</Text>
-                    </View>
-                    <View style={styles.anchoColumna}>
-                      <Text style={styles.tablaCelda}>{(detalle.TipoDoc === "BOLETA")? detalle.NumeroDoc : undefined}</Text>
-                    </View>
-                    <View style={styles.anchoColumna}>
-                      <Text style={styles.tablaCelda}>{(detalle.TipoDoc === "FACTURA")? detalle.NumeroDoc : undefined}</Text>
-                    </View>
-                    <View style={styles.anchoColumnaDetalle}>
-                      <Text style={styles.tablaCelda}>{detalle.Obs}</Text>
-                    </View>
-                    <View style={styles.anchoColumna}>
-                      <Text style={styles.tablaCeldaTotal}>$ {detalle.MontoTotal}</Text>
-                    </View>
-                  </View>
-                )
-              }
-            })}
-          
-          <View style={styles.tablaFila}>
-            <View style={styles.anchoColumna}>
-              <Text style={styles.tablaCelda}></Text>
-            </View>
-            <View style={styles.anchoColumna}>
-              <Text style={styles.tablaCelda}></Text>
-            </View>
-            <View style={styles.anchoColumna}>
-              <Text style={styles.tablaCelda}></Text>
-            </View>
-            <View style={styles.anchoColumnaDetalle}>
-              <Text style={styles.tablaCelda}>Total</Text>
-            </View>
-            <View style={styles.anchoColumna}>
-              <Text style={styles.tablaCeldaTotal}>$ {totalDetalles("Colaciones")}</Text>
-            </View>
-          </View>
-        </View>
-      </View>
-
-
-      {/* ============================================================
-      ====================================================================
-      ===================================================================
-      ============================================================ */}
-
-<View style={styles.contenedorTabla}>
-        <Text style={styles.tableTitles}>DETALLE DE GASTOS EN COMBUSTIBLE</Text>
-        <View style={styles.tabla}>
-          <View style={styles.tablaFila}>
-            <View style={styles.tablaColumna}>
-              <Text style={styles.tablaCeldaHeader}>Fecha</Text>
-            </View>
-            <View style={styles.tablaColumna}>
-              <Text style={styles.tablaCeldaHeader}>Boleta</Text>
-            </View>
-            <View style={styles.tablaColumna}>
-              <Text style={styles.tablaCeldaHeader}>Factura</Text>
-            </View>
-            <View style={styles.tablaColumnaDetalle}>
-              <Text style={styles.tablaCeldaHeader}>Detalle</Text>
-            </View>
-            <View style={styles.tablaColumna}>
-              <Text style={styles.tablaCeldaHeader}>Total</Text>
-            </View>
-          </View>
-        </View>
-        
-        {/*Aqui se recorre un arreglo y se muestran los datos*/}
-        <View style={styles.anchoContenedor}>
-            {rendicionDet.map((detalle, indice) => {
-              if(detalle.Tipo === "Combustibles"){
-                return (
-                  <View style={styles.tablaFila}  key={indice}>
-                    <View style={styles.anchoColumna}>
-                      <Text style={styles.tablaCelda}>{detalle.FechaDoc}</Text>
-                    </View>
-                    <View style={styles.anchoColumna}>
-                      <Text style={styles.tablaCelda}>{(detalle.TipoDoc === "BOLETA")? detalle.NumeroDoc : undefined}</Text>
-                    </View>
-                    <View style={styles.anchoColumna}>
-                      <Text style={styles.tablaCelda}>{(detalle.TipoDoc === "FACTURA")? detalle.NumeroDoc : undefined}</Text>
-                    </View>
-                    <View style={styles.anchoColumnaDetalle}>
-                      <Text style={styles.tablaCelda}>{detalle.Obs}</Text>
-                    </View>
-                    <View style={styles.anchoColumna}>
-                      <Text style={styles.tablaCeldaTotal}>$ {detalle.MontoTotal}</Text>
-                    </View>
-                  </View>
-                )
-              }
-            })}
-          
-          <View style={styles.tablaFila}>
-            <View style={styles.anchoColumna}>
-              <Text style={styles.tablaCelda}></Text>
-            </View>
-            <View style={styles.anchoColumna}>
-              <Text style={styles.tablaCelda}></Text>
-            </View>
-            <View style={styles.anchoColumna}>
-              <Text style={styles.tablaCelda}></Text>
-            </View>
-            <View style={styles.anchoColumnaDetalle}>
-              <Text style={styles.tablaCelda}>Total</Text>
-            </View>
-            <View style={styles.anchoColumna}>
-              <Text style={styles.tablaCeldaTotal}>$ {totalDetalles("Combustibles")}</Text>
-            </View>
-          </View>
-        </View>
-      </View>
-    </Page>
-
-    <Page size="A4" style={styles.page}>
-      <Text style={styles.tableTitles}>IMAGENES PEAJES</Text>
-      <View style={{flexDirection: 'row', gap: "32px", margin: "20px 0", justifyContent: "center"}}>
-        <View >
-          <Text style={styles.headertitles}>Fecha Documento</Text>
-          <Text style={styles.headertitles}>Numero Documento:</Text>
-          <Text style={styles.headertitles}>Monto Total</Text>
-        </View>
-        <View >
-          <Text style={styles.headertexts}>2022-11-08</Text>
-          <Text style={styles.headertexts}>65</Text>
-          <Text style={styles.headertexts}>$ 56</Text>
-        </View>
-      </View>
-      <Image src={"https://picsum.photos/200"} style={{width: 400,marginVertical: 15, marginHorizontal: "auto",}}></Image>
-        
-    </Page>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-			{/* <View >
-        <Text >Texto de prueba 1</Text>
-        <Image src="https://via.placeholder.com/150" />
-        <Text >Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minima est saepe obcaecati maxime, in suscipit aut aliquam. Eligendi, labore reprehenderit quae hic earum vel. Enim asperiores, veniam exercitationem illo, odit laboriosam tempora delectus corporis aut quae incidunt minus molestiae debitis dolores doloremque error nesciunt! Culpa dolorem eaque sit amet veritatis.</Text>
-			</View>
-			<View >
-				<Text >Texto de prueba 2</Text>
-			</View>
-		</Page>
-    <Page size="A4" >
-			<View >
-        <Text >Pagina 2</Text>
-        <Text >Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dignissimos excepturi obcaecati vel commodi fuga mollitia quia alias nemo. Atque nisi porro at assumenda nihil explicabo, autem id? Nam, nisi. Quas eveniet aliquid enim molestiae reiciendis dolor, asperiores distinctio pariatur nisi dolorum quaerat quisquam quos cum? Architecto corrupti nihil hic. Placeat nemo libero veritatis quae non mollitia quasi neque, ipsum hic corrupti, voluptatum quia temporibus harum sed! Dicta, cumque. Repellendus minus molestias ab. Necessitatibus quam magni, cum mollitia eos officiis in tempore facilis, ratione similique accusantium explicabo inventore commodi pariatur quas, iste rerum tempora libero ipsum dignissimos saepe quis. Quam, asperiores!</Text>
-			</View> */}
-		
+        </Page>
+      )
+    })}
 	</Document>
   )
 }

@@ -1,11 +1,9 @@
 import React,{useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 
-export let resultNameExport = "";
-export let resultEmailExport = "";
 
 export const Login = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("test@test.com");
   const [password, setPassword] = useState("qwerty123");
 
@@ -25,9 +23,7 @@ export const Login = () => {
   
       result = await result.json()
       localStorage.setItem("user-token", result.token)
-
-      resultNameExport = result.user.name
-      resultEmailExport = result.user.email
+      localStorage.setItem("email", result.user.email)
       
 
       //navegar a home

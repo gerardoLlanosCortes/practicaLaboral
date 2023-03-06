@@ -13,3 +13,7 @@ export const getHeadersData = () => {
         "authorization": "Bearer: " + localStorage.getItem("user-token")
     }
 }
+
+export const formatNumbers = (numero) => {
+    return new Intl.NumberFormat('es-CL').format(numero)
+}

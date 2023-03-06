@@ -1,6 +1,5 @@
 import React from 'react'
 import {Link, Outlet, useNavigate} from 'react-router-dom'
-import {resultNameExport, resultEmailExport} from '../pages/Login'
 
 export const Layout = () => {
 	const navigate = useNavigate();
@@ -9,21 +8,6 @@ export const Layout = () => {
     localStorage.removeItem("user-token")
     navigate('/login')
   }
-
-  const nombreUsuario = () => {
-    if(resultNameExport === null){
-      return resultEmailExport;
-    } else{
-      return resultNameExport
-    }
-  }
-
-
-  
-
-  // const menuToggle = () => {
-  //   document.querySelector(".navbar").classList.toggle("open")
-  // }
 
   return (
     <>
@@ -65,7 +49,7 @@ export const Layout = () => {
                 <div className="nav__right d-flex align-items-center">
                   <div className="user__nav d-flex">
                     <i className="fa fa-solid fa-user m-auto"></i>
-                    <p className='user__name m-auto'>{nombreUsuario()}</p>
+                    <p className='user__name m-auto'>{localStorage.getItem("email")}</p>
                   </div>
                   <a href="#" className='btn__cta' onClick={cerrarSesion}>Cerrar Sesión</a>
                 </div>
