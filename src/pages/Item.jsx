@@ -1,25 +1,28 @@
 import React from 'react'
 import { useState,useEffect } from 'react'
-import {show__alert} from "../utils/functions"
-import Tabla from '../components/Tabla'
-import withReactContent from 'sweetalert2-react-content'
-import Swal from "sweetalert2";
+import {buscarEnTabla, showAlert} from "../utils/functions"
+import Tabla from '../components/shared/Tabla'
 
+import { useForm } from 'react-hook-form'
+import FormItem from '../components/forms/FormItem'
+import ModalLibreria from '../components/shared/ModalLibreria'
 
 
 import itemService from '../services/itemService'
 
 export const Item = () => {
 
+    const {register, handleSubmit, formState: { errors }, setValue, reset} = useForm({defaultValues: { item: "", estado: "",}})
+
     const [items, setItems] = useState([]);
     const [idItem,setIdItem] = useState("")
-    const [item,setItem] = useState("")
-    const [estado, setEstado] = useState("")
+
     const [operation, setOperation] = useState(1)
     const [title, setTitle] = useState("")
 
-    const [filterVal, setFilterVal] = useState("")
     const [searchApiData, setSearchApiData] = useState("")
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
     
 
 
@@ -50,14 +53,16 @@ export const Item = () => {
     // ==== POST Y PATCH =======
     // =========================
 
-    const validar = async (idItem) => {
-        let parametros = {Item:item.trim(), Estado:estado}
-        if(item.trim() === "" || item === undefined) show__alert("Escribe el el nombre del item", "warning")
-        else if(item.length <= 2 || item.length > 100) show__alert("El item debe tener entre 3 y 100 carácteres", "warning")
-        else if(estado === "" || estado === undefined) show__alert("Selecciona el estado del item", "warning")
-        else (operation === 1) ? enviarSolicitud(await itemService.insert(parametros)) : enviarSolicitud(await itemService.update(idItem, parametros))            
-    }
+    const onSubmit = async (data, e) => {
+        let parametros = {Item: data.item,Estado: data.estado}
 
+        if(operation === 1){
+            showResult(await itemService.insert(parametros))
+        }else{
+            showResult(await itemService.update(idItem, parametros))
+        }
+        e.target.reset()
+    };
 
 
     // =========================
@@ -65,38 +70,31 @@ export const Item = () => {
     // =========================
 
     const deleteItem = (id,item) => {
-        const MySwal = withReactContent(Swal)
-        MySwal.fire({
-            title: "Seguro que quieres eliminar el item " + item + " ?",
-            icon: "question",
-            confirmButtonColor: 'rgba(25, 135, 84, 0.800)',
-            cancelButtonColor: '#d33',
-            showCancelButton:true,confirmButtonText:"Sí, eliminar",cancelButtonText:"Cancelar"
-        }).then((async result => {
+        showAlert(`Seguro que quieres eliminar el item ${item} ?`, "question", "eliminar")
+        .then((async result => {
             if(result.isConfirmed){
                 setIdItem(id)
                 let result = await itemService.del(id)
-                enviarSolicitud(result)
+                showResult(result)
             }else{
-                show__alert("El item NO fue eliminado", "info")
+                showAlert("El item NO fue eliminado", "info")
             }
         }))
     }
-
-
+    
 
     // =========================
     // ======= ENVIAR ==========
     // =========================
 
-    const enviarSolicitud = (result) => {
+    const showResult = (result) => {
         if(result.statusText === "OK"){
-            show__alert("Accion exitosa","success")
-            document.getElementById("btnCerrar").click()
+            showAlert("Accion exitosa","success")
+            handleClose()
             obtenerDatos()
         }
         else{
-            show__alert("Error en la solicitud", "error")
+            showAlert("Error en la solicitud", "error")
             console.log(err)
         }
     }
@@ -121,7 +119,7 @@ export const Item = () => {
             name:"Action",
             cell: row => (
                 <div>                
-                    <a href="#" className='edit edit__icon' data-toggle="modal"><i className='material-icons ' data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#modalTable" title='Edit' onClick={() => openModal(2, row.IdItem, row.Item, row.Estado)}>&#xE254;</i></a> 
+                    <a href="#" className='edit edit__icon' data-toggle="modal"><i className='material-icons ' data-toggle="tooltip" title='Edit' onClick={() => handleShow(2, row.IdItem, row.Item, row.Estado)}>&#xE254;</i></a> 
                     <a href="#" className='delete delete__icon' data-toggle="modal"><i className='material-icons' data-toggle="tooltip" title='Delete' onClick={() => deleteItem(row.IdItem, row.Item)}>&#xE872;</i></a>
                 </div>
             ),
@@ -138,20 +136,20 @@ export const Item = () => {
     // ======== MODAL ==========
     // =========================
 
-    const openModal = (op, id, item, estado) => {
+    const handleShow = (op, id, banco, estado) => {
         setIdItem("")
-        setItem("")
-        setEstado("")
+        reset()
         setOperation(op)
         if(op === 1){
             setTitle("Registrar Item")
         }
         else if(op === 2){
-            setTitle("Editar Item")
             setIdItem(id)
-            setItem(item)
-            setEstado(estado)
+            setTitle("Editar Item")
+            setValue("item", banco)
+            setValue("estado", estado)
         }
+        setShow(true)
         window.setTimeout(function(){
             document.getElementById("first").focus()
         },500)
@@ -162,17 +160,8 @@ export const Item = () => {
     // =========================
 
     const handleFilter = (e) => {
-        if(e.target.value == ""){
-            setItems(searchApiData)
-        }else{
-            const filterResult = searchApiData.filter(item => item.Item.toLowerCase().includes(e.target.value.toLowerCase()))
-            if (filterResult.length > 0) {
-                setItems(filterResult)
-            } else {
-                setItems([{"Item": "No hay información", "Estado": undefined}])
-            }
-        }
-        setFilterVal(e.target.value)
+        const valor = buscarEnTabla(e.target.value, searchApiData, ["Item"])
+        setItems(valor)
     }
 
 
@@ -182,50 +171,25 @@ export const Item = () => {
                 arrayData={items}
                 columns={columns}
                 title={"Administrar Items"}
-                filterVal={filterVal}
                 handleFilter={handleFilter}
-                openModal={openModal}
+                handleShow={handleShow}
                 />
 
+            <ModalLibreria
+                title={title} 
+                handleClose={handleClose}
+                show={show}
+            >
+                <FormItem 
+                    handleSubmit={handleSubmit}
+                    onSubmit={onSubmit} 
+                    register={register}
+                    errors={errors}
+                />
+            </ModalLibreria>
 
 
-
-            <div id='modalTable' className="modal fade" aria-hidden="true">
-                <div className="modal-dialog">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <label className="h5">{title}</label>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" id='btnCerrar'></button>
-                        </div>
-                        <div className="modal-body">
-                            <input type="hidden" id='id'/>
-                            <div className="input-group mb-3">
-                                <span className='input-group-text input-group-text__modal'>Item</span>
-                                <input type="text" id='first' className='form-control' placeholder='Ingrese Nombre del Item' value={item}
-                                onChange={(e) => setItem(e.target.value)} />
-                            </div>
-
-                            <div className="input-group mb-3">
-                                <span className='input-group-text input-group-text__modal'>Estado</span>
-                                <select className="form-select" aria-label="Default select example" name="estado" id='estado' onChange={(e) => setEstado(e.target.value)} value={estado}>
-                                    <option value="">Selecciona un Estado</option>
-                                    <option value="1">Activo</option>
-                                    <option value="0">Inactivo</option>
-                                </select>
-                            </div>
-
-
-                            <div className="d-flex justify-content-end btn__container">
-                                <div className="">
-                                    <button type='button' onClick={() => validar(idItem)} className='btn btn-success btn__save btn__save--modal'>
-                                        <i className="fa-solid fa-floppy-disk save__icon"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
         </div>
 
         

@@ -1,18 +1,17 @@
 import React from 'react'
 import { useState,useEffect } from 'react'
-import {show__alert} from "../utils/functions"
-import Tabla from '../components/Tabla'
+import { showAlert} from "../utils/functions"
+
 import withReactContent from 'sweetalert2-react-content'
 import Swal from "sweetalert2";
 import { v4 } from 'uuid'
-import {Link, Outlet, useNavigate} from 'react-router-dom'
-import FormRendicionDetalle from '../components/FormRendicionDetalle'
-import PDFFile from '../components/PDFFile'
+import FormRendicionDetalle from '../components/forms/FormRendicionDetalle'
 import itemService from '../services/itemService'
 import tipoService from '../services/tipoService'
 
 import rendicionService from '../services/rendicionService'
 import empleadoService from '../services/empleadoService'
+import TablaRendiciones from '../components/TablaRendiciones';
 
 
 export const Rendicion = () => {
@@ -88,8 +87,6 @@ export const Rendicion = () => {
             setRendicionesDet([])
             let result = await rendicionService.getOne(id);
             setRendicionesDet(result.data.detalle)
-            console.log(result.data.detalle)
-            console.log(result.data)
 
         }catch(err){
             console.log(err)
@@ -137,17 +134,17 @@ export const Rendicion = () => {
     const validar = async (id) => {
         let parametros = {IdRenEnc:idRenEnc,Numero:numeroEnc,Rut:rut,Fecha:fechaEnc,Obs:obsEnc.trim(),Estado:estadoEnc}
 
-        if(!/^([0-9])*$/.test(numeroEnc)) show__alert("El número de encabezado solo debe poseer carácteres númericos", "warning")
-        else if(numeroEnc === "" || numeroEnc === undefined) show__alert("Escribe el número de encabezado de la rendición", "warning")
+        if(!/^([0-9])*$/.test(numeroEnc)) showAlert("El número de encabezado solo debe poseer carácteres númericos", "warning")
+        else if(numeroEnc === "" || numeroEnc === undefined) showAlert("Escribe el número de encabezado de la rendición", "warning")
 
-        else if(rut === "" || rut === undefined) show__alert("Selecciona el rut del empleado", "warning")
+        else if(rut === "" || rut === undefined) showAlert("Selecciona el rut del empleado", "warning")
 
-        else if(fechaEnc === "" || fechaEnc === undefined) show__alert("Selecciona la fecha de rendición", "warning")
+        else if(fechaEnc === "" || fechaEnc === undefined) showAlert("Selecciona la fecha de rendición", "warning")
 
-        else if(obsEnc.trim() === "" || obsEnc === undefined) show__alert("Escribe la observación de la rendicion", "warning")
-        else if(obsEnc.length < 1 || obsEnc.length > 200) show__alert("la observación de la rendicion debe tener entre 1 y 200 carácteres", "warning")
+        else if(obsEnc.trim() === "" || obsEnc === undefined) showAlert("Escribe la observación de la rendicion", "warning")
+        else if(obsEnc.length < 1 || obsEnc.length > 200) showAlert("la observación de la rendicion debe tener entre 1 y 200 carácteres", "warning")
         
-        else if(estadoEnc === "" || estadoEnc === undefined) show__alert("Selecciona el estado de la rendición", "warning")
+        else if(estadoEnc === "" || estadoEnc === undefined) showAlert("Selecciona el estado de la rendición", "warning")
 
         else (operation === 1) ? enviarSolicitud(await rendicionService.insertEnc(parametros)) : setGuardar(await rendicionService.updateEnc(id, parametros))
     }
@@ -159,20 +156,14 @@ export const Rendicion = () => {
     // =========================
 
     const deleteItem = (id,numeroEnc) => {
-        const MySwal = withReactContent(Swal)
-        MySwal.fire({
-            title: "Seguro que quieres eliminar la rendición " + numeroEnc + " ?",
-            icon: "question",
-            confirmButtonColor: 'rgba(25, 135, 84, 0.800)',
-            cancelButtonColor: '#d33',
-            showCancelButton:true,confirmButtonText:"Sí, eliminar",cancelButtonText:"Cancelar"
-        }).then((async result => {
+        showAlert(`Seguro que quieres eliminar la rendición ${numeroEnc} ?`, "question", "eliminar")
+        .then((async result => {
             if(result.isConfirmed){
                 setIdRenEnc(id)
                 let result = await rendicionService.delEnc(id)
                 enviarSolicitud(result)
             }else{
-                show__alert("la rendición NO fue eliminada", "info")
+                showAlert("la rendición NO fue eliminada", "info")
             }
         }))
     }
@@ -186,12 +177,12 @@ export const Rendicion = () => {
 
     const enviarSolicitud = (result) => {
         if(result.statusText === "OK"){
-            show__alert("Accion exitosa","success")
+            showAlert("Accion exitosa","success")
             document.getElementById("btnCerrar").click()
             obtenerDatos()
         }
         else{
-            show__alert("Error en la solicitud", "error")
+            showAlert("Error en la solicitud", "error")
             console.log(err)
         }
     }
@@ -231,13 +222,12 @@ export const Rendicion = () => {
             name:"Action",
             cell: row => (
                 <div>      
-                    {/* <Link to="/rendicionInfo" className='edit edit__icon' data-toggle="modal"><i className='material-icons ' data-toggle="tooltip"  title='See' onClick={(e) => obtenerOne(row.IdRenEnc)}>&#xe417;</i></Link> */}
                     <a href="#" className='edit edit__icon' data-toggle="modal"><i className='material-icons ' data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#modalTable" title='See' onClick={() => openModal(3, row.IdRenEnc, row.Numero, row.Rut, row.Fecha, row.Obs, row.Estado)}>&#xe417;</i></a> 
 
 
                     <a href="#" className='edit edit__icon' data-toggle="modal"><i className='material-icons ' data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#modalTable" title='Edit' onClick={() => openModal(2, row.IdRenEnc, row.Numero, row.Rut, row.Fecha, row.Obs, row.Estado)}>&#xE254;</i></a> 
 
-                    <a href="#" className='delete delete__icon' data-toggle="modal"><i className='material-icons' data-toggle="tooltip" title='Delete' onClick={() => deleteItem(row.IdRenEnc, row.NumeroEnc)}>&#xE872;</i></a>
+                    <a href="#" className='delete delete__icon' data-toggle="modal"><i className='material-icons' data-toggle="tooltip" title='Delete' onClick={() => deleteItem(row.IdRenEnc, row.Numero)}>&#xE872;</i></a>
                     
                 </div>
             ),
@@ -391,30 +381,24 @@ export const Rendicion = () => {
     }
 
     const deleteDet = (idEnc,idDet,numeroDoc, isNew) => {
-        const MySwal = withReactContent(Swal)
-        MySwal.fire({
-            title: "Seguro que quieres eliminar el detalle " + numeroDoc + " ?",
-            icon: "question",
-            confirmButtonColor: 'rgba(25, 135, 84, 0.800)',
-            cancelButtonColor: '#d33',
-            showCancelButton:true,confirmButtonText:"Sí, eliminar",cancelButtonText:"Cancelar"
-        }).then((async result => {
+        showAlert(`Seguro que quieres eliminar el detalle ${numeroDoc} ?`, "question", "eliminar")
+        .then((async result => {
             if(result.isConfirmed){
                 if(isNew){
                     setRendicionesDet(rendicionesDet.filter(item => item.IdRenDet !== idDet));
-                    show__alert("Accion exitosa","success")
+                    showAlert("Accion exitosa","success")
                 }else{
                     setRendicionesDet(rendicionesDet.map(el => {
                         if(el.IdRenDet === idDet){
                             el.Estado = 2
-                            console.log(el.Estado)
+                            showAlert("Accion exitosa, presione el botón de guardar para confirmar cambios","success")
                         }
                         return el
                     }))
                 }
                 
             }else{
-                show__alert("El detalle NO fue eliminado", "info")
+                showAlert("El detalle NO fue eliminado", "info")
             }
         }))
     }
@@ -433,7 +417,7 @@ export const Rendicion = () => {
 
     return(
         <div className='item' >
-            <Tabla 
+            <TablaRendiciones 
                 arrayData={rendicionesEnc}
                 columns={columns}
                 title={"Administrar Rendiciones"}
@@ -504,16 +488,16 @@ export const Rendicion = () => {
                         
 
                         <div className="d-flex justify-content-between btn__container mt-2 mb-4">
-                            <div className="">
+                            <div className="btn__footer">
                                 <button type='button' onClick={() => validar(idRenEnc)} className='btn btn-success btn__modal btn__save btn__save--modal' disabled={guardar}>
                                     <i className="fa-solid fa-floppy-disk save__icon"></i>
                                 </button>
                             </div>
-                            <div className="">
+                            <div className="btn__footer">
                                 <button type='button' className='btn btn-success btn__modal' onClick={añadirDetalle}>Añadir Detalle</button>
                             </div>
-                            <div className="">
-                                <button type='button' className='btn btn-danger btn__modal' onClick={() => deleteItem(idRenEnc, numeroEnc)} >Eliminar Rendición</button>
+                            <div className="btn__footer ">
+                                <button type='button' className='btn btn-danger btn__modal btn__footer--eliminar' onClick={() => deleteItem(idRenEnc, numeroEnc)} >Eliminar Rendición</button>
                             </div>
                         </div>
 

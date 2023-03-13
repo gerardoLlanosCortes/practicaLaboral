@@ -421,6 +421,8 @@ i{
   height: 40px;
 }
 
+
+
 /* =============================
 ========= MEDIA QUERIES ========
 ================================ */
@@ -495,6 +497,25 @@ View {
     width: 180px;
     color: #fff;
   }
+
+  .input-group-text--encabezado{
+    /* width: 180px; */
+    width: 100%;
+  }
+
+  .input-group-text--detalle{
+    /* width: 120px; */
+    width: 100%;
+  }
+
+  .btn__footer{
+    width: 40%;
+  }
+
+  .btn__footer--eliminar{
+    font-size: 15px;
+  }
+
 }
 
 

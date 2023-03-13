@@ -187,6 +187,8 @@ const styles = StyleSheet.create({
   
 });
 
+const API_URL = import.meta.env.VITE_API_URL
+
 export const PDFFile = ({rendicionesEncOne, rendicionDet, resumenes, items, tipos}) => {
 
   const total = () => {
@@ -219,11 +221,11 @@ export const PDFFile = ({rendicionesEncOne, rendicionDet, resumenes, items, tipo
 
   const getImagen = (nombreImagen) =>{
     if(nombreImagen == ""){
-      return "http://localhost:4503/public/no-image.png"
+      return `${API_URL}/public/no-image.png`
     }
     
     else{
-        return "http://localhost:4503/public/" + nombreImagen
+        return `${API_URL}/public/${nombreImagen}`
     }
   }
 

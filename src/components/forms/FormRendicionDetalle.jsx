@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react'
-import {show__alert} from "../utils/functions"
+import { showAlert} from "../../utils/functions"
 import withReactContent from 'sweetalert2-react-content'
 import Swal from "sweetalert2";
 
-import rendicionService from '../services/rendicionService'
+import rendicionService from '../../services/rendicionService'
 import { width } from '@mui/system';
+
+const API_URL = import.meta.env.VITE_API_URL
 
 
 export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formDetalle, setFormDetalle, items, tipos, deleteDet, defaultFecha}) => {
+    
     const [idRenEnc, setIdRenEnc] = useState(idEnc)
     const [idRenDet, setIdRenDet] = useState(detalle.IdRenDet)
     const [idTipo,setIdTipo] = useState(detalle.IdTipo)
@@ -34,11 +37,11 @@ export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formD
 
     useEffect(() =>{
         if(nombreImagen == ""){
-            setUrlImagen("http://localhost:4503/public/no-image.png")
+            setUrlImagen(`${API_URL}/public/no-image.png`)
         }
         
         else{
-            setUrlImagen("http://localhost:4503/public/" + nombreImagen)
+            setUrlImagen(`${API_URL}/public/${nombreImagen}`)
         }
     }, [])
 
@@ -60,47 +63,47 @@ export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formD
         formdata.append("NombreImagen", nombreImagen)
             
         if(idTipo === "" || idTipo === undefined){
-            show__alert("Selecciona el tipo del detalle", "warning") 
+            showAlert("Selecciona el tipo del detalle", "warning") 
             setGuardar(false)
         } 
 
         else if(idItem === "" || idItem === undefined){
-            show__alert("Selecciona el item del detalle", "warning")
+            showAlert("Selecciona el item del detalle", "warning")
             setGuardar(false)
         } 
 
         else if(fechaDocDet === "" || fechaDocDet === undefined){
-            show__alert("Selecciona la fecha del detalle", "warning") //!
+            showAlert("Selecciona la fecha del detalle", "warning") //!
             setGuardar(false)
         }
  
         else if(idTipoDoc === "" || idTipoDoc === undefined){
-            show__alert("Selecciona el tipo de documento del detalle", "warning")
+            showAlert("Selecciona el tipo de documento del detalle", "warning")
             setGuardar(false)
         } 
 
         else if(!/^([0-9])*$/.test(numeroDoc)){
-            show__alert("El número de documento solo debe poseer carácteres númericos", "warning")
+            showAlert("El número de documento solo debe poseer carácteres númericos", "warning")
             setGuardar(false)
         }
 
         else if(numeroDoc === "" || numeroDoc === undefined){
-            show__alert("Escribe el número de documento del detalle", "warning")
+            showAlert("Escribe el número de documento del detalle", "warning")
             setGuardar(false)
         } 
 
         else if(!/^([0-9])*$/.test(montoTotal)){
-            show__alert("El monto total solo debe poseer carácteres númericos", "warning")
+            showAlert("El monto total solo debe poseer carácteres númericos", "warning")
             setGuardar(false)
         }
 
         else if(montoTotal === "" || montoTotal === undefined){
-            show__alert("Escribe el monto total del detalle", "warning")
+            showAlert("Escribe el monto total del detalle", "warning")
             setGuardar(false)
         } 
 
         else if(obsDet === "" || obsDet === undefined){
-            show__alert("Ingresa la observación del detalle", "warning")
+            showAlert("Ingresa la observación del detalle", "warning")
             setGuardar(false)
         } 
         
@@ -124,7 +127,7 @@ export const FormRendicionDetalle = ({detalle, idEnc, guardar, setGuardar, formD
         if (file) {
           reader.readAsDataURL(file);
         } else {
-            preview.src = "http://localhost:4503/public/no-image.png";
+            preview.src = `${API_URL}/public/no-image.png`;
         }
     }
     

@@ -1,5 +1,5 @@
 import React from 'react'
-import { empresaValidator } from '../utils/validators'
+import { empresaValidator } from '../../utils/validators'
 
 export const FormEmpresa = ({handleSubmit, onSubmit, register, errors }) => {
   return (    

@@ -1,16 +1,13 @@
 import React from 'react'
 import { useState,useEffect } from 'react'
-import {buscarEnTabla, showAlertDelete, show__alert} from "../utils/functions"
-import Tabla from '../components/Tabla'
-import withReactContent from 'sweetalert2-react-content'
-import Swal from "sweetalert2";
+import {buscarEnTabla, showAlert} from "../utils/functions"
+import Tabla from '../components/shared/Tabla'
+
 import empresaService from '../services/empresaService'
 
 import { useForm } from 'react-hook-form'
-import { empresaValidator } from '../utils/validators'
-import FormEmpresa from '../components/FormEmpresa'
-import ModalLibreria from '../components/ModalLibreria'
-import Modal from 'react-bootstrap/Modal';
+import FormEmpresa from '../components/forms/FormEmpresa'
+import ModalLibreria from '../components/shared/ModalLibreria'
 
 export const Empresa = () => {
 
@@ -69,14 +66,14 @@ export const Empresa = () => {
     // =========================
 
     const deleteItem = (id,empresa) => {
-        showAlertDelete(empresa)
+        showAlert(`Seguro que quieres eliminar la empresa ${empresa} ?`, "question", "eliminar")
         .then((async result => {
             if(result.isConfirmed){
                 setIdEmpresa(id)
                 let result = await empresaService.del(id)
                 showResult(result)
             }else{
-                show__alert("La empresa NO fue eliminada", "info")
+                showAlert("La empresa NO fue eliminada", "info")
             }
         }))
     }
@@ -88,12 +85,12 @@ export const Empresa = () => {
 
     const showResult = (result) => {
         if(result.statusText === "OK"){
-            show__alert("Accion exitosa","success")
+            showAlert("Accion exitosa","success")
             handleClose()
             obtenerDatos()
         }
         else{
-            show__alert("Error en la solicitud", "error")
+            showAlert("Error en la solicitud", "error")
             console.log(err)
         }
     }

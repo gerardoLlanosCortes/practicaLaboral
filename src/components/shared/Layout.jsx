@@ -31,6 +31,9 @@ export const Layout = () => {
                   <li className="nav-item">
                     <Link to="/about" className='nav__anchor nav-link'>About</Link>
                   </li>
+                  <li className="nav-item">
+                    <Link to="/dashboard" className='nav__anchor nav-link'>Dashboard</Link>
+                  </li>
                   <li className="nav-item dropdown">
                     <a className="nav-link dropdown-toggle nav__anchor" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                       Administración
