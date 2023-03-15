@@ -38,6 +38,18 @@ const buscarEnTabla = (value, itemsArray, colsArray) => {
     })
 } 
 
+const rangeYear = () => {
+    const max = new Date().getFullYear()
+    const min = 2022
+    const years = []
+  
+    for (let i = max; i >= min; i--) {
+        years.push(i)
+    }
+    return years
+  }
+  
 
 
-export {buscarEnTabla, showAlert}
+
+export {buscarEnTabla, showAlert, rangeYear}

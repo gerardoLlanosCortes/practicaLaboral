@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { showAlert} from "../../utils/functions"
-import withReactContent from 'sweetalert2-react-content'
-import Swal from "sweetalert2";
 
 import rendicionService from '../../services/rendicionService'
-import { width } from '@mui/system';
 
 const API_URL = import.meta.env.VITE_API_URL
 
