@@ -2,8 +2,6 @@ import React from 'react'
 import { useState,useEffect } from 'react'
 import { showAlert} from "../utils/functions"
 
-import withReactContent from 'sweetalert2-react-content'
-import Swal from "sweetalert2";
 import { v4 } from 'uuid'
 import FormRendicionDetalle from '../components/forms/FormRendicionDetalle'
 import itemService from '../services/itemService'
@@ -17,7 +15,6 @@ import TablaRendiciones from '../components/TablaRendiciones';
 export const Rendicion = () => {
 
     // Encabezado
-    // IdRenEnc, Numero, Rut, Fecha, Obs, Estado, FechaServer, LastModified, RowGuidControl
     const [rendicionesEnc, setRendicionesEnc] = useState([]);
     const [idRenEnc, setIdRenEnc] = useState("")
     const [numeroEnc,setNumeroEnc] = useState("")
@@ -27,7 +24,6 @@ export const Rendicion = () => {
     const [estadoEnc, setEstadoEnc] = useState(1)
 
     // Detalle
-    // IdRenDet, IdTipo, IdItem, Fecha, FechaDoc, IdTipoDoc, NumeroDoc, Obs, MontoTotal, Estado, LastModified, FechaServer, RowGuidControl, IdRenEnc, NombreImagen
     const [rendicionesDet, setRendicionesDet] = useState([]);
 
 
@@ -57,10 +53,8 @@ export const Rendicion = () => {
 
     useEffect(() => {
         if(guardar && formDetalle.length === rendicionesDet.length) {
-            console.log("pasa")
             Promise.all(formDetalle)
             .then(result => {
-                console.log(result)
                 enviarSolicitud(result[0])
             })
             .catch(reason => {

@@ -60,47 +60,40 @@ export const Home = () => {
   }
 
   return (
-  <div className="container-sm">
     <div className="container-sm">
-      <div className="row">
-        {rendicionesEnc.map((encabezado) => {
-          return (
-            <CardHome
-              obtenerOne = {obtenerOne}
-              encabezado = {encabezado}
-              formatNumbers = {formatNumbers}
-              key={encabezado.IdRenEnc}
-            />
-          )
-        })} 
-      </div>
-
-        
-      <div id='modalTable' className="modal fade modal-xl" aria-hidden="true">
-        <div className="modal-dialog">
-            <div className="modal-content">
-              { loading ? " " : 
-                <PDFViewer style={{width:"100%", height:"93vh"}}>
-                  <PDFFile
-                  rendicionesEncOne={rendicionesEncOne}
-                  rendicionDet={rendicionDet}
-                  resumenes={resumenes}
-                  items={items}
-                  tipos={tipos}
-                  />
-                </PDFViewer>
-              }
-            </div>
+      <div className="container-sm">
+        <div className="row">
+          {rendicionesEnc.map((encabezado) => {
+            return (
+              <CardHome
+                obtenerOne = {obtenerOne}
+                encabezado = {encabezado}
+                formatNumbers = {formatNumbers}
+                key={encabezado.IdRenEnc}
+              />
+            )
+          })} 
         </div>
-      </div> 
-        {/* <PDFDownloadLink style={{width: "200px", backgroundColor:"#6dbafa", textAlign: 'center', padding: "16px", color:"white", borderRadius: "6px"}}   
-          document={<PDFFile/>} fileName="ArchivoDePrueba">
-          {({ blob, url, loading, error }) =>
-            loading ? 'Loading document...' : 'Download now!'
-          }
-        </PDFDownloadLink> */}
-      </div>
 
+          
+        <div id='modalTable' className="modal fade modal-xl" aria-hidden="true">
+          <div className="modal-dialog">
+              <div className="modal-content">
+                { loading ? " " : 
+                  <PDFViewer style={{width:"100%", height:"93vh"}}>
+                    <PDFFile
+                    rendicionesEncOne={rendicionesEncOne}
+                    rendicionDet={rendicionDet}
+                    resumenes={resumenes}
+                    items={items}
+                    tipos={tipos}
+                    />
+                  </PDFViewer>
+                }
+              </div>
+          </div>
+        </div> 
+      </div>
     </div>
   )
 }

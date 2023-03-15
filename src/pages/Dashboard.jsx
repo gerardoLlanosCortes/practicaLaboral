@@ -1,10 +1,8 @@
 import React from 'react'
 import { useState,useEffect } from 'react'
-import AreaChartItem from '../components/charts/AreaChartItem';
 import BarChartEmpleado from '../components/charts/BarChartEmpleado';
-import BarChartEmpleadoVertical from '../components/charts/BarChartEmpleadoVertical';
+
 import PieChartItem from '../components/charts/PieChartItem';
-// import { Area, AreaChart, Bar, BarChart, CartesianGrid, Legend, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import gastosService from '../services/gastosService';
 import { rangeYear } from '../utils/functions';
 

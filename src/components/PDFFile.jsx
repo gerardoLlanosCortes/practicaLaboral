@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from 'react'
-
+import React from 'react'
 import { Document, Page, Text, View, StyleSheet, Image, Font } from '@react-pdf/renderer';
 import RobotoRegular from "../assets/fonts/Roboto-Regular.ttf"
 import RobotoBold from "../assets/fonts/Roboto-Bold.ttf"
 import RobotoLight from "../assets/fonts/Roboto-Light.ttf"
 import RobotoThin from "../assets/fonts/Roboto-Thin.ttf"
-import { fontFamily } from '@mui/system';
 import {formatNumbers} from '../utils/utils'
 
 Font.register({
@@ -87,7 +85,6 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto-bold",
   },
   tabla: {
-    // display: "table",
     width: "auto",
     minWidth: 0,
   },
@@ -229,9 +226,6 @@ export const PDFFile = ({rendicionesEncOne, rendicionDet, resumenes, items, tipo
     }
   }
 
-  // const fechaDesde = () => {
-  //   return 
-  // }
 
   return (
     <Document>
