@@ -9,6 +9,7 @@ import {
     Legend,
   } from 'chart.js';
   import { Bar } from 'react-chartjs-2';
+  import ChartDataLabels from 'chartjs-plugin-datalabels';
   
   ChartJS.register(
     CategoryScale,
@@ -19,6 +20,12 @@ import {
     Legend
   );
 
+  ChartJS.defaults.set('plugins.datalabels', {
+    anchor: 'end',
+    align: 'end',
+    offset: -5
+  });
+
 
 export const BarChart = ({datos, title}) => {
   
@@ -26,9 +33,15 @@ const data = {
     labels: datos.map((dato) => dato.Empleado),
     datasets: [
       {
-        label: "Monto Total",
         data: datos.map((dato) => dato.MontoTotal),
-        backgroundColor: 'rgba(54, 162, 235, 0.35)',
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.35)',
+          'rgba(54, 162, 235, 0.35)',
+          'rgba(255, 206, 86, 0.35)',
+          'rgba(75, 192, 192, 0.35)',
+          'rgba(153, 102, 255, 0.35)',
+          'rgba(255, 159, 64, 0.35)',
+        ],
       }
     ]
   }
@@ -37,9 +50,7 @@ const options = {
   maintainAspectRatio: false,
   responsive: true,
   plugins: {
-      legend: {
-      position: 'top',
-      },
+      legend: false,
       title: {
       display: true,
       text: title,
@@ -54,6 +65,7 @@ const options = {
         options={options}
         width={300}
         height={400}
+        plugins={[ChartDataLabels]}
         />
     </div>
   )

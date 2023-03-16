@@ -19,7 +19,7 @@ axios.interceptors.response.use(
 
 		if (error.response.status === 401) {
 			localStorage.removeItem("user-token")
-			// window.location = '/login';
+			window.location = '/login';
 			
 		}
 

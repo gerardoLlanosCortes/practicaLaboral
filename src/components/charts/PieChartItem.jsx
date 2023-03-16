@@ -1,6 +1,7 @@
 import React from 'react';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -36,6 +37,9 @@ export const PieChartItem = ({datos, title}) => {
             display: true,
             text: title,
             },
+            datalabels: {
+                anchor: 'center'
+            },
         },
         }
 
@@ -43,7 +47,8 @@ export const PieChartItem = ({datos, title}) => {
     <div className="col-md-6">
         <Pie data={data} options={options}
         width={300}
-        height={400}/>
+        height={400}
+        plugins={[ChartDataLabels]}/>
     </div>
   )
 }
